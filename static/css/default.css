@@ -1,7 +1,13 @@
 /* TODO: Coloca tu código aquí */
 
-body{
-    color :white;
-    background-color: #011329 ; 
+* {
+    color: white;
+}
 
+body {
+    background-color: #011329;
+}
+
+.contactSubmitBtn {
+    color: #011329;
 }

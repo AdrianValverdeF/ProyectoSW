@@ -1,37 +1,51 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contacto</title>
-    <link href= "css/default.css" rel = "stylesheet">
+    <link href="css/default.css" rel="stylesheet">
 </head>
+
 <body>
-    
+
+    <section class="header">
+        <h1>UCMBets</h1>
+        <a href="detalles.html">Detalles</a>
+        <a href="bocetos.html">Bocetos</a>
+        <a href="miembros.html">Miembros</a>
+        <a href="planificacion.html">Planificación</a>
+        <a href="contacto.html">Contacto</a>
+    </section>
+
+    <h2>Contacto</h2>
+
     <!-------->
-    <form  action="mailto:user@example.com" method="get">
+    <form action="mailto:recipiente@gmail.com" method="get" enctype="text/plain">
         <label>Nombre:</label>
-        <input type="text" required><br><br>
-        
+        <input type="text" name="nombre" required><br><br>
+
         <label>Correo electrónico:</label>
-        <input type="email" required>
-        
+        <input type="email" name="email" required><br><br>
+
         <p>Motivo de la consulta:</p>
-        <input type="radio" required>
+        <input type="radio" name="motivo" value="Evaluación" required>
         <label>Evaluación</label>
-        <input type="radio">
-        <label>Sugerencias</label><br>
-        <input type="radio">
+        <input type="radio" name="motivo" value="Sugerencias">
+        <label>Sugerencias</label>
+        <input type="radio" name="motivo" value="Críticas">
         <label>Críticas</label><br><br>
-        
-        <input type="checkbox" required>
-        <label>Marque esta casilla para verificar que ha leído nuestros términos y condiciones del servicio</label><br><br>
-        
+
+        <input type="checkbox" name="terminos" required>
+        <label>Acepto los términos y condiciones</label><br><br>
+
         <label>Escriba su consulta:</label><br>
-        <textarea rows="4" cols="50" required></textarea><br><br>
-        
-        <button type="submit">Enviar</button>
+        <textarea name="consulta" rows="4" cols="50" required></textarea><br><br>
+
+        <button type="submit" class="contactSubmitBtn">Enviar</button>
     </form>
 
 </body>
+
 </html>
