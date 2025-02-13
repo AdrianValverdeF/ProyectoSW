@@ -33,7 +33,7 @@ Comentarios:
 ### planificacion.html (hasta 0.5 puntos)
 
 - [ ] No se incluye el contenido solicitado en el enunciado (0 puntos)
-- [ ] Se incluye la tabla de hitos solicitada con los hitos del proyecto (+0.25 puntos)
+- [X] Se incluye la tabla de hitos solicitada con los hitos del proyecto (+0.25 puntos)
 - [ ] Incluye información acerca de la planificación del proyecto (descripción, gantt o similar) (+0.25 puntos)
 - [ ] Valida W3C
 
