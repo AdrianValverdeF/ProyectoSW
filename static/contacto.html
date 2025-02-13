@@ -7,5 +7,30 @@
 </head>
 <body>
     
+    <!-------->
+    <form  action="mailto:user@example.com" method="get">
+        <label>Nombre:</label>
+        <input type="text" required><br><br>
+        
+        <label>Correo electrónico:</label>
+        <input type="email" required>
+        
+        <p>Motivo de la consulta:</p>
+        <input type="radio" required>
+        <label>Evaluación</label>
+        <input type="radio">
+        <label>Sugerencias</label><br>
+        <input type="radio">
+        <label>Críticas</label><br><br>
+        
+        <input type="checkbox" required>
+        <label>Marque esta casilla para verificar que ha leído nuestros términos y condiciones del servicio</label><br><br>
+        
+        <label>Escriba su consulta:</label><br>
+        <textarea rows="4" cols="50" required></textarea><br><br>
+        
+        <button type="submit">Enviar</button>
+    </form>
+
 </body>
 </html>
