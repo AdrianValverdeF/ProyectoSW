@@ -20,7 +20,7 @@ Evaluación de este apartado:
 ### miembros.html (hasta 0.5 puntos)
 
 Contenido solicitado:
-- [ ] Incluye el listado con todos los integrantes del grupo al comienzo de la página.
+- [X] Incluye el listado con todos los integrantes del grupo al comienzo de la página.
 - [ ] Las descripciones contienen la información solicitada
 Evaluación de este apartado:
 - [ ] No se incluye el contenido solicitado en el enunciado (0 puntos)
