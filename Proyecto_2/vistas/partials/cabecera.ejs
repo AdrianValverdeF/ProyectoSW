@@ -5,7 +5,7 @@
         <% if (!session.nombre) { %>
             Usuario desconocido. <a href='/usuarios/login'>Login</a>
         <% } else { %>
-            <p>¡Bienvenido, <%= session.nombre %>!</p>
+            <p>¡Bienvenido, <%= session.nombre %>! <a href='/usuarios/logout'>Cerrar sesión</a></p>
         <% } %>
        	
     </div>

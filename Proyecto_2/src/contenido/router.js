@@ -7,7 +7,7 @@ contenidoRouter.get('/normal', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/normal';
     }
-    console.log(req.session);
+    
     res.render('pagina', {
         contenido,
         session: req.session
