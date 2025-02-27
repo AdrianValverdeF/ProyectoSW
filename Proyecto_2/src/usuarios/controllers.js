@@ -2,16 +2,40 @@ import { body } from 'express-validator';
 
 export function viewLogin(req, res) {
     res.render('pagina', { 
-        contenido: 'paginas/login', // Ruta relativa a la vista de login
-        session: req.session // Pasar la sesión si es necesario
+        contenido: 'paginas/login', 
+        session: req.session 
     });
 }
 export function doLogin(req, res) {
     body('username').escape(); // Se asegura que eliminar caracteres problemáticos
     body('password').escape(); // Se asegura que eliminar caracteres problemáticos
-    // TODO: tu código aquí
+    const { username, password } = req.body;
+
+    if (username === 'user' && password === 'userpass') {
+        req.session.login = true;
+        req.session.nombre = 'Usuario';
+        req.session.esAdmin = false;
+        res.redirect('/contenido/normal');
+    } else if (username === 'admin' && password === 'adminpass') {
+        req.session.login = true;
+        req.session.nombre = 'Administrador';
+        req.session.esAdmin = true;
+        res.redirect('/contenido/admin');
+    } else {
+        
+        res.status(401).render('paginas/login', {
+            error: 'Usuario o contraseña incorrectos',
+            session: req.session
+        });
+    }
 }
 
+
 export function doLogout(req, res, next) {
-    // TODO: https://expressjs.com/en/resources/middleware/session.html
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).send('Error al cerrar la sesión');
+        }
+        res.redirect('/');
+    });
 }

@@ -7,6 +7,7 @@ contenidoRouter.get('/normal', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/normal';
     }
+    console.log(req.session);
     res.render('pagina', {
         contenido,
         session: req.session
@@ -15,7 +16,7 @@ contenidoRouter.get('/normal', (req, res) => {
 
 contenidoRouter.get('/admin', (req, res) => {
     let contenido = 'paginas/noPermisos';
-    if (req.session.login.admin) {
+    if (req.session.esAdmin) {
         contenido = 'paginas/admin';
     }
     res.render('pagina', {

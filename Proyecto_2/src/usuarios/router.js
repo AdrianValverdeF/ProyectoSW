@@ -5,7 +5,7 @@ const usuariosRouter = express.Router();
 
 // /usuarios/login
 usuariosRouter.get('/login', viewLogin);
-usuariosRouter.post('/login', doLogin); // Manejar el envío del formulario de login
-usuariosRouter.get('/logout', doLogout); // Manejar el cierre de sesión
+usuariosRouter.post('/login', doLogin); 
+usuariosRouter.get('/logout', doLogout); 
 
 export default usuariosRouter;
