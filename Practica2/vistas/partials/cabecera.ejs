@@ -1,0 +1,24 @@
+<header>
+    <nav class="navbar">
+        <div class="logo-container">
+            <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/logoUCMBets.png-KkNp0QeKRGsvL6Edq89qLu9QP6Qzp4.jpeg" alt="UCMBets Logo" class="logo">
+            <span>UCMBets</span>
+        </div>
+        <div class="nav-links">
+            <a href="/">Inicio</a>
+            <a href="/contenido/normal">Eventos</a>
+            <a href="/contenido/gestion-apuestas">Apuestas</a>
+            <a href="/contenido/gestion-eventos">Competición</a>
+            <a href="/contenido/perfil">Perfil</a>
+        </div>
+        <div class="user-menu">
+            
+            <% if (!session.nombre) { %>
+                <a class='login-btn' href='/usuarios/login'>Iniciar sesión</a>
+            <% } else { %>
+                <p>¡Bienvenido, <%= session.nombre %>! <a href='/usuarios/logout'>Cerrar sesión</a></p>
+            <% } %>
+        </div>
+    </nav>
+    
+</header>   
