@@ -16,7 +16,7 @@
             <% if (!session.nombre) { %>
                 <a class='login-btn' href='/usuarios/login'>Iniciar sesión</a>
             <% } else { %>
-                <p>¡Bienvenido, <%= session.nombre %>! <a href='/usuarios/logout'>Cerrar sesión</a></p>
+                <p>¡Bienvenido, <%= session.nombre %>! <a class='login-btn'  href='/usuarios/logout'>Cerrar sesión</a></p>
             <% } %>
         </div>
     </nav>
