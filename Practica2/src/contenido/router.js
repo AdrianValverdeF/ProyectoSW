@@ -58,10 +58,10 @@ contenidoRouter.get('/perfil', (req, res) => {
     });
 });
 
-contenidoRouter.get('/foroFutbol11', (req, res) => {
+contenidoRouter.get('/futbol11', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {
-        contenido = 'paginas/foroFutbol11';
+        contenido = 'paginas/futbol11';
     }
     res.render('pagina', {
         contenido,
@@ -69,31 +69,20 @@ contenidoRouter.get('/foroFutbol11', (req, res) => {
     });
 });
 
-contenidoRouter.get('/foroFutbolSala', (req, res) => {
+contenidoRouter.get('/futbolSala', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {
-        contenido = 'paginas/foroFutbolSala';
+        contenido = 'paginas/futbolSala';
     }
     res.render('pagina', {
         contenido,
         session: req.session
     });
 });
-contenidoRouter.get('/foroVoleibol', (req, res) => {
+contenidoRouter.get('/voleibol', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {
-        contenido = 'paginas/foroVoleibol';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/foroRugby', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/foroRugby';
+        contenido = 'paginas/voleibol';
     }
     res.render('pagina', {
         contenido,
@@ -101,10 +90,21 @@ contenidoRouter.get('/foroRugby', (req, res) => {
     });
 });
 
-contenidoRouter.get('/foroBaloncesto', (req, res) => {
+contenidoRouter.get('/rugby', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {
-        contenido = 'paginas/foroBaloncesto';
+        contenido = 'paginas/rugby';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/baloncesto', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/baloncesto';
     }
     res.render('pagina', {
         contenido,

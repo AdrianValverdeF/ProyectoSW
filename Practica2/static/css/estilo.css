@@ -37,6 +37,12 @@ header {
     border-right: 2px solid var(--border-color);
 }
 
+aside{
+    float: right;
+    width: 500px;
+    height: 2000px;
+}
+
 
 .navbar {
     background-color: var(--secondary-bg);
@@ -162,8 +168,28 @@ button {
 }
 
 .chat-input {
+    position :fixed;
+    width: 25%;
     padding: 1rem;
     border-top: 2px solid var(--border-color);
+    bottom :0;
+}
+.chat-input-foroG {
+    position :fixed;
+    width: 85%;
+    padding: 1rem;
+    border-top: 2px solid var(--border-color);
+    bottom :0;
+}
+
+.chat-input-foroG input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+   
 }
 
 .chat-input input {
