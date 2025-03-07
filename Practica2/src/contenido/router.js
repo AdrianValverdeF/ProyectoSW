@@ -1,15 +1,21 @@
 import express from 'express';
-import { Mensajes } from './mensajes';
+import { Mensajes } from './mensajes.js';
 
 const contenidoRouter = express.Router();
 
 contenidoRouter.get('/foroComun', (req, res) => {
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
+    console.log(mensajes);
+    
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
 
-
-
-
+contenidoRouter.get('/enviarmensaje', (req, res) => {
+    let contenido = 'paginas/noPermisos';
     if (req.session.login) {
         contenido = 'paginas/normal';
     }
@@ -19,6 +25,7 @@ contenidoRouter.get('/foroComun', (req, res) => {
         session: req.session
     });
 });
+
 
 contenidoRouter.get('/normal', (req, res) => {
     let contenido = 'paginas/noPermisos';
@@ -54,18 +61,6 @@ contenidoRouter.get('/amigosPag', (req, res) => {
     });
 });
 
-
-contenidoRouter.get('/gestion-apuestas', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/gestion-apuestas';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
 contenidoRouter.get('/gestion-apuestas', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {
@@ -96,13 +91,12 @@ contenidoRouter.get('/perfil', (req, res) => {
             contenido,
             session: req.session
         });
-    }else{
+    } else {
         res.render('pagina', {
             contenido,
             session: req.session
         });
     }
-    
 });
 
 contenidoRouter.get('/futbol11', (req, res) => {
@@ -126,6 +120,7 @@ contenidoRouter.get('/futbolSala', (req, res) => {
         session: req.session
     });
 });
+
 contenidoRouter.get('/voleibol', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {

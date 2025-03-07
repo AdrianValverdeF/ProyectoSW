@@ -14,7 +14,7 @@ export class Mensajes {
     }
 
     static getMensajes() {
-        return this.#getByNearestDateStmt.all();
+        return this.#getByNearestDateStmt.run();
     }
 
     static #insert(mensaje) {
