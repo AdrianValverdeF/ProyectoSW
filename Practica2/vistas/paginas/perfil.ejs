@@ -20,12 +20,12 @@
             <div class="datos-personales">
                 <h2>Datos Personales</h2>
                 <p><strong>Nombre:</strong> <%= session.nombre %></p>
-                <p><strong>Apellidos:</strong> Sánchez</p>
-                <p><strong>Edad:</strong> 22</p>
+                <p><strong>Apellidos:</strong> session.apellido</p>
+                <p><strong>Edad:</strong> session.edad </p>
                 <p><strong>Tipo de cuota:</strong> <%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'VIP' : 'Normal') %></p>
-                <p><strong>Correo electrónico:</strong> ****chez@gmail.com</p>
+                <p><strong>Correo electrónico:</strong> session.email </p>
                 <p><strong>Contraseña:</strong> **********</p>
-                <button>Modificar</button>
+                <button class="modificar-btn">Modificar</button>
             </div>
             <div class="ultimas-apuestas">
                 <h2>Últimas Apuestas</h2>
