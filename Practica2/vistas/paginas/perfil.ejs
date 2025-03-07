@@ -11,7 +11,7 @@
         <div class="perfil-header">
             <img src="/img/gallo.jpg" alt="Avatar" class="avatar">
             <div class="perfil-header-content">
-                <h1><%= session.nombre %></h1>
+                <h1><%= session.username %></h1>
                 <p class="tipo-usuario"><%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'Cliente VIP' : 'Cliente Normal') %></p>
             </div>
             <a href="amigos" class="amigos-btn">Amigos</a>
@@ -20,10 +20,10 @@
             <div class="datos-personales">
                 <h2>Datos Personales</h2>
                 <p><strong>Nombre:</strong> <%= session.nombre %></p>
-                <p><strong>Apellidos:</strong> session.apellido</p>
-                <p><strong>Edad:</strong> session.edad </p>
+                <p><strong>Apellidos:</strong> <%= session.apellido %></p>
+                <p><strong>Edad:</strong> <%= session.edad %> </p>
                 <p><strong>Tipo de cuota:</strong> <%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'VIP' : 'Normal') %></p>
-                <p><strong>Correo electrónico:</strong> session.email </p>
+                <p><strong>Correo electrónico:</strong> <%= session.username %></p>
                 <p><strong>Contraseña:</strong> **********</p>
                 <button class="modificar-btn">Modificar</button>
             </div>

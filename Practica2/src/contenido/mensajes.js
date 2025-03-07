@@ -7,7 +7,7 @@ export class Mensajes {
     static initStatementsMensajes(db) {
         if (this.#getByNearestDateStmt !== null) return;
 
-        this.#getByNearestDateStmt = db.prepare('SELECT * FROM Mensajes ORDER BY created_at DESC');
+        this.#getByNearestDateStmt = db.prepare('SELECT * FROM Mensajes ORDER BY created_at ASC');
         this.#insertStmt = db.prepare('INSERT INTO Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro) VALUES (@mensaje, @id_usuario, @created_at, @id_mensaje_respuesta, @id_foro)');
         this.#updateStmt = db.prepare('UPDATE Mensajes SET mensaje = @mensaje, id_usuario = @id_usuario, id_foro = @id_foro, id_mensaje_respuesta = @id_mensaje_respuesta WHERE id = @id');
         this.#deleteStmt = db.prepare('DELETE FROM Mensajes WHERE id = @id');

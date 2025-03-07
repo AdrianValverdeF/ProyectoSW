@@ -27,6 +27,7 @@ export function doLogin(req, res) {
         req.session.nombre = usuario.nombre;
         req.session.apellido = usuario.apellido;
         req.session.username = usuario.username;
+        req.session.edad = usuario.edad;
         req.session.esAdmin = usuario.rol === "A";
         return res.render('pagina', {
             contenido: 'paginas/foroComun',
@@ -65,6 +66,7 @@ export function doRegister(req, res) {
         req.session.nombre = usuario.nombre;
         req.session.apellido = usuario.apellido;
         req.session.username = usuario.username;
+        req.session.edad = usuario.edad;
         req.session.esAdmin = usuario.rol === "A";
 
         return res.render('pagina', {
