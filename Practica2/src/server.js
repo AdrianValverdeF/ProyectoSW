@@ -1,5 +1,11 @@
 import { config } from './config.js';
 import { app } from './app.js';
+import { getConnection, checkConnection, closeConnection } from './db.js';
+import { inicializaModelos } from './modelos.js';
+
+const db = getConnection();
+checkConnection(db);
+inicializaModelos(db);
 
 const server = app.listen(config.port, (error) => {
     if (error) return console.log(`Error: ${error}`);
@@ -15,6 +21,7 @@ const server = app.listen(config.port, (error) => {
 
 process.on('exit', () => {
     server.close();
+    closeConnection();
 });
 
 process.on('SIGHUP', () => process.exit(128 + 1));
