@@ -1,4 +1,5 @@
 import { body } from 'express-validator';
+import { Usuario } from './usuario.js';
 
 export function viewLogin(req, res) {
     res.render('pagina', { 
@@ -9,25 +10,24 @@ export function viewLogin(req, res) {
 export function doLogin(req, res) {
     body('username').escape(); // Se asegura que eliminar caracteres problemáticos
     body('password').escape(); // Se asegura que eliminar caracteres problemáticos
-    const { username, password } = req.body;
+    const username = req.body.username.trim();
+    const password = req.body.password.trim();
 
-    if (username === 'Paco' && password === 'sanchez2025') {
+    try {
+        const usuario = Usuario.login(username, password);
         req.session.login = true;
-        req.session.nombre = 'Paco';
-        req.session.esAdmin = false;
-        res.redirect('/contenido/normal');
-    } else if (username === 'admin' && password === 'adminpass') {
-        req.session.login = true;
-        req.session.nombre = 'Administrador';
-        req.session.esAdmin = true;
-        res.redirect('/contenido/admin');
-    } else {
-        
-        res.status(401).render('pagina', {
-            error: 'Usuario o contraseña incorrectos',
-            contenido:'paginas/errLogin',
+        req.session.nombre = usuario.nombre;
+        req.session.esAdmin = usuario.rol === "A";
+        return res.render('pagina', {
+            contenido: 'paginas/foroComun',
             session: req.session
         });
+
+    } catch (e) {
+        res.render('pagina', {
+            contenido: 'paginas/login',
+            error: 'El usuario o contraseña no son válidos'
+        })
     }
 }
 

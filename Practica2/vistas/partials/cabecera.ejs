@@ -12,12 +12,15 @@
             <a href="/contenido/perfil">Perfil</a>
         </div>
         <div class="user-menu">
+            <%
+            function mostrarSaludo(session){
+                if (session == null || ! session.login){
+                    return `<a class='login-btn' href='/usuarios/login'>Iniciar sesión</a>`;
+                }
             
-            <% if (!session.nombre) { %>
-                <a class='login-btn' href='/usuarios/login'>Iniciar sesión</a>
-            <% } else { %>
-                <p>¡Bienvenido, <%= session.nombre %>! <a class='login-btn'  href='/usuarios/logout'>Cerrar sesión</a></p>
-            <% } %>
+                return ` <p>¡Bienvenido, ${session.nombre}! <a class='login-btn'  href='/usuarios/logout'>Cerrar sesión</a></p>`;
+            }%>
+            <%- mostrarSaludo(session) %>
         </div>
     </nav>
 </header>   
