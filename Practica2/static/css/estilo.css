@@ -205,13 +205,43 @@ label {
 }
 
 .chat-input-foroG {
-    display: flex; 
-    align-items: center; 
     position :fixed;
     width: 85%;
     padding: 1rem;
     border-top: 2px solid var(--border-color);
     bottom :0;
+}
+
+.chat-input-enter-msg {
+    display: flex; 
+    align-items: center; 
+}
+
+.chat-reply {
+    font-style: italic; 
+    color: gray;
+    display: flex; 
+    align-items: center; 
+}
+
+.chat-reply img {
+    width: 10px;
+    margin-left: 35px;
+    margin-right: 5px;
+}
+
+.chat-input-reply {
+    font-style: italic; 
+    color: gray;
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 20px;
+}
+
+.chat-input-reply img {
+    width: 20px;
+    margin-left: 35px;
+    margin-right: 5px;
 }
 
 .chat-input-foroG input {
