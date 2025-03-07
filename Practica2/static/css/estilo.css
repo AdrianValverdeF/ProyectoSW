@@ -229,7 +229,7 @@ label {
     max-width: 2000px;
     margin: 0 auto;
     padding: 100px;
-    background-color: var(--secondary-bg);
+    background-color: var(--primary-bg);
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
@@ -292,7 +292,7 @@ label {
 
 .apuesta {
     padding: 15px;
-    background-color: var(--primary-bg);
+    background-color: var(--secondary-bg);
     border: 2px solid var(--accent-color);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -368,7 +368,7 @@ label {
     max-width: 1800px;
     margin: 0 auto;
     padding: 30px;
-    background-color: var(--secondary-bg);
+    background-color: var(--primary-bg);
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
@@ -398,7 +398,7 @@ label {
 .amigos-content li {
     max-width: 1800px; 
     padding: 20px;
-    background-color: var(--primary-bg);
+    background-color: var(--secondary-bg);
     border: 2px solid var(--accent-color);
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
