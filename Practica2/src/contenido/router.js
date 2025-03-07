@@ -1,13 +1,21 @@
 import express from 'express';
 import { Mensajes } from './mensajes.js';
+import { Usuario } from '../usuarios/usuario.js';
 
 const contenidoRouter = express.Router();
 
 contenidoRouter.get('/foroComun', (req, res) => {
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
-    console.log(mensajes);
-    
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+    req.session.mensajes = mensajesConUsuarios;
+
     res.render('pagina', {
         contenido,
         session: req.session
@@ -25,7 +33,6 @@ contenidoRouter.get('/enviarmensaje', (req, res) => {
         session: req.session
     });
 });
-
 
 contenidoRouter.get('/normal', (req, res) => {
     let contenido = 'paginas/noPermisos';

@@ -4,17 +4,24 @@ export class Mensajes {
     static #updateStmt = null;
     static #deleteStmt = null;
 
-    static initStatements(db) {
+    static initStatementsMensajes(db) {
         if (this.#getByNearestDateStmt !== null) return;
 
         this.#getByNearestDateStmt = db.prepare('SELECT * FROM Mensajes ORDER BY created_at DESC');
         this.#insertStmt = db.prepare('INSERT INTO Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro) VALUES (@mensaje, @id_usuario, @created_at, @id_mensaje_respuesta, @id_foro)');
-        this.#updateStmt = db.prepare('UPDATE Mensajes SET mensaje = @mensaje, autor = @autor, id_foro = @id_foro, id_mensaje_respuesta = @id_mensaje_respuesta WHERE id = @id');
+        this.#updateStmt = db.prepare('UPDATE Mensajes SET mensaje = @mensaje, id_usuario = @id_usuario, id_foro = @id_foro, id_mensaje_respuesta = @id_mensaje_respuesta WHERE id = @id');
         this.#deleteStmt = db.prepare('DELETE FROM Mensajes WHERE id = @id');
     }
 
     static getMensajes() {
-        return this.#getByNearestDateStmt.run();
+        let result = null;
+        try {
+            result = this.#getByNearestDateStmt.all();
+        } catch (e) {
+            throw new ErrorDatos('No se han encontrado mensajes', { cause: e });
+        }
+    
+        return result.map(row => new Mensajes(row.mensaje, row.id_usuario, row.created_at, row.id_mensaje_respuesta, row.id_foro, row.id));
     }
 
     static #insert(mensaje) {
@@ -48,7 +55,6 @@ export class Mensajes {
     }
 
     static persist(mensaje) {
-        if (mensaje.id === null) return Mensajes.#insert(mensaje);
         return Mensajes.#update(mensaje);
     }
 

@@ -1,5 +1,29 @@
 <div class="chat-container">
     <div class="chat-messages">
+        <%
+        function mostrarMensajes(session) {
+            let result = "";
+            for (let i = 0; i < session.mensajes.length; i++) {
+                result += `<div class="message">
+                <span class="reply-btn">
+                     <button id="reply">
+                          <img src="/img/reply.webp">
+                     </button>
+                </span>
+                <span class="time">${session.mensajes[i].created_at}</span>
+                <span class="username">${session.mensajes[i].username}:</span>
+                <span class="content">${session.mensajes[i].mensaje}</span>
+                </div>`;
+            }
+            return result;
+        }
+        %>
+        <%- mostrarMensajes(session) %>
+    </div>
+
+
+
+    <!-- <div class="chat-messages">
         <div class="message">
             <span class="reply-btn">
                 <button id="reply">
@@ -34,8 +58,7 @@
             <span class="username">adrifan66:</span>
             <span class="content">yo acabo de empezar con tirabuzones</span>
         </div>
-        <!-- Más mensajes aquí -->
-    </div>
+    </div> -->
     <div class="chat-input-foroG">
         <div class="chat-input-reply">
             <img src="/img/reply.webp">

@@ -9,11 +9,14 @@ export class Usuario {
     static #getByUsernameStmt = null;
     static #insertStmt = null;
     static #updateStmt = null;
+    static #getByIdStmt = null;
+
 
     static initStatements(db) {
         if (this.#getByUsernameStmt !== null) return;
 
         this.#getByUsernameStmt = db.prepare('SELECT * FROM Usuarios WHERE username = @username');
+        this.#getByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id = @id');
         this.#insertStmt = db.prepare('INSERT INTO Usuarios(username, password, nombre, apellido, edad, rol) VALUES (@username, @password, @nombre, @apellido, @edad, @rol)');
         this.#updateStmt = db.prepare('UPDATE Usuarios SET username = @username, password = @password, rol = @rol, nombre = @nombre WHERE id = @id');
     }
@@ -27,6 +30,16 @@ export class Usuario {
       
        
         return new Usuario(username, password, nombre, apellido, edad, rol, id);
+    }
+
+    static getUsuarioById(id) {
+        let result = null;
+        try {
+            result = this.#getByIdStmt.get({ id });
+        } catch (e) {
+            throw new ErrorDatos('No se ha encontrado el usuario', { cause: e });
+        }
+        return result;
     }
 
     static #insert(usuario) {

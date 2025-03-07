@@ -15,9 +15,9 @@ export class Foros {
         const foro = this.#getBynombreStmt.get({ nombre });
         if (foro === undefined) throw new ForoNoEncontrado(nombre);
 
-        const {nombre, descripcion} = foro;
+        const {name, descripcion} = foro;
 
-        return new Foros(nombre, descripcion);
+        return new Foros(name, descripcion);
     }
 
     static #insert(foro) {
