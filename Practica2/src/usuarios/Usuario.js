@@ -39,7 +39,7 @@ export class Usuario {
             result = this.#insertStmt.run(datos);
 
             usuario.#id = result.lastInsertRowid;
-        } catch(e) { // SqliteError: https://github.com/WiseLibs/better-sqlite3/blob/master/docs/api.md#class-sqliteerror
+        } catch(e) { 
             if (e.code === 'SQLITE_CONSTRAINT') {
                 throw new UsuarioYaExiste(usuario.#username);
             }

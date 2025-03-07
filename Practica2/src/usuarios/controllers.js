@@ -7,6 +7,14 @@ export function viewLogin(req, res) {
         session: req.session 
     });
 }
+
+export function viewRegister(req, res) {
+    res.render('pagina', { 
+        contenido: 'paginas/register', 
+        session: req.session 
+    });
+}
+
 export function doLogin(req, res) {
     body('username').escape(); // Se asegura que eliminar caracteres problemáticos
     body('password').escape(); // Se asegura que eliminar caracteres problemáticos
@@ -28,6 +36,44 @@ export function doLogin(req, res) {
             contenido: 'paginas/login',
             error: 'El usuario o contraseña no son válidos'
         })
+    }
+
+
+}
+
+export function doRegister(req, res) {
+
+    body('name').trim().escape().notEmpty().withMessage('Nombre requerido');
+    body('surname').trim().escape().notEmpty().withMessage('Apellido requerido');
+    body('username').trim().escape().notEmpty().withMessage('Usuario requerido');
+    body('password').trim().escape().notEmpty().withMessage('Contraseña requerida');
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.render('pagina', {
+            contenido: 'paginas/register',
+            error: 'Invalid input data',
+            errors: errors.array()
+        });
+    }
+
+    const { name, surname, username, password } = req.body;
+
+    try {
+        const usuario = Usuario.register(name, surname, username, password);
+
+        req.session.login = true;
+        req.session.nombre = usuario.nombre;
+
+        return res.render('pagina', {
+            contenido: 'paginas/foroComun',
+            session: req.session
+        });
+    } catch (e) {
+        return res.render('pagina', {
+            contenido: 'paginas/register',
+            error: e.message || 'Registration failed'
+        });
     }
 }
 
