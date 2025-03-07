@@ -25,6 +25,29 @@ contenidoRouter.get('/admin', (req, res) => {
     });
 });
 
+contenidoRouter.get('/amigosPag', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/amigos';
+    }
+    res.render('paginaSinSidebar', {
+        contenido,
+        session: req.session
+    });
+});
+
+
+contenidoRouter.get('/gestion-apuestas', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/gestion-apuestas';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
 contenidoRouter.get('/gestion-apuestas', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {
@@ -48,14 +71,20 @@ contenidoRouter.get('/gestion-eventos', (req, res) => {
 });
 
 contenidoRouter.get('/perfil', (req, res) => {
-    let contenido = 'paginas/noPermisos';
+    let contenido = 'paginas/login';
     if (req.session.login) {
         contenido = 'paginas/perfil';
+        res.render('paginaSinSidebar', {
+            contenido,
+            session: req.session
+        });
+    }else{
+        res.render('pagina', {
+            contenido,
+            session: req.session
+        });
     }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
+    
 });
 
 contenidoRouter.get('/futbol11', (req, res) => {
@@ -112,5 +141,16 @@ contenidoRouter.get('/baloncesto', (req, res) => {
     });
 });
 
+contenidoRouter.get('/amigos', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/amigos';
+    }
+    res.render('paginaSinSidebar', {
+        contenido,
+        session: req.session
+    });
+});
 
 export default contenidoRouter;
+
