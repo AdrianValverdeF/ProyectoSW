@@ -172,6 +172,8 @@ label {
 }
 
 .chat-input {
+    display: flex; 
+    align-items: center; 
     position :fixed;
     width: 25%;
     padding: 1rem;
