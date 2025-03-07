@@ -25,6 +25,29 @@ contenidoRouter.get('/admin', (req, res) => {
     });
 });
 
+contenidoRouter.get('/amigosPag', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/amigos';
+    }
+    res.render('paginaSinSidebar', {
+        contenido,
+        session: req.session
+    });
+});
+
+
+contenidoRouter.get('/gestion-apuestas', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/gestion-apuestas';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
 contenidoRouter.get('/gestion-apuestas', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {
@@ -52,7 +75,7 @@ contenidoRouter.get('/perfil', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/perfil';
     }
-    res.render('pagina', {
+    res.render('paginaSinSidebar', {
         contenido,
         session: req.session
     });
@@ -112,5 +135,16 @@ contenidoRouter.get('/baloncesto', (req, res) => {
     });
 });
 
+contenidoRouter.get('/amigos', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/amigos';
+    }
+    res.render('paginaSinSidebar', {
+        contenido,
+        session: req.session
+    });
+});
 
 export default contenidoRouter;
+
