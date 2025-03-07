@@ -71,14 +71,20 @@ contenidoRouter.get('/gestion-eventos', (req, res) => {
 });
 
 contenidoRouter.get('/perfil', (req, res) => {
-    let contenido = 'paginas/noPermisos';
+    let contenido = 'paginas/login';
     if (req.session.login) {
         contenido = 'paginas/perfil';
+        res.render('paginaSinSidebar', {
+            contenido,
+            session: req.session
+        });
+    }else{
+        res.render('pagina', {
+            contenido,
+            session: req.session
+        });
     }
-    res.render('paginaSinSidebar', {
-        contenido,
-        session: req.session
-    });
+    
 });
 
 contenidoRouter.get('/futbol11', (req, res) => {

@@ -226,7 +226,6 @@ label {
     width: 30px;
 }
 .perfil-container {
-    max-width: 2000px;
     margin: 0 auto;
     padding: 100px;
     background-color: var(--primary-bg);
