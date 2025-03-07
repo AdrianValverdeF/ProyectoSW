@@ -1,3 +1,48 @@
-<P>
-    Tienes Permisos pero aun esta en desarollo...
-</P>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <div class="perfil-container">
+        <div class="perfil-header">
+            <img src="/img/gallo.jpg" alt="Avatar" class="avatar">
+            <div class="perfil-header-content">
+                <h1><%= session.nombre %></h1>
+                <p class="tipo-usuario"><%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'Cliente VIP' : 'Cliente Normal') %></p>
+            </div>
+            <a href="amigos" class="amigos-btn">+</a>
+        </div>
+        <div class="perfil-content">
+            <div class="datos-personales">
+                <h2>Datos Personales</h2>
+                <p><strong>Nombre:</strong> <%= session.nombre %></p>
+                <p><strong>Apellidos:</strong> Sánchez</p>
+                <p><strong>Edad:</strong> 22</p>
+                <p><strong>Tipo de cuota:</strong> <%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'VIP' : 'Normal') %></p>
+                <p><strong>Correo electrónico:</strong> ****chez@gmail.com</p>
+                <p><strong>Contraseña:</strong> **********</p>
+                <button>Modificar</button>
+            </div>
+            <div class="ultimas-apuestas">
+                <h2>Últimas Apuestas</h2>
+                <div class="apuesta">
+                    <span class="fecha">25/11/24</span>
+                    <p>DERECHO 4 - 5 QUÍMICAS <span class="resultado-ganado">✔</span></p>
+                </div>
+                <div class="apuesta">
+                    <span class="fecha">26/11/24</span>
+                    <p>DOCUMENTACIÓN 1 - 1 C. JURÍDICAS <span class="resultado-perdido">✘</span></p>
+                </div>
+                <div class="apuesta">
+                    <span class="fecha">27/11/24</span>
+                    <p>INFORMÁTICA 2 - 5 FARMACIA <span class="resultado-ganado">✔</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
