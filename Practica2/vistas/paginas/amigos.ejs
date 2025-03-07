@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amigos</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <div class="amigos-container">
+        <div class="perfil-header">
+            <img src="/img/gallo.jpg" alt="Avatar" class="avatar">
+            <div class="perfil-header-content">
+                <h1><%= session.nombre %></h1>
+                <p class="tipo-usuario"><%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'Cliente VIP' : 'Cliente Normal') %></p>
+            </div>
+        </div>
+        <div class="amigos-header">
+            <h1>Amigos de <%= session.nombre %></h1>
+        </div>
+        <div class="amigos-content">
+            <ul>
+                <li>
+                    <img src="/img/avatar1.jpg" alt="Avatar">
+                    <span class="nombre">Manolo Lama</span>
+                    <div class="acciones">
+                        <button>Mensaje</button>
+                        <button>Eliminar</button>
+                    </div>
+                </li>
+                <li>
+                    <img src="/img/avatar2.jpg" alt="Avatar">
+                    <span class="nombre">Lucía García</span>
+                    <div class="acciones">
+                        <button>Mensaje</button>
+                        <button>Eliminar</button>
+                    </div>
+                </li>
+                <li>
+                    <img src="/img/avatar3.jpg" alt="Avatar">
+                    <span class="nombre">Mateo Hernández</span>
+                    <div class="acciones">
+                        <button>Mensaje</button>
+                        <button>Eliminar</button>
+                    </div>
+                </li>
+                <li>
+                    <img src="/img/avatar4.jpg" alt="Avatar">
+                    <span class="nombre">Julián Álvarez</span>
+                    <div class="acciones">
+                        <button>Mensaje</button>
+                        <button>Eliminar</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

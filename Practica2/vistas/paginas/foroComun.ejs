@@ -13,7 +13,15 @@
         <!-- Más mensajes aquí -->
     </div>
     <div class="chat-input-foroG">
-        <input type="text" placeholder="Escribe un mensaje..." disabled>
-        <span class="login-message">No está permitido escribir sin iniciar sesión</span>
+        <div class="forum-btn">
+            <button id="send">
+                <img src="img/send_message.png">
+            </button>
+        </div>
+        <% if (!session.nombre) { %>
+            <input type="text" placeholder="No está permitido escribir sin iniciar sesión" disabled>
+        <% } else { %>
+            <input type="text" placeholder="Escribe un mensaje...">
+        <% } %>
     </div>
 </div>
