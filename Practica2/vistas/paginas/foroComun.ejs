@@ -3,6 +3,9 @@
         <%
         function mostrarMensajes(session) {
             let result = "";
+            if (!session.mensajes) {
+                return "<div>No hay mensajes disponibles.</div>";
+            }
             for (let i = 0; i < session.mensajes.length; i++) {
                 result += `<div class="message">
                 <span class="reply-btn">
@@ -21,60 +24,24 @@
         <%- mostrarMensajes(session) %>
     </div>
 
-
-
-    <!-- <div class="chat-messages">
-        <div class="message">
-            <span class="reply-btn">
-                <button id="reply">
-                    <img src="img/reply.webp">
-                </button>
-            </span>
-            <span class="time">18:24</span>
-            <span class="username">petermartin:</span>
-            <span class="content">meterle a rugby físicas genteeeee</span>
-        </div>
-        <div class="message">
-            <span class="reply-btn">
-                <button id="reply">
-                    <img src="img/reply.webp">
-                </button>
-            </span>
-            <span class="time">18:26</span>
-            <span class="username">yisus1203:</span>
-            <span class="content">ensayo de adri, estoy dando volteretas en mi casa</span>
-        </div>
-        <div class="message">
-            <div class="chat-reply">
-                <img src="img/reply.webp">
-                <span class="reply-input-username">yisus1203: ensayo de adri, estoy dando volteretas en mi casa</span>
-            </div>
-            <span class="reply-btn">
-                <button id="reply">
-                    <img src="/img/reply.webp">
-                </button>
-            </span>
-            <span class="time">18:27</span>
-            <span class="username">adrifan66:</span>
-            <span class="content">yo acabo de empezar con tirabuzones</span>
-        </div>
-    </div> -->
     <div class="chat-input-foroG">
-        <div class="chat-input-reply">
-            <img src="/img/reply.webp">
-            <span class="reply-input-username">respondiendo a yisus1203: ensayo de adri, estoy dando volteretas en mi casa</span>
-        </div>
-        <div class="chat-input-enter-msg">
-            <div class="forum-btn">
-                <button id="send">
-                    <img src="/img/send_message.png">
-                </button>
+        <form action="/contenido/enviarmensaje" method="POST">
+            <div class="chat-input-reply">
+                <img src="/img/reply.webp">
+                <span class="reply-input-username">respondiendo a yisus1203: ensayo de adri, estoy dando volteretas en mi casa</span>
             </div>
-            <% if (!session.nombre) { %>
-                <input type="text" placeholder="No está permitido escribir sin iniciar sesión" disabled>
-            <% } else { %>
-                <input type="text" placeholder="Escribe un mensaje...">
-            <% } %>
-        </div>
+            <div class="chat-input-enter-msg">
+                <div class="forum-btn">
+                    <button type="submit" id="send">
+                        <img src="/img/send_message.png">
+                    </button>
+                </div>
+                <% if (!session.nombre) { %>
+                    <input type="text" placeholder="No está permitido escribir sin iniciar sesión" disabled>
+                <% } else { %>
+                    <input type="text" name="mensaje" placeholder="Escribe un mensaje...">
+                <% } %>
+            </div>
+        </form>
     </div>
 </div>

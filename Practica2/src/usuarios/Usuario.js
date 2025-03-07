@@ -11,7 +11,6 @@ export class Usuario {
     static #updateStmt = null;
     static #getByIdStmt = null;
 
-
     static initStatements(db) {
         if (this.#getByUsernameStmt !== null) return;
 
@@ -22,13 +21,10 @@ export class Usuario {
     }
 
     static getUsuarioByUsername(username) {
-
         const usuario = this.#getByUsernameStmt.get({ username });
         if (usuario === undefined) throw new UsuarioNoEncontrado(username);
 
         const { password, rol, nombre, apellido, edad, id } = usuario;
-      
-       
         return new Usuario(username, password, nombre, apellido, edad, rol, id);
     }
 
@@ -42,10 +38,15 @@ export class Usuario {
         return result;
     }
 
+    static getIdByUsername(username) {
+        const usuario = this.getUsuarioByUsername(username);
+        return usuario.id_user;
+    }
+
     static #insert(usuario) {
         let result = null;
         try {
-            const username = usuario.#username;
+            const username = usuario.username;
             const password = usuario.#password;
             const nombre = usuario.nombre;
             const apellido = usuario.apellido;
@@ -58,7 +59,7 @@ export class Usuario {
             usuario.#id = result.lastInsertRowid;
         } catch (e) {
             if (e.code === 'SQLITE_CONSTRAINT') {
-                throw new UsuarioYaExiste(usuario.#username);
+                throw new UsuarioYaExiste(usuario.username);
             }
             throw new ErrorDatos('No se ha insertado el usuario', { cause: e });
         }
@@ -66,7 +67,7 @@ export class Usuario {
     }
 
     static #update(usuario) {
-        const username = usuario.#username;
+        const username = usuario.username;
         const password = usuario.#password;
         const nombre = usuario.nombre;
         const apellido = usuario.apellido;
@@ -80,24 +81,20 @@ export class Usuario {
         return usuario;
     }
 
-
     static login(username, password) {
         let usuario = null;
         try {
             usuario = this.getUsuarioByUsername(username);
-
         } catch (e) {
             throw new UsuarioOPasswordNoValido(username, { cause: e });
         }
         
-        // XXX: En el ej3 / P3 lo cambiaremos para usar async / await o Promises
         if (!bcrypt.compareSync(password, usuario.#password)) throw new UsuarioOPasswordNoValido(username);
 
         return usuario;
     }
 
     static register(username, password, nombre, apellido, edad, rol = RolesEnum.USUARIO) {
-
         const hashedPassword = bcrypt.hashSync(password, 10);
         const usuario = new Usuario(username, hashedPassword, nombre, apellido, edad, rol);
 
@@ -112,15 +109,15 @@ export class Usuario {
     }
 
     #id;
-    #username;
+    username;
     #password;
     rol;
     nombre;
     apellido;
     edad;
 
-    constructor(username, password, nombre,apellido,edad, rol = RolesEnum.USUARIO, id = null) {
-        this.#username = username;
+    constructor(username, password, nombre, apellido, edad, rol = RolesEnum.USUARIO, id = null) {
+        this.username = username;
         this.#password = password;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -129,17 +126,16 @@ export class Usuario {
         this.#id = id;
     }
 
-    get id() {
+    get id_user() {
         return this.#id;
     }
 
     set password(nuevoPassword) {
-        // XXX: En el ej3 / P3 lo cambiaremos para usar async / await o Promises
         this.#password = bcrypt.hashSync(nuevoPassword);
     }
 
     get username() {
-        return this.#username;
+        return this.username;
     }
 
     persist() {
@@ -149,11 +145,6 @@ export class Usuario {
 }
 
 export class UsuarioNoEncontrado extends Error {
-    /**
-     * 
-     * @param {string} username 
-     * @param {ErrorOptions} [options]
-     */
     constructor(username, options) {
         super(`Usuario no encontrado: ${username}`, options);
         this.name = 'UsuarioNoEncontrado';
@@ -161,24 +152,13 @@ export class UsuarioNoEncontrado extends Error {
 }
 
 export class UsuarioOPasswordNoValido extends Error {
-    /**
-     * 
-     * @param {string} username 
-     * @param {ErrorOptions} [options]
-     */
     constructor(username, options) {
-        super(`Usuario o password no vÃ¡lido: ${username}`, options);
+        super(`Usuario o password no válido: ${username}`, options);
         this.name = 'UsuarioOPasswordNoValido';
     }
 }
 
-
 export class UsuarioYaExiste extends Error {
-    /**
-     * 
-     * @param {string} username 
-     * @param {ErrorOptions} [options]
-     */
     constructor(username, options) {
         super(`Usuario ya existe: ${username}`, options);
         this.name = 'UsuarioYaExiste';

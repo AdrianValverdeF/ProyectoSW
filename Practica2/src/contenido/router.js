@@ -22,16 +22,27 @@ contenidoRouter.get('/foroComun', (req, res) => {
     });
 });
 
-contenidoRouter.get('/enviarmensaje', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/normal';
-    }
+contenidoRouter.post('/enviarmensaje', (req, res) => {
+    const { mensaje } = req.body;
+    const id_usuario = Usuario.getIdByUsername(req.session.username); 
+    const datas = new Date();
+    const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
+    const created_at = horaEnvio;
+    const id_mensaje_respuesta = null; 
+    const id_foro = 1; 
     
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
+    if (!mensaje || !id_usuario) {
+        return res.status(400).send('Mensaje o usuario no válido');
+    }
+
+    try {
+        const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+        Mensajes.persist(nuevoMensaje);
+    } catch (e) {
+        return res.status(500).send('Error al enviar el mensaje');
+    }
+
+    res.redirect('/contenido/foroComun');
 });
 
 contenidoRouter.get('/normal', (req, res) => {

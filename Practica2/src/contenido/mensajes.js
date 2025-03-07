@@ -17,6 +17,7 @@ export class Mensajes {
         let result = null;
         try {
             result = this.#getByNearestDateStmt.all();
+
         } catch (e) {
             throw new ErrorDatos('No se han encontrado mensajes', { cause: e });
         }
@@ -55,7 +56,9 @@ export class Mensajes {
     }
 
     static persist(mensaje) {
-        return Mensajes.#update(mensaje);
+        
+        return Mensajes.#insert(mensaje)
+
     }
 
     static remove(id) {
