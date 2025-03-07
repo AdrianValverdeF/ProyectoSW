@@ -1,6 +1,24 @@
 import express from 'express';
+import { Mensajes } from './mensajes';
 
 const contenidoRouter = express.Router();
+
+contenidoRouter.get('/foroComun', (req, res) => {
+    let contenido = 'paginas/foroComun';
+    let mensajes = Mensajes.getMensajes();
+
+
+
+
+    if (req.session.login) {
+        contenido = 'paginas/normal';
+    }
+    
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
 
 contenidoRouter.get('/normal', (req, res) => {
     let contenido = 'paginas/noPermisos';

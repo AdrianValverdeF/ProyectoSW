@@ -15,11 +15,7 @@ app.use(session(config.session));
 app.use('/', express.static(config.recursos));
 app.get('/', (req, res) => {
     // Parámetros que estarán disponibles en la plantilla
-    const params = {
-        contenido: 'paginas/foroComun', // fichero ejs que tiene el contenido específico para esta vista
-        session: req.session // Neesario para (entre otras cosas) utilizarlo en mostrarSaludo de cabecera.ejs
-    }
-    res.render('pagina', params);
+    res.redirect('/contenido/foroComun');
 })
 app.use('/usuarios', usuariosRouter);
 app.use('/contenido', contenidoRouter);
