@@ -1,5 +1,3 @@
-import bcrypt from "bcryptjs";
-
 export class Foros {
     static #getBynombreStmt = null;
     static #insertStmt = null;

@@ -1,32 +1,23 @@
-import bcrypt from "bcryptjs";
-
-export const RolesEnum = Object.freeze({
-    USUARIO: 'U',
-    ADMIN: 'A'
-});
-
-export class Usuario {
-    static #getByUsernameStmt = null;
+export class Mensajes {
+    static #getByNearestDateStmt = null;
     static #insertStmt = null;
     static #updateStmt = null;
 
     static initStatements(db) {
-        if (this.#getByUsernameStmt !== null) return;
+        if (this.#getByNearestDateStmt !== null) return;
 
-        this.#getByUsernameStmt = db.prepare('SELECT * FROM Usuarios WHERE username = @username');
-        this.#insertStmt = db.prepare('INSERT INTO Usuarios(username, password, nombre, apellido, edad, rol) VALUES (@username, @password, @nombre, @apellido, @edad, @rol)');
+        this.#getByNearestDateStmt = db.prepare('SELECT * FROM Mensajes ORDER BY created_at DESC');
+        this.#insertStmt = db.prepare('INSERT INTO Usuarios(username, password, nombre, rol) VALUES (@username, @password, @nombre, @rol)');
         this.#updateStmt = db.prepare('UPDATE Usuarios SET username = @username, password = @password, rol = @rol, nombre = @nombre WHERE id = @id');
     }
 
     static getUsuarioByUsername(username) {
-
-        const usuario = this.#getByUsernameStmt.get({ username });
+        const usuario = this.#getByNearestDateStmt.get({ username });
         if (usuario === undefined) throw new UsuarioNoEncontrado(username);
 
-        const { password, rol, nombre, apellido, edad, id } = usuario;
-      
-       
-        return new Usuario(username, password, nombre, apellido, edad, rol, id);
+        const { password, rol, nombre, id } = usuario;
+
+        return new Usuario(username, password, nombre, rol, id);
     }
 
     static #insert(usuario) {
@@ -35,15 +26,13 @@ export class Usuario {
             const username = usuario.#username;
             const password = usuario.#password;
             const nombre = usuario.nombre;
-            const apellido = usuario.apellido;
-            const edad = usuario.edad;
             const rol = usuario.rol;
-            const datos = { username, password, nombre, apellido, edad, rol };
+            const datos = {username, password, nombre, rol};
 
             result = this.#insertStmt.run(datos);
 
             usuario.#id = result.lastInsertRowid;
-        } catch (e) {
+        } catch(e) { 
             if (e.code === 'SQLITE_CONSTRAINT') {
                 throw new UsuarioYaExiste(usuario.#username);
             }
@@ -56,10 +45,8 @@ export class Usuario {
         const username = usuario.#username;
         const password = usuario.#password;
         const nombre = usuario.nombre;
-        const apellido = usuario.apellido;
-        const edad = usuario.edad;
         const rol = usuario.rol;
-        const datos = { username, password, nombre, apellido, edad, rol };
+        const datos = {username, password, nombre, rol};
 
         const result = this.#updateStmt.run(datos);
         if (result.changes === 0) throw new UsuarioNoEncontrado(username);
@@ -72,30 +59,14 @@ export class Usuario {
         let usuario = null;
         try {
             usuario = this.getUsuarioByUsername(username);
-
         } catch (e) {
             throw new UsuarioOPasswordNoValido(username, { cause: e });
         }
-        /*
+
         // XXX: En el ej3 / P3 lo cambiaremos para usar async / await o Promises
-        if (!bcrypt.compareSync(password, usuario.#password)) throw new UsuarioOPasswordNoValido(username);
-*/
+        /*if ( ! bcrypt.compareSync(password, usuario.#password) ) throw new UsuarioOPasswordNoValido(username);
+        */
         return usuario;
-    }
-
-    static register(username, password, nombre, apellido, edad, rol = RolesEnum.USUARIO) {
-
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        const usuario = new Usuario(username, hashedPassword, nombre, apellido, edad, rol);
-
-        try {
-            return this.#insert(usuario);
-        } catch (e) {
-            if (e instanceof UsuarioYaExiste) {
-                throw e;
-            }
-            throw new Error('Error al registrarse', { cause: e });
-        }
     }
 
     #id;
@@ -103,15 +74,11 @@ export class Usuario {
     #password;
     rol;
     nombre;
-    apellido;
-    edad;
 
-    constructor(username, password, nombre,apellido,edad, rol = RolesEnum.USUARIO, id = null) {
+    constructor(username, password, nombre, rol = RolesEnum.USUARIO, id = null) {
         this.#username = username;
         this.#password = password;
         this.nombre = nombre;
-        this.apellido = apellido;
-        this.edad = edad;
         this.rol = rol;
         this.#id = id;
     }
@@ -154,7 +121,7 @@ export class UsuarioOPasswordNoValido extends Error {
      * @param {ErrorOptions} [options]
      */
     constructor(username, options) {
-        super(`Usuario o password no vÃ¡lido: ${username}`, options);
+        super(`Usuario o password no válido: ${username}`, options);
         this.name = 'UsuarioOPasswordNoValido';
     }
 }

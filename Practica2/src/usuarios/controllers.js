@@ -25,6 +25,7 @@ export function doLogin(req, res) {
         const usuario = Usuario.login(username, password);
         req.session.login = true;
         req.session.nombre = usuario.nombre;
+        req.session.apellido = usuario.apellido;
         req.session.esAdmin = usuario.rol === "A";
         return res.render('pagina', {
             contenido: 'paginas/foroComun',
@@ -47,20 +48,26 @@ export function doRegister(req, res) {
     body('surname').trim().escape().notEmpty().withMessage('Apellido requerido');
     body('username').trim().escape().notEmpty().withMessage('Usuario requerido');
     body('password').trim().escape().notEmpty().withMessage('Contraseña requerida');
+    body('age').trim().escape().notEmpty().withMessage('Edad requerida').isInt({ min: 1 }).withMessage('Edad debe ser un número válido').custom((value) => {
+            if (parseInt(value) < 18) {
+                throw new Error('Debes tener al menos 18 años para registrarte');
+            }
+            return true;
+        });
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
+   // const errors = validationResult(req);
+    /*if (!errors.isEmpty()) {
         return res.render('pagina', {
             contenido: 'paginas/register',
-            error: 'Invalid input data',
+            error: 'Datos de entrada no válidos',
             errors: errors.array()
         });
     }
-
-    const { name, surname, username, password } = req.body;
+*/
+    const { name, surname, username, password, age } = req.body;
 
     try {
-        const usuario = Usuario.register(name, surname, username, password);
+        const usuario = Usuario.register(username, password, name, surname, parseInt(age));
 
         req.session.login = true;
         req.session.nombre = usuario.nombre;
@@ -72,7 +79,7 @@ export function doRegister(req, res) {
     } catch (e) {
         return res.render('pagina', {
             contenido: 'paginas/register',
-            error: e.message || 'Registration failed'
+            error: e.message || 'Error en el registro'
         });
     }
 }
