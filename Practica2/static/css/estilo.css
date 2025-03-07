@@ -481,3 +481,22 @@ label {
 .amigos-content li .acciones button:hover {
     background-color: #e55b5b;
 }
+
+.modificar-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    padding:  20px; 
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 0;
+    text-decoration: none; 
+    display: block;
+    width: 100%;
+    margin-top: 80px;
+}
+
+.modificar-btn:hover {
+    background-color: #e55b5b;
+    text-decoration: none; 
+}
