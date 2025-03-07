@@ -54,16 +54,7 @@ export function doRegister(req, res) {
             }
             return true;
         });
-
-   // const errors = validationResult(req);
-    /*if (!errors.isEmpty()) {
-        return res.render('pagina', {
-            contenido: 'paginas/register',
-            error: 'Datos de entrada no válidos',
-            errors: errors.array()
-        });
-    }
-*/
+        
     const { name, surname, username, password, age } = req.body;
 
     try {
