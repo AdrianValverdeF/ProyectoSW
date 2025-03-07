@@ -103,7 +103,6 @@ button {
     outline: none;      
 }
 
-
 fieldset {
 	border: 1px solid black;
 	width: 15em;
@@ -362,21 +361,21 @@ label {
 .amigos-btn {
     background-color: var(--accent-color);
     color: var(--text-color);
-    border: none;
-    padding: 5px 10px;
-    border-radius: 50%;
+    padding: 10px;
     cursor: pointer;
     font-size: 20px;
     position: absolute;
-    right: 20px;
-    top: 500px;
-    text-decoration: none;
-    text-align: center;
+    right: 100px;
+    top: 300px;
+    text-align: right;
     line-height: 1;
+    border-radius: 0;
+    text-decoration: none; 
 }
 
 .amigos-btn:hover {
     background-color: #e55b5b;
+    text-decoration: none; 
 }
 
 .amigos-list {
