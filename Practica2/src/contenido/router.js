@@ -1,6 +1,6 @@
 import express from 'express';
 import { Mensajes } from './mensajes.js';
-import { Usuario } from '../usuarios/usuario.js';
+import { Usuario } from '../usuarios/Usuario.js';
 
 const contenidoRouter = express.Router();
 
