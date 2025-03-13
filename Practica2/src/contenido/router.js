@@ -14,16 +14,17 @@ contenidoRouter.get('/foroComun', (req, res) => {
             username: usuario ? usuario.username : 'Usuario desconocido'
         };
     });
-    req.session.mensajes = mensajesConUsuarios;
 
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
 contenidoRouter.post('/enviarmensaje', (req, res) => {
-    const { mensaje } = req.body;
+    console.log(req.body.mensaje);
+    const mensaje = req.body.mensaje;
     const id_usuario = Usuario.getIdByUsername(req.session.username); 
     const datas = new Date();
     const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
