@@ -23,7 +23,6 @@ contenidoRouter.get('/foroComun', (req, res) => {
 });
 
 contenidoRouter.post('/enviarmensaje', (req, res) => {
-    console.log(req.body.mensaje);
     const mensaje = req.body.mensaje;
     const id_usuario = Usuario.getIdByUsername(req.session.username); 
     const datas = new Date();
