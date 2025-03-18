@@ -88,9 +88,17 @@ export class Usuario {
 
     static async login(username, password) {
         const db = getConnection();
-        const usuario = this.getUsuarioByUsername(username);
+        let usuario;
+        try {
+            usuario = this.getUsuarioByUsername(username);
+        } catch (e) {
+            throw new UsuarioOPasswordNoValido(username);
+        }
+
         const isValidPassword = await bcrypt.compare(password, usuario.password);
-        if (!isValidPassword) throw new Error('Invalid password');
+        if (!isValidPassword) {
+            throw new UsuarioOPasswordNoValido(username); 
+        }
         return usuario;
     }
 
