@@ -1,4 +1,7 @@
 import bcrypt from "bcryptjs";
+import { getConnection } from '../db.js';
+
+
 
 export const RolesEnum = Object.freeze({
     USUARIO: 'U',
@@ -17,7 +20,7 @@ export class Usuario {
         this.#getByUsernameStmt = db.prepare('SELECT * FROM Usuarios WHERE username = @username');
         this.#getByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id = @id');
         this.#insertStmt = db.prepare('INSERT INTO Usuarios(username, password, nombre, apellido, edad, rol) VALUES (@username, @password, @nombre, @apellido, @edad, @rol)');
-        this.#updateStmt = db.prepare('UPDATE Usuarios SET username = @username, password = @password, rol = @rol, nombre = @nombre WHERE id = @id');
+        this.#updateStmt = db.prepare('UPDATE Usuarios SET username = @username, password = @password, rol = @rol, nombre = @nombre, apellido = @apellido, edad = @edad WHERE id = @id');
     }
 
     static getUsuarioByUsername(username) {
@@ -33,9 +36,11 @@ export class Usuario {
         try {
             result = this.#getByIdStmt.get({ id });
         } catch (e) {
-            throw new ErrorDatos('No se ha encontrado el usuario', { cause: e });
+            throw new Error(`Error al obtener el usuario por ID: ${e.message}`);
         }
-        return result;
+        if (result === undefined) throw new UsuarioNoEncontrado(id);
+        const { username, password, rol, nombre, apellido, edad } = result;
+        return new Usuario(username, password, nombre, apellido, edad, rol, id);
     }
 
     static getIdByUsername(username) {
@@ -81,31 +86,18 @@ export class Usuario {
         return usuario;
     }
 
-    static login(username, password) {
-        let usuario = null;
-        try {
-            usuario = this.getUsuarioByUsername(username);
-        } catch (e) {
-            throw new UsuarioOPasswordNoValido(username, { cause: e });
-        }
-        
-        if (!bcrypt.compareSync(password, usuario.#password)) throw new UsuarioOPasswordNoValido(username);
-
+    static async login(username, password) {
+        const db = getConnection();
+        const usuario = this.getUsuarioByUsername(username);
+        const isValidPassword = await bcrypt.compare(password, usuario.password);
+        if (!isValidPassword) throw new Error('Invalid password');
         return usuario;
     }
 
-    static register(username, password, nombre, apellido, edad, rol = RolesEnum.USUARIO) {
-        const hashedPassword = bcrypt.hashSync(password, 10);
-        const usuario = new Usuario(username, hashedPassword, nombre, apellido, edad, rol);
-
-        try {
-            return this.#insert(usuario);
-        } catch (e) {
-            if (e instanceof UsuarioYaExiste) {
-                throw e;
-            }
-            throw new Error('Error al registrarse', { cause: e });
-        }
+    static async register(username, password, nombre, apellido, edad) {
+        const db = getConnection();
+        const hashedPassword = await bcrypt.hash(password, 10);
+        this.#insertStmt.run({ username, password: hashedPassword, nombre, apellido, edad, rol: RolesEnum.USUARIO });
     }
 
     #id;
@@ -145,8 +137,8 @@ export class Usuario {
 }
 
 export class UsuarioNoEncontrado extends Error {
-    constructor(username, options) {
-        super(`Usuario no encontrado: ${username}`, options);
+    constructor(identifier) {
+        super(`Usuario no encontrado: ${identifier}`);
         this.name = 'UsuarioNoEncontrado';
     }
 }
