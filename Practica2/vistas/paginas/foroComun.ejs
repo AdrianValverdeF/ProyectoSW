@@ -9,7 +9,7 @@
             for (let i = 0; i < mensajes.length; i++) {
                 result += `<div class="message">
                 <span class="reply-btn">
-                     <a href="/mensajes?id = ${mensajes[i].id}" id="reply">
+                     <a href="/mensajes?id=${mensajes[i].id}" id="reply">
                           <img src="/img/reply.webp">
                      </a>
                 </span>
@@ -26,11 +26,6 @@
 
     <div class="chat-input-foroG">
         <form action="/contenido/enviarmensaje" method="POST">
-            
-            <!-- <div class="chat-input-reply">
-                <img src="/img/reply.webp">
-                <span class="reply-input-username">respondiendo a yisus1203: ensayo de adri, estoy dando volteretas en mi casa</span>
-            </div> -->
             <div class="chat-input-enter-msg">
                 <div class="forum-btn">
                     <button type="submit" id="send">
