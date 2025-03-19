@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { getConnection } from '../db.js';
 
 export const RolesEnum = Object.freeze({
     USUARIO: 'U',
