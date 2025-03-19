@@ -7,7 +7,6 @@ const contenidoRouter = express.Router();
 contenidoRouter.get('/foroComun', (req, res) => {
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
-    console.log(mensajes);
     let mensajesConUsuarios = mensajes.map(mensaje => {
         let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
         return {
@@ -15,34 +14,64 @@ contenidoRouter.get('/foroComun', (req, res) => {
             username: usuario ? usuario.username : 'Usuario desconocido'
         };
     });
-
+    let resp = false;
     res.render('pagina', {
         contenido,
         session: req.session,
-        mensajes: mensajesConUsuarios
+        mensajes: mensajesConUsuarios,
+        respuesta: resp
     });
 });
 
-contenidoRouter.post('/enviarmensaje', (req, res) => {
-    const mensaje = req.body.mensaje;
-    const id_usuario = Usuario.getIdByUsername(req.session.username); 
-    const datas = new Date();
-    const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
-    const created_at = horaEnvio;
-    const id_mensaje_respuesta = null; 
-    const id_foro = 1; 
+contenidoRouter.get('/mensajes', (req, res) => {
+    let contenido = 'paginas/foroComun';
+    let resp = false;
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+    if (req.session.login) {
+        console.log(req.query);
+        let id_mensaje_respuesta = req.query.id;
+        resp = true;
+    }  
     
-    if (!mensaje || !id_usuario) {
-        return res.status(400).send('Mensaje o usuario no válido');
-    }
+    res.render('pagina', {
+        contenido,
+        session: req.session,
+        mensajes: mensajesConUsuarios,
+        respuesta: resp
+    });
 
-    try {
-        const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
-        Mensajes.persist(nuevoMensaje);
-    } catch (e) {
-        return res.status(500).send('Error al enviar el mensaje');
-    }
+});
 
+contenidoRouter.post('/enviarmensaje', (req, res) => {
+    if (req.session.login) {
+        
+        const mensaje = req.body.mensaje;
+        const id_usuario = Usuario.getIdByUsername(req.session.username); 
+        const datas = new Date();
+        const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
+        const created_at = horaEnvio;
+        const id_mensaje_respuesta = null; 
+        const id_foro = 1; 
+        
+        if (!mensaje || !id_usuario) {
+            return res.status(400).send('Mensaje o usuario no válido');
+        }
+
+        try {
+            const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+            Mensajes.persist(nuevoMensaje);
+        } catch (e) {
+            return res.status(500).send('Error al enviar el mensaje');
+        }
+    
+    }
     res.redirect('/contenido/foroComun');
 });
 
