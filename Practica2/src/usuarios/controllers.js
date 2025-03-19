@@ -1,6 +1,5 @@
 import { body } from 'express-validator';
 import { Usuario } from './Usuario.js';
-import { Mensajes } from '../contenido/mensajes.js';
 
 export function viewLogin(req, res) {
     res.render('pagina', { 
@@ -30,32 +29,23 @@ export function doLogin(req, res) {
         req.session.username = usuario.username;
         req.session.edad = usuario.edad;
         req.session.esAdmin = usuario.rol === "A";
-
-        // Obtener mensajes
-        let mensajes = Mensajes.getMensajes();
-        let mensajesConUsuarios = mensajes.map(mensaje => {
-            let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
-            return {
-                ...mensaje,
-                username: usuario ? usuario.username : 'Usuario desconocido'
-            };
-        });
-
         return res.render('pagina', {
             contenido: 'paginas/foroComun',
-            session: req.session,
-            mensajes: mensajesConUsuarios
+            session: req.session
         });
 
     } catch (e) {
         res.render('pagina', {
             contenido: 'paginas/login',
             error: 'El usuario o contraseña no son válidos'
-        });
+        })
     }
+
+
 }
 
 export function doRegister(req, res) {
+
     body('name').trim().escape().notEmpty().withMessage('Nombre requerido');
     body('surname').trim().escape().notEmpty().withMessage('Apellido requerido');
     body('username').trim().escape().notEmpty().withMessage('Usuario requerido');
@@ -79,20 +69,9 @@ export function doRegister(req, res) {
         req.session.edad = usuario.edad;
         req.session.esAdmin = usuario.rol === "A";
 
-        // Obtener mensajes
-        let mensajes = Mensajes.getMensajes();
-        let mensajesConUsuarios = mensajes.map(mensaje => {
-            let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
-            return {
-                ...mensaje,
-                username: usuario ? usuario.username : 'Usuario desconocido'
-            };
-        });
-
         return res.render('pagina', {
             contenido: 'paginas/foroComun',
-            session: req.session,
-            mensajes: mensajesConUsuarios
+            session: req.session
         });
     } catch (e) {
         return res.render('pagina', {
@@ -101,6 +80,7 @@ export function doRegister(req, res) {
         });
     }
 }
+
 
 export function doLogout(req, res, next) {
     req.session.destroy((err) => {
