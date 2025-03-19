@@ -1,5 +1,5 @@
 import { body } from 'express-validator';
-import { Usuario } from './Usuario.js';
+import { Usuario } from './usuario.js';
 
 export function viewLogin(req, res) {
     res.render('pagina', { 

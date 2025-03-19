@@ -1,12 +1,13 @@
 import express from 'express';
 import { Mensajes } from './mensajes.js';
-import { Usuario } from '../usuarios/Usuario.js';
+import { Usuario } from '../usuarios/usuario.js';
 
 const contenidoRouter = express.Router();
 
 contenidoRouter.get('/foroComun', (req, res) => {
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
+    console.log(mensajes);
     let mensajesConUsuarios = mensajes.map(mensaje => {
         let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
         return {

@@ -14,7 +14,8 @@ app.use(session(config.session));
 
 app.use('/', express.static(config.recursos));
 app.get('/', (req, res) => {
+    // Parámetros que estarán disponibles en la plantilla
     res.redirect('/contenido/foroComun');
-});
+})
 app.use('/usuarios', usuariosRouter);
 app.use('/contenido', contenidoRouter);
