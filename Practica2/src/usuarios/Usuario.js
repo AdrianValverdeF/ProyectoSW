@@ -68,15 +68,18 @@ export class Usuario {
     }
 
     static #update(usuario) {
-        const username = usuario.username;
-        const password = usuario.#password;
-        const nombre = usuario.nombre;
-        const apellido = usuario.apellido;
-        const edad = usuario.edad;
+        const id = usuario.#id; 
+        const username = usuario.username; 
+        const password = usuario.#password; 
+        const nombre = usuario.nombre; 
+        const apellido = usuario.apellido; 
+        const edad = usuario.edad; 
         const rol = usuario.rol;
-        const datos = { username, password, nombre, apellido, edad, rol };
+
+        const datos = { id, username, password, nombre, apellido, edad, rol };
 
         const result = this.#updateStmt.run(datos);
+
         if (result.changes === 0) throw new UsuarioNoEncontrado(username);
 
         return usuario;

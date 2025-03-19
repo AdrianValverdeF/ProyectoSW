@@ -103,17 +103,48 @@ contenidoRouter.get('/gestion-eventos', (req, res) => {
 });
 
 contenidoRouter.get('/perfil', (req, res) => {
-    let contenido = 'paginas/login';
-    if (req.session.login) {
-        contenido = 'paginas/perfil';
-        res.render('paginaSinSidebar', {
-            contenido,
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
             session: req.session
         });
-    } else {
-        res.render('pagina', {
-            contenido,
-            session: req.session
+    }
+
+    const mostrarFormulario = req.query.modificar === 'true';
+
+    res.render('paginaSinSidebar', {
+        contenido: 'paginas/perfil',
+        session: req.session,
+        mostrarFormulario 
+    });
+});
+
+contenidoRouter.post('/modificarPerfil', (req, res) => {
+    const { nombre, apellido, edad, username } = req.body;
+
+    try {
+        const usuario = Usuario.getUsuarioByUsername(req.session.username);
+        usuario.nombre = nombre;
+        usuario.apellido = apellido;
+        usuario.edad = parseInt(edad);
+        usuario.username = username;
+
+        usuario.persist(); 
+
+        req.session.nombre = nombre;
+        req.session.apellido = apellido;
+        req.session.edad = parseInt(edad);
+        req.session.username = username;
+
+        res.redirect('/contenido/perfil');
+    } catch (e) {
+        console.error('Error al actualizar el perfil:', e);
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            mostrarFormulario: true, // formulario calentito
+            error: 'Error al actualizar el perfil. Inténtalo de nuevo.'
         });
     }
 });
@@ -183,6 +214,7 @@ contenidoRouter.get('/amigos', (req, res) => {
         session: req.session
     });
 });
+
 
 export default contenidoRouter;
 
