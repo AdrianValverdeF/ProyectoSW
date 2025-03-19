@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat con <%= amigo %></title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+   
+    <main class="chat-main">
+        <div class="amigos-sidebar">
+            <ul>
+                <li><a href="/contenido/chat?amigo=Pedro%20Gutiérrez">Pedro Gutiérrez</a></li>
+                <li><a href="/contenido/chat?amigo=Antonio%20García">Antonio García</a></li>
+                <li><a href="/contenido/chat?amigo=Miranda">Miranda</a></li>
+                <li><a href="/contenido/chat?amigo=Carlos%20Martínez">Carlos Martínez</a></li>
+                <li><a href="/contenido/chat?amigo=Martín%20Caballero">Martín Caballero</a></li>
+            </ul>
+        </div>
+        <div class="amigos-chat-container">
+            <div class="amigos-chat-header">
+                <div class="amigos-chat-info">
+                    <h2><%= amigo %></h2>
+                    <span>Activo hace 5 minutos</span>
+                </div>
+            </div>
+            <div class="amigos-chat-messages">
+                <div class="amigos-message">
+                    <div class="amigos-message-content">
+                        Hola que tal
+                    </div>
+                </div>
+                <div class="amigos-message">
+                    <div class="amigos-message-content">
+                        Holaaa
+                    </div>
+                </div>
+            </div>
+            <form action="/enviarMensaje" method="POST" class="amigos-chat-input">
+                <input type="hidden" name="amigo" value="<%= amigo %>">
+                <textarea name="mensaje" placeholder="Escribe tu mensaje..." required></textarea>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

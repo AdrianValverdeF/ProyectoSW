@@ -244,6 +244,25 @@ contenidoRouter.get('/amigos', (req, res) => {
     });
 });
 
+contenidoRouter.get('/chat', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
+
+    const amigo = req.query.amigo; 
+    if (!amigo) {
+        return res.status(400).send('Amigo no especificado');
+    }
+
+    res.render('paginaSinSidebar', {
+        contenido: 'paginas/chat', 
+        session: req.session,
+        amigo 
+    });
+});
 
 export default contenidoRouter;
 
