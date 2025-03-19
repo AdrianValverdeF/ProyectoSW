@@ -50,10 +50,19 @@ contenidoRouter.get('/normal', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/normal';
     }
-    
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
@@ -62,9 +71,19 @@ contenidoRouter.get('/admin', (req, res) => {
     if (req.session.esAdmin) {
         contenido = 'paginas/admin';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
@@ -73,9 +92,19 @@ contenidoRouter.get('/amigosPag', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/amigos';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('paginaSinSidebar', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
@@ -84,9 +113,19 @@ contenidoRouter.get('/gestion-apuestas', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/gestion-apuestas';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
@@ -95,26 +134,38 @@ contenidoRouter.get('/gestion-eventos', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/gestion-eventos';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
 contenidoRouter.get('/perfil', (req, res) => {
-    let contenido = 'paginas/login';
-    if (req.session.login) {
-        contenido = 'paginas/perfil';
-        res.render('paginaSinSidebar', {
-            contenido,
-            session: req.session
-        });
-    } else {
-        res.render('pagina', {
-            contenido,
-            session: req.session
-        });
-    }
+    let contenido = 'paginas/perfil';
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
+    res.render('pagina', {
+        contenido,
+        session: req.session,
+        mensajes: mensajesConUsuarios
+    });
 });
 
 contenidoRouter.get('/futbol11', (req, res) => {
@@ -122,9 +173,19 @@ contenidoRouter.get('/futbol11', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/futbol11';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
@@ -133,9 +194,19 @@ contenidoRouter.get('/futbolSala', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/futbolSala';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
@@ -144,9 +215,19 @@ contenidoRouter.get('/voleibol', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/voleibol';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
@@ -155,9 +236,19 @@ contenidoRouter.get('/rugby', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/rugby';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
@@ -166,9 +257,19 @@ contenidoRouter.get('/baloncesto', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/baloncesto';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
@@ -177,11 +278,22 @@ contenidoRouter.get('/amigos', (req, res) => {
     if (req.session.login) {
         contenido = 'paginas/amigos';
     }
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+
     res.render('paginaSinSidebar', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios
     });
 });
 
 export default contenidoRouter;
+
 
