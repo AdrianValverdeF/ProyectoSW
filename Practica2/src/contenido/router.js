@@ -1,6 +1,7 @@
 import express from 'express';
 import { Mensajes } from './mensajes.js';
 import { Usuario } from '../usuarios/Usuario.js';
+import { Eventos } from './eventos.js';
 
 const contenidoRouter = express.Router();
 
@@ -25,15 +26,15 @@ contenidoRouter.get('/foroComun', (req, res) => {
 
 contenidoRouter.post('/enviarmensaje', (req, res) => {
     if (req.session.login) {
-        
+
         const mensaje = req.body.mensaje;
-        const id_usuario = Usuario.getIdByUsername(req.session.username); 
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
         const datas = new Date();
         const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
         const created_at = horaEnvio;
-        const id_mensaje_respuesta = null; 
-        const id_foro = 1; 
-        
+        const id_mensaje_respuesta = null;
+        const id_foro = 1;
+
         if (!mensaje || !id_usuario) {
             return res.status(400).send('Mensaje o usuario no válido');
         }
@@ -44,20 +45,25 @@ contenidoRouter.post('/enviarmensaje', (req, res) => {
         } catch (e) {
             return res.status(500).send('Error al enviar el mensaje');
         }
-    
+
     }
     res.redirect('/contenido/foroComun');
 });
 
-contenidoRouter.get('/normal', (req, res) => {
+contenidoRouter.get('/eventos', (req, res) => {
+
     let contenido = 'paginas/noPermisos';
+
     if (req.session.login) {
-        contenido = 'paginas/normal';
+        contenido = 'paginas/eventos';
     }
-    
+
+    const eventos = Eventos.getEventos();
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        eventos: eventos
     });
 });
 
@@ -118,7 +124,7 @@ contenidoRouter.get('/perfil', (req, res) => {
     res.render('paginaSinSidebar', {
         contenido: 'paginas/perfil',
         session: req.session,
-        mostrarFormulario 
+        mostrarFormulario
     });
 });
 
@@ -132,7 +138,7 @@ contenidoRouter.post('/modificarPerfil', (req, res) => {
         usuario.edad = parseInt(edad);
         usuario.username = username;
 
-        usuario.persist(); 
+        usuario.persist();
 
         req.session.nombre = nombre;
         req.session.apellido = apellido;
@@ -226,15 +232,15 @@ contenidoRouter.get('/chat', (req, res) => {
         });
     }
 
-    const amigo = req.query.amigo; 
+    const amigo = req.query.amigo;
     if (!amigo) {
         return res.status(400).send('Amigo no especificado');
     }
 
     res.render('paginaSinSidebar', {
-        contenido: 'paginas/chat', 
+        contenido: 'paginas/chat',
         session: req.session,
-        amigo 
+        amigo
     });
 });
 
