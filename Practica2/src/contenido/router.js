@@ -23,32 +23,6 @@ contenidoRouter.get('/foroComun', (req, res) => {
     });
 });
 
-contenidoRouter.get('/mensajes', (req, res) => {
-    let contenido = 'paginas/foroComun';
-    let resp = false;
-    let mensajes = Mensajes.getMensajes();
-    let mensajesConUsuarios = mensajes.map(mensaje => {
-        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
-        return {
-            ...mensaje,
-            username: usuario ? usuario.username : 'Usuario desconocido'
-        };
-    });
-    if (req.session.login) {
-        console.log(req.query);
-        let id_mensaje_respuesta = req.query.id;
-        resp = true;
-    }  
-    
-    res.render('pagina', {
-        contenido,
-        session: req.session,
-        mensajes: mensajesConUsuarios,
-        respuesta: resp
-    });
-
-});
-
 contenidoRouter.post('/enviarmensaje', (req, res) => {
     if (req.session.login) {
         
