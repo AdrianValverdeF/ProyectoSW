@@ -1,5 +1,6 @@
 export class Mensajes {
     static #getByNearestDateStmt = null;
+    static #getByIdStmt = null;
     static #insertStmt = null;
     static #updateStmt = null;
     static #deleteStmt = null;
@@ -8,6 +9,7 @@ export class Mensajes {
         if (this.#getByNearestDateStmt !== null) return;
 
         this.#getByNearestDateStmt = db.prepare('SELECT * FROM Mensajes ORDER BY created_at ASC');
+        this.#getByIdStmt = db.prepare('SELECT * FROM Mensajes WHERE id = @id');
         this.#insertStmt = db.prepare('INSERT INTO Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro) VALUES (@mensaje, @id_usuario, @created_at, @id_mensaje_respuesta, @id_foro)');
         this.#updateStmt = db.prepare('UPDATE Mensajes SET mensaje = @mensaje, id_usuario = @id_usuario, id_foro = @id_foro, id_mensaje_respuesta = @id_mensaje_respuesta WHERE id = @id');
         this.#deleteStmt = db.prepare('DELETE FROM Mensajes WHERE id = @id');
@@ -23,6 +25,15 @@ export class Mensajes {
         }
     
         return result.map(row => new Mensajes(row.mensaje, row.id_usuario, row.created_at, row.id_mensaje_respuesta, row.id_foro, row.id));
+    }
+    static getMensajeById(id) {
+        let result = null;  
+        try {
+            result = this.#getByIdStmt.get({ id });
+        } catch (e) {
+            throw new ErrorDatos('No se ha encontrado el mensaje', { cause: e });
+        }
+        return new Mensajes(result.mensaje, result.id_usuario, result.created_at, result.id_mensaje_respuesta, result.id_foro, result.id);
     }
 
     static #insert(mensaje) {

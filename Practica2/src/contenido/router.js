@@ -23,6 +23,45 @@ contenidoRouter.get('/foroComun', (req, res) => {
     });
 });
 
+
+
+contenidoRouter.get('/mensajes', (req,res) => {
+    const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+    // Aquí puedes agregar la lógica que necesites para manejar la solicitud
+    // Por ejemplo, obtener mensajes y renderizar una vista
+    let contenido = 'paginas/foroComun';
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+    let resp = false;
+    if (req.session.login) {;
+        let id_mensaje_respuesta = url.searchParams.get('id');
+        console.log(id_mensaje_respuesta);
+        let mRespuesta = Mensajes.getMensajeById(id_mensaje_respuesta);
+        let usuario = Usuario.getUsuarioById(mRespuesta.id_usuario);
+        mRespuesta.username = usuario ? usuario.username : 'Usuario desconocido';
+        console.log(mRespuesta);
+        resp = true;
+        
+        res.render('pagina', {
+            contenido,
+            session: req.session,
+            mensajes: mensajesConUsuarios,
+            respuesta: resp,
+            mensajeRespuesta: mRespuesta
+        });
+    } else {
+        res.redirect('/contenido/foroComun');
+    }
+
+
+});
+
 contenidoRouter.post('/enviarmensaje', (req, res) => {
     if (req.session.login) {
         
