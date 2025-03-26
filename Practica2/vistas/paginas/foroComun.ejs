@@ -35,6 +35,7 @@
                 return `<div class="chat-input-reply">
                     <img src="/img/reply.webp">
                     <span class="reply-input-username">respondiendo a ${mensajeRespuesta.username}: ${mensajeRespuesta.mensaje}</span>
+                    <input type="hidden" name="id_respuesta" value="${mensajeRespuesta.id}">
                 </div>`;
             
             }%>

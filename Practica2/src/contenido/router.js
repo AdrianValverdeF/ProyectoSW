@@ -41,11 +41,9 @@ contenidoRouter.get('/mensajes', (req,res) => {
     let resp = false;
     if (req.session.login) {;
         let id_mensaje_respuesta = url.searchParams.get('id');
-        console.log(id_mensaje_respuesta);
         let mRespuesta = Mensajes.getMensajeById(id_mensaje_respuesta);
         let usuario = Usuario.getUsuarioById(mRespuesta.id_usuario);
         mRespuesta.username = usuario ? usuario.username : 'Usuario desconocido';
-        console.log(mRespuesta);
         resp = true;
         
         res.render('pagina', {
@@ -70,7 +68,8 @@ contenidoRouter.post('/enviarmensaje', (req, res) => {
         const datas = new Date();
         const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
         const created_at = horaEnvio;
-        const id_mensaje_respuesta = null; 
+        console.log(req.body.id_respuesta);
+        const id_mensaje_respuesta = req.body.id_respuesta;
         const id_foro = 1; 
         
         if (!mensaje || !id_usuario) {
