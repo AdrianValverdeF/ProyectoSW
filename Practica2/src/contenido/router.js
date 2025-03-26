@@ -27,8 +27,6 @@ contenidoRouter.get('/foroComun', (req, res) => {
 
 contenidoRouter.get('/mensajes', (req,res) => {
     const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
-    // Aquí puedes agregar la lógica que necesites para manejar la solicitud
-    // Por ejemplo, obtener mensajes y renderizar una vista
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
     let mensajesConUsuarios = mensajes.map(mensaje => {
