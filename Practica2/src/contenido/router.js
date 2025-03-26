@@ -166,14 +166,14 @@ contenidoRouter.post('/modificarPerfil', (req, res) => {
         usuario.nombre = nombre;
         usuario.apellido = apellido;
         usuario.edad = parseInt(edad);
-        usuario.username = username;
+        usuario.username = `${nombre}@ucm.es`; 
 
         usuario.persist(); 
 
         req.session.nombre = nombre;
         req.session.apellido = apellido;
         req.session.edad = parseInt(edad);
-        req.session.username = username;
+        req.session.username = `${nombre}@ucm.es`; 
 
         res.redirect('/contenido/perfil');
     } catch (e) {
