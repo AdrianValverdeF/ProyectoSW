@@ -14,6 +14,12 @@ contenidoRouter.get('/foroComun', (req, res) => {
             username: usuario ? usuario.username : 'Usuario desconocido'
         };
     });
+    mensajesConUsuarios.forEach(mEnsaje => {
+        if(mEnsaje.id_mensaje_respuesta != null){
+            let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
+            mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
+        }
+    });
     let resp = false;
     res.render('pagina', {
         contenido,
@@ -35,6 +41,12 @@ contenidoRouter.get('/mensajes', (req,res) => {
             ...mensaje,
             username: usuario ? usuario.username : 'Usuario desconocido'
         };
+    });
+    mensajesConUsuarios.forEach(mEnsaje => {
+        if(mEnsaje.id_mensaje_respuesta != null){
+            let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
+            mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
+        }
     });
     let resp = false;
     if (req.session.login) {;
