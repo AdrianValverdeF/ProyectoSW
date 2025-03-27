@@ -155,16 +155,24 @@ label {
     padding: 1rem;
 }
 
+.respuesta {
+    display: block;
+    color: gray;
+    font-size: 0.9rem;   
+}
+  
 .message {
     margin-bottom: 1rem;
+    
 }
-
+  
 .message img {
     width: 20px;
 }
 
 .reply-btn {
-    opacity: 0;
+    width: 1px;
+    height: 1px;
 }
 
 .message:hover .reply-btn {

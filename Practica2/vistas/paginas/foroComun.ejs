@@ -7,16 +7,30 @@
                 return "<div>No hay mensajes disponibles.</div>";
             }
             for (let i = 0; i < mensajes.length; i++) {
-                result += `<div class="message">
+                result += `
                 <span class="reply-btn">
-                     <a href="/contenido/mensajes?id= ${mensajes[i].id}" id="reply">
-                          <img src="/img/reply.webp">
-                     </a>
-                </span>
-                <span class="time">${mensajes[i].created_at}</span>
-                <span class="username">${mensajes[i].username}:</span>
-                <span class="content">${mensajes[i].mensaje}</span>
-                </div>`;
+                    <a href="/contenido/mensajes?id=${mensajes[i].id}" id="reply">
+                         <img src="/img/reply.webp">
+                    </a>
+               </span>
+                <div class="message">`;
+                
+                if(mensajes[i].mensajeRespuesta != null){
+                    result+= `<div class="chat-reply">
+                        <span class ="respuesta"><em>${mensajes[i].mensajeRespuesta}</em></span>
+                    </div>
+                    <span class="time">${mensajes[i].created_at}</span>
+                    <span class="username">${mensajes[i].username}:</span>
+                    <span class="content">${mensajes[i].mensaje}</span>
+                    </div>`;
+                }else{
+
+                    result+=`<span class="time">${mensajes[i].created_at}</span>
+                    <span class="username">${mensajes[i].username}:</span>
+                    <span class="content">${mensajes[i].mensaje}</span>
+                    </div>`;
+                }
+              
             }
             return result;
         }
