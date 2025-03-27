@@ -7,16 +7,30 @@
                 return "<div>No hay mensajes disponibles.</div>";
             }
             for (let i = 0; i < mensajes.length; i++) {
-                result += `<div class="message">
-                <span class="reply-btn">
-                     <a href="/contenido/mensajes?id = ${mensajes[i].id}" id="reply">
-                          <img src="/img/reply.webp">
-                     </a>
-                </span>
-                <span class="time">${mensajes[i].created_at}</span>
-                <span class="username">${mensajes[i].username}:</span>
-                <span class="content">${mensajes[i].mensaje}</span>
-                </div>`;
+                result += `
+                <div class="message">
+                    <span class="reply-btn">
+                        <a href="/contenido/mensajes?id=${mensajes[i].id}" id="reply">
+                             <img src="/img/reply.webp">
+                        </a>
+                   </span>`;
+                
+                if(mensajes[i].mensajeRespuesta != null){
+                    result+= `<div class="chat-reply">
+                        <span class ="respuesta"><em>${mensajes[i].mensajeRespuesta}</em></span>
+                    </div>
+                    <span class="time">${mensajes[i].created_at}</span>
+                    <span class="username">${mensajes[i].username}:</span>
+                    <span class="content">${mensajes[i].mensaje}</span>
+                    </div>`;
+                }else{
+
+                    result+=`<span class="time">${mensajes[i].created_at}</span>
+                    <span class="username">${mensajes[i].username}:</span>
+                    <span class="content">${mensajes[i].mensaje}</span>
+                    </div>`;
+                }
+              
             }
             return result;
         }
@@ -28,17 +42,18 @@
         <form action="/contenido/enviarmensaje" method="POST">
 
             <%
-            function mostrarRespuesta(resp) {
+            function mostrarRespuesta(resp,mensajeRespuesta) {
                 if (!resp) {
                     return "";
                 }
                 return `<div class="chat-input-reply">
                     <img src="/img/reply.webp">
-                    <span class="reply-input-username">respondiendo a yisus1203: ensayo de adri, estoy dando volteretas en mi casa</span>
+                    <span class="reply-input-username">respondiendo a ${mensajeRespuesta.username}: ${mensajeRespuesta.mensaje}</span>
+                    <input type="hidden" name="id_respuesta" value="${mensajeRespuesta.id}">
                 </div>`;
             
             }%>
-            <%- mostrarRespuesta(locals.respuesta) %>
+            <%- mostrarRespuesta(locals.respuesta,locals.mensajeRespuesta) %>
             
             <div class="chat-input-enter-msg">
                 <div class="forum-btn">

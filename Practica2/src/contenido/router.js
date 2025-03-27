@@ -14,6 +14,12 @@ contenidoRouter.get('/foroComun', (req, res) => {
             username: usuario ? usuario.username : 'Usuario desconocido'
         };
     });
+    mensajesConUsuarios.forEach(mEnsaje => {
+        if(mEnsaje.id_mensaje_respuesta != null){
+            let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
+            mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
+        }
+    });
     let resp = false;
     res.render('pagina', {
         contenido,
@@ -23,9 +29,11 @@ contenidoRouter.get('/foroComun', (req, res) => {
     });
 });
 
-contenidoRouter.get('/mensajes', (req, res) => {
+
+
+contenidoRouter.get('/mensajes', (req,res) => {
+    const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
     let contenido = 'paginas/foroComun';
-    let resp = false;
     let mensajes = Mensajes.getMensajes();
     let mensajesConUsuarios = mensajes.map(mensaje => {
         let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
@@ -34,18 +42,31 @@ contenidoRouter.get('/mensajes', (req, res) => {
             username: usuario ? usuario.username : 'Usuario desconocido'
         };
     });
-    if (req.session.login) {
-        console.log(req.query);
-        let id_mensaje_respuesta = req.query.id;
-        resp = true;
-    }  
-    
-    res.render('pagina', {
-        contenido,
-        session: req.session,
-        mensajes: mensajesConUsuarios,
-        respuesta: resp
+    mensajesConUsuarios.forEach(mEnsaje => {
+        if(mEnsaje.id_mensaje_respuesta != null){
+            let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
+            mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
+        }
     });
+    let resp = false;
+    if (req.session.login) {;
+        let id_mensaje_respuesta = url.searchParams.get('id');
+        let mRespuesta = Mensajes.getMensajeById(id_mensaje_respuesta);
+        let usuario = Usuario.getUsuarioById(mRespuesta.id_usuario);
+        mRespuesta.username = usuario ? usuario.username : 'Usuario desconocido';
+        resp = true;
+        
+        res.render('pagina', {
+            contenido,
+            session: req.session,
+            mensajes: mensajesConUsuarios,
+            respuesta: resp,
+            mensajeRespuesta: mRespuesta
+        });
+    } else {
+        res.redirect('/contenido/foroComun');
+    }
+
 
 });
 
@@ -57,7 +78,8 @@ contenidoRouter.post('/enviarmensaje', (req, res) => {
         const datas = new Date();
         const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
         const created_at = horaEnvio;
-        const id_mensaje_respuesta = null; 
+        console.log(req.body.id_respuesta);
+        const id_mensaje_respuesta = req.body.id_respuesta;
         const id_foro = 1; 
         
         if (!mensaje || !id_usuario) {
@@ -156,14 +178,14 @@ contenidoRouter.post('/modificarPerfil', (req, res) => {
         usuario.nombre = nombre;
         usuario.apellido = apellido;
         usuario.edad = parseInt(edad);
-        usuario.username = username;
+        usuario.username = `${nombre}@ucm.es`; 
 
         usuario.persist(); 
 
         req.session.nombre = nombre;
         req.session.apellido = apellido;
         req.session.edad = parseInt(edad);
-        req.session.username = username;
+        req.session.username = `${nombre}@ucm.es`; 
 
         res.redirect('/contenido/perfil');
     } catch (e) {
@@ -276,4 +298,58 @@ contenidoRouter.get('/chat', (req, res) => {
 });
 
 export default contenidoRouter;
+
+contenidoRouter.get('/chat', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
+
+    const amigo = req.query.amigo;
+    if (!amigo) {
+        return res.status(400).send('Amigo no especificado');
+    }
+
+    try {
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const id_amigo = Usuario.getIdByUsername(amigo);
+        const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/chat',
+            session: req.session,
+            amigo,
+            mensajes
+        });
+    } catch (e) {
+        console.error('Error al cargar el chat:', e);
+        res.status(500).send('Error al cargar el chat');
+    }
+});
+
+
+contenidoRouter.post('/enviarMensaje', (req, res) => {
+    if (!req.session.login) {
+        return res.status(403).send('No tienes permiso para enviar mensajes');
+    }
+
+    const { mensaje, amigo } = req.body;
+
+    try {
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const id_amigo = Usuario.getIdByUsername(amigo);
+        const created_at = new Date().toISOString();
+
+        const nuevoMensaje = new Chat(mensaje, id_usuario, id_amigo, created_at);
+        Chat.persist(nuevoMensaje);
+
+        res.redirect(`/contenido/chat?amigo=${amigo}`);
+    } catch (e) {
+        console.error('Error al enviar el mensaje:', e);
+        res.status(500).send('Error al enviar el mensaje');
+    }
+});
+
 
