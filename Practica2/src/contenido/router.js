@@ -173,14 +173,14 @@ contenidoRouter.post('/modificarPerfil', (req, res) => {
         usuario.nombre = nombre;
         usuario.apellido = apellido;
         usuario.edad = parseInt(edad);
-        usuario.username = username;
+        usuario.username = `${nombre}@ucm.es`; 
 
         usuario.persist(); 
 
         req.session.nombre = nombre;
         req.session.apellido = apellido;
         req.session.edad = parseInt(edad);
-        req.session.username = username;
+        req.session.username = `${nombre}@ucm.es`; 
 
         res.redirect('/contenido/perfil');
     } catch (e) {
@@ -283,3 +283,58 @@ contenidoRouter.get('/chat', (req, res) => {
 
 export default contenidoRouter;
 
+/*contenidoRouter.get('/chat', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
+
+    const amigo = req.query.amigo;
+    if (!amigo) {
+        return res.status(400).send('Amigo no especificado');
+    }
+
+    try {
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const id_amigo = Usuario.getIdByUsername(amigo);
+        const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/chat',
+            session: req.session,
+            amigo,
+            mensajes
+        });
+    } catch (e) {
+        console.error('Error al cargar el chat:', e);
+        res.status(500).send('Error al cargar el chat');
+    }
+});*/ 
+
+/*
+contenidoRouter.post('/enviarMensaje', (req, res) => {
+    if (!req.session.login) {
+        return res.status(403).send('No tienes permiso para enviar mensajes');
+    }
+
+    const { mensaje, amigo } = req.body;
+
+    try {
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const id_amigo = Usuario.getIdByUsername(amigo);
+        const created_at = new Date().toISOString();
+
+        const nuevoMensaje = new Chat(mensaje, id_usuario, id_amigo, created_at);
+        Chat.persist(nuevoMensaje);
+
+        res.redirect(`/contenido/chat?amigo=${amigo}`);
+    } catch (e) {
+        console.error('Error al enviar el mensaje:', e);
+        res.status(500).send('Error al enviar el mensaje');
+    }
+});
+
+
+*/

@@ -34,7 +34,7 @@
                         <p><strong>Nombre:</strong> <%= session.nombre %></p>
                         <p><strong>Apellidos:</strong> <%= session.apellido %></p>
                         <p><strong>Edad:</strong> <%= session.edad %></p>
-                        <p><strong>Correo electrónico:</strong> <%= session.username %></p>
+                        <p><strong>Correo electrónico:</strong> <%= session.nombre %>@ucm.es %></p>
                         <form action="/contenido/perfil" method="GET">
                             <input type="hidden" name="modificar" value="true">
                             <button class="modificar-btn" type="submit">Modificar</button>
@@ -45,7 +45,7 @@
                         <p><strong>Nombre:</strong> <input type="text" name="nombre" value="<%= session.nombre %>" required></p>
                         <p><strong>Apellidos:</strong> <input type="text" name="apellido" value="<%= session.apellido %>" required></p>
                         <p><strong>Edad:</strong> <input type="number" name="edad" value="<%= session.edad %>" required></p>
-                        <p><strong>Correo electrónico:</strong> <input type="email" name="username" value="<%= session.username %>" required></p>
+                        <p><strong>Correo electrónico:</strong> <input type="email" name="correo" value="<%= session.nombre %>@ucm.es" readonly></p>
                         <button class="guardar-btn" type="submit">Guardar Cambios</button>
                         <a href="/contenido/perfil" class="cancelar-btn">Cancelar</a>
                     </form>
