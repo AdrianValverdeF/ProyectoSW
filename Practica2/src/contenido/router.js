@@ -42,7 +42,12 @@ contenidoRouter.get('/mensajes', (req,res) => {
             username: usuario ? usuario.username : 'Usuario desconocido'
         };
     });
-
+    mensajesConUsuarios.forEach(mEnsaje => {
+        if(mEnsaje.id_mensaje_respuesta != null){
+            let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
+            mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
+        }
+    });
     let resp = false;
     if (req.session.login) {;
         let id_mensaje_respuesta = url.searchParams.get('id');

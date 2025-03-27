@@ -8,12 +8,12 @@
             }
             for (let i = 0; i < mensajes.length; i++) {
                 result += `
-                <span class="reply-btn">
-                    <a href="/contenido/mensajes?id=${mensajes[i].id}" id="reply">
-                         <img src="/img/reply.webp">
-                    </a>
-               </span>
-                <div class="message">`;
+                <div class="message">
+                    <span class="reply-btn">
+                        <a href="/contenido/mensajes?id=${mensajes[i].id}" id="reply">
+                             <img src="/img/reply.webp">
+                        </a>
+                   </span>`;
                 
                 if(mensajes[i].mensajeRespuesta != null){
                     result+= `<div class="chat-reply">
