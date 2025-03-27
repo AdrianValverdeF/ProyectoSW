@@ -1,6 +1,6 @@
 import express from 'express';
 import { Mensajes } from './mensajes.js';
-import { Usuario } from '../usuarios/usuario.js';
+import { Usuario } from '../usuarios/Usuario.js';
 
 const contenidoRouter = express.Router();
 
@@ -14,34 +14,64 @@ contenidoRouter.get('/foroComun', (req, res) => {
             username: usuario ? usuario.username : 'Usuario desconocido'
         };
     });
-    req.session.mensajes = mensajesConUsuarios;
-
+    let resp = false;
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        mensajes: mensajesConUsuarios,
+        respuesta: resp
     });
 });
 
-contenidoRouter.post('/enviarmensaje', (req, res) => {
-    const { mensaje } = req.body;
-    const id_usuario = Usuario.getIdByUsername(req.session.username); 
-    const datas = new Date();
-    const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
-    const created_at = horaEnvio;
-    const id_mensaje_respuesta = null; 
-    const id_foro = 1; 
+contenidoRouter.get('/mensajes', (req, res) => {
+    let contenido = 'paginas/foroComun';
+    let resp = false;
+    let mensajes = Mensajes.getMensajes();
+    let mensajesConUsuarios = mensajes.map(mensaje => {
+        let usuario = Usuario.getUsuarioById(mensaje.id_usuario);
+        return {
+            ...mensaje,
+            username: usuario ? usuario.username : 'Usuario desconocido'
+        };
+    });
+    if (req.session.login) {
+        console.log(req.query);
+        let id_mensaje_respuesta = req.query.id;
+        resp = true;
+    }  
     
-    if (!mensaje || !id_usuario) {
-        return res.status(400).send('Mensaje o usuario no válido');
-    }
+    res.render('pagina', {
+        contenido,
+        session: req.session,
+        mensajes: mensajesConUsuarios,
+        respuesta: resp
+    });
 
-    try {
-        const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
-        Mensajes.persist(nuevoMensaje);
-    } catch (e) {
-        return res.status(500).send('Error al enviar el mensaje');
-    }
+});
 
+contenidoRouter.post('/enviarmensaje', (req, res) => {
+    if (req.session.login) {
+        
+        const mensaje = req.body.mensaje;
+        const id_usuario = Usuario.getIdByUsername(req.session.username); 
+        const datas = new Date();
+        const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
+        const created_at = horaEnvio;
+        const id_mensaje_respuesta = null; 
+        const id_foro = 1; 
+        
+        if (!mensaje || !id_usuario) {
+            return res.status(400).send('Mensaje o usuario no válido');
+        }
+
+        try {
+            const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+            Mensajes.persist(nuevoMensaje);
+        } catch (e) {
+            return res.status(500).send('Error al enviar el mensaje');
+        }
+    
+    }
     res.redirect('/contenido/foroComun');
 });
 
@@ -102,17 +132,48 @@ contenidoRouter.get('/gestion-eventos', (req, res) => {
 });
 
 contenidoRouter.get('/perfil', (req, res) => {
-    let contenido = 'paginas/login';
-    if (req.session.login) {
-        contenido = 'paginas/perfil';
-        res.render('paginaSinSidebar', {
-            contenido,
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
             session: req.session
         });
-    } else {
-        res.render('pagina', {
-            contenido,
-            session: req.session
+    }
+
+    const mostrarFormulario = req.query.modificar === 'true';
+
+    res.render('paginaSinSidebar', {
+        contenido: 'paginas/perfil',
+        session: req.session,
+        mostrarFormulario 
+    });
+});
+
+contenidoRouter.post('/modificarPerfil', (req, res) => {
+    const { nombre, apellido, edad, username } = req.body;
+
+    try {
+        const usuario = Usuario.getUsuarioByUsername(req.session.username);
+        usuario.nombre = nombre;
+        usuario.apellido = apellido;
+        usuario.edad = parseInt(edad);
+        usuario.username = username;
+
+        usuario.persist(); 
+
+        req.session.nombre = nombre;
+        req.session.apellido = apellido;
+        req.session.edad = parseInt(edad);
+        req.session.username = username;
+
+        res.redirect('/contenido/perfil');
+    } catch (e) {
+        console.error('Error al actualizar el perfil:', e);
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            mostrarFormulario: true, // formulario calentito
+            error: 'Error al actualizar el perfil. Inténtalo de nuevo.'
         });
     }
 });
@@ -180,6 +241,37 @@ contenidoRouter.get('/amigos', (req, res) => {
     res.render('paginaSinSidebar', {
         contenido,
         session: req.session
+    });
+});
+
+contenidoRouter.get('/solicitudes', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/solicitudes';
+    }
+    res.render('paginaSinSidebar', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/chat', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
+
+    const amigo = req.query.amigo; 
+    if (!amigo) {
+        return res.status(400).send('Amigo no especificado');
+    }
+
+    res.render('paginaSinSidebar', {
+        contenido: 'paginas/chat', 
+        session: req.session,
+        amigo 
     });
 });
 

@@ -19,12 +19,18 @@
             <h1>Amigos de <%= session.nombre %></h1>
         </div>
         <div class="amigos-content">
+            <div class="amigos-añadir">
+                <input type="text" name="mensaje" placeholder="Añade un amigo...">
+                <button>Añadir</button>
+            </div>
             <ul>
                 <li>
                     <img src="/img/descarga.jpeg" alt="Avatar">
                     <span class="nombre">Manolo Lama</span>
                     <div class="acciones">
-                        <button>Mensaje</button>
+                        <a href="/contenido/chat?amigo=Manolo%20Lama" target="_blank">
+                            <button>Mensaje</button>
+                        </a>
                         <button>Eliminar</button>
                     </div>
                 </li>
@@ -32,7 +38,9 @@
                     <img src="/img/descarga.jpeg" alt="Avatar">
                     <span class="nombre">Lucía García</span>
                     <div class="acciones">
-                        <button>Mensaje</button>
+                        <a href="/contenido/chat?amigo=Lucía%20García" target="_blank">
+                            <button>Mensaje</button>
+                        </a>
                         <button>Eliminar</button>
                     </div>
                 </li>
@@ -40,7 +48,9 @@
                     <img src="/img/descarga.jpeg" alt="Avatar">
                     <span class="nombre">Mateo Hernández</span>
                     <div class="acciones">
-                        <button>Mensaje</button>
+                        <a href="/contenido/chat?amigo=Mateo%20Hernández" target="_blank">
+                            <button>Mensaje</button>
+                        </a>
                         <button>Eliminar</button>
                     </div>
                 </li>
@@ -48,7 +58,9 @@
                     <img src="/img/descarga.jpeg" alt="Avatar">
                     <span class="nombre">Julián Álvarez</span>
                     <div class="acciones">
-                        <button>Mensaje</button>
+                        <a href="/contenido/chat?amigo=Julián%20Álvarez" target="_blank">
+                            <button>Mensaje</button>
+                        </a>
                         <button>Eliminar</button>
                     </div>
                 </li>

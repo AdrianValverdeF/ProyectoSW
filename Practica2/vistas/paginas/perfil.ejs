@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil</title>
     <link rel="stylesheet" href="/css/estilo.css">
+    <script>
+        function habilitarEdicion() { // PREGUNTAR POR ESTO PORFI
+            const inputs = document.querySelectorAll(".datos-personales input");
+            inputs.forEach(input => input.removeAttribute("disabled"));
+            document.getElementById("guardar-btn").style.display = "inline-block";
+            document.getElementById("modificar-btn").style.display = "none";
+        }
+    </script>
 </head>
 <body>
     <div class="perfil-container">
@@ -15,17 +23,34 @@
                 <p class="tipo-usuario"><%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'Cliente VIP' : 'Cliente Normal') %></p>
             </div>
             <a href="amigos" class="amigos-btn">Amigos</a>
+            <a href="solicitudes" class="solicitudes-btn">Solicitudes</a>
         </div>
         <div class="perfil-content">
             <div class="datos-personales">
                 <h2>Datos Personales</h2>
-                <p><strong>Nombre:</strong> <%= session.nombre %></p>
-                <p><strong>Apellidos:</strong> <%= session.apellido %></p>
-                <p><strong>Edad:</strong> <%= session.edad %> </p>
-                <p><strong>Tipo de cuota:</strong> <%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'VIP' : 'Normal') %></p>
-                <p><strong>Correo electrónico:</strong> <%= session.username %></p>
-                <p><strong>Contraseña:</strong> **********</p>
-                <button class="modificar-btn">Modificar</button>
+
+                <% if (!mostrarFormulario) { %>
+                    <!-- Mostrar solo los datos personales -->
+                    <div id="datos-mostrados">
+                        <p><strong>Nombre:</strong> <%= session.nombre %></p>
+                        <p><strong>Apellidos:</strong> <%= session.apellido %></p>
+                        <p><strong>Edad:</strong> <%= session.edad %></p>
+                        <p><strong>Correo electrónico:</strong> <%= session.username %></p>
+                        <form action="/contenido/perfil" method="GET">
+                            <input type="hidden" name="modificar" value="true">
+                            <button class="modificar-btn" type="submit">Modificar</button>
+                        </form>
+                    </div>
+                <% } else { %>
+                    <form id="formulario-modificar" action="/contenido/modificarPerfil" method="POST">
+                        <p><strong>Nombre:</strong> <input type="text" name="nombre" value="<%= session.nombre %>" required></p>
+                        <p><strong>Apellidos:</strong> <input type="text" name="apellido" value="<%= session.apellido %>" required></p>
+                        <p><strong>Edad:</strong> <input type="number" name="edad" value="<%= session.edad %>" required></p>
+                        <p><strong>Correo electrónico:</strong> <input type="email" name="username" value="<%= session.username %>" required></p>
+                        <button class="guardar-btn" type="submit">Guardar Cambios</button>
+                        <a href="/contenido/perfil" class="cancelar-btn">Cancelar</a>
+                    </form>
+                <% } %>
             </div>
             <div class="ultimas-apuestas">
                 <h2>Últimas Apuestas</h2>
