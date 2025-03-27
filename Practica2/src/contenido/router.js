@@ -276,7 +276,7 @@ contenidoRouter.get('/chat', (req, res) => {
 
 export default contenidoRouter;
 
-/*contenidoRouter.get('/chat', (req, res) => {
+contenidoRouter.get('/chat', (req, res) => {
     if (!req.session.login) {
         return res.render('pagina', {
             contenido: 'paginas/login',
@@ -304,9 +304,9 @@ export default contenidoRouter;
         console.error('Error al cargar el chat:', e);
         res.status(500).send('Error al cargar el chat');
     }
-});*/ 
+});
 
-/*
+
 contenidoRouter.post('/enviarMensaje', (req, res) => {
     if (!req.session.login) {
         return res.status(403).send('No tienes permiso para enviar mensajes');
@@ -330,4 +330,3 @@ contenidoRouter.post('/enviarMensaje', (req, res) => {
 });
 
 
-*/
