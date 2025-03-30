@@ -1,42 +1,49 @@
 <section class="events-section">
     <h2>Proximos Eventos</h2>
+    <% if (!eventos || eventos.length===0) { %>
+        <div class="no-events">
+            <p>No hay eventos disponibles.</p>
+        </div>
+        <% } else { %>
+            <% eventos.forEach(evento=> {
+                // Pre-process data to ensure proper formatting
+                const deporte = evento.deporte ? evento.deporte.toString().toLowerCase() : 'default';
+                const equipoA = evento.equipoA ? evento.equipoA.toString().toLowerCase() : 'default';
+                const equipoB = evento.equipoB ? evento.equipoB.toString().toLowerCase() : 'default';
+                const fecha = evento.fecha ? evento.fecha.toString() : 'Date TBD';
+                %>
+                <a href="/apuestas/<%= evento.id %>" class="event-banner" style="--team-a-image: url('/img/<%= deporte %>-<%= equipoA %>.jpg');
+                           --team-b-image: url('/img/<%= deporte %>-<%= equipoB %>.jpg')">
 
-    <% if (eventos && eventos.length) { %>
-        <% eventos.forEach(evento=> { %>
-            <a href="/eventos/<%= evento.id %>" class="event-banner">
-                <div class="sport-logo">
-                    <img src="../../static/img/<%= (evento.deporte || 'default').toLowerCase() %>.png"
-                        alt="<%= evento.deporte || 'Sport' %> logo">
-                </div>
-
-                <div class="teams-container">
-                    <div class="team">
-                        <img src="../../static/img/<%= (evento.equipoA || 'default').toLowerCase() %>.jpg"
-                            alt="<%= evento.equipoA || 'Team A' %> logo">
-                        <span>
-                            <%= evento.equipoA %>
-                        </span>
+                    <div class="team-background-container">
+                        <div class="team-background team-a-bg"></div>
+                        <div class="team-background team-b-bg"></div>
                     </div>
 
-                    <div class="vs">VS</div>
-
-                    <div class="team">
-                        <img src="../../static/img/<%= (evento.equipoB || 'default').toLowerCase() %>.jpg"
-                            alt="<%= evento.equipoB || 'Team B' %> logo">
-                        <span>
-                            <%= evento.equipoB %>
-                        </span>
+                    <div class="sport-logo">
+                        <img src="/img/<%= deporte %>.png" alt="<%= evento.deporte || 'Sport' %> logo">
                     </div>
-                </div>
 
-                <div class="event-date">
-                    <%= evento.fecha ? new Date(evento.fecha).toLocaleDateString() : 'Date TBD' %>
-                </div>
-            </a>
-            <% }); %>
-                <% } else { %>
-                    <div class="no-events">
-                        <p>No upcoming events found</p>
+                    <div class="teams-container">
+                        <div class="team">
+                            <span>
+                                <%= evento.equipoA %>
+                            </span>
+                        </div>
+
+                        <div class="vs">VS</div>
+
+                        <div class="team">
+                            <span>
+                                <%= evento.equipoB %>
+                            </span>
+                        </div>
                     </div>
+
+                    <div class="event-date">
+                        <%= fecha %>
+                    </div>
+                </a>
+                <% }); %>
                     <% } %>
 </section>

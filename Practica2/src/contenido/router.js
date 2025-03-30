@@ -59,6 +59,7 @@ contenidoRouter.get('/eventos', (req, res) => {
     }
 
     const eventos = Eventos.getEventos();
+    console.log(eventos);
 
     res.render('pagina', {
         contenido,
