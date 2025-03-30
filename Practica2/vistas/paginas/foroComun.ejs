@@ -1,72 +1,63 @@
 <div class="chat-container">
     <div class="chat-messages">
-        <%
-        function mostrarMensajes(mensajes) {
-            let result = "";
-            if (!mensajes) {
-                return "<div>No hay mensajes disponibles.</div>";
-            }
-            for (let i = 0; i < mensajes.length; i++) {
-                result += `
-                <div class="message">
-                    <span class="reply-btn">
-                        <a href="/contenido/mensajes?id=${mensajes[i].id}" id="reply">
-                             <img src="/img/reply.webp">
-                        </a>
-                   </span>`;
-                
-                if(mensajes[i].mensajeRespuesta != null){
-                    result+= `<div class="chat-reply">
-                        <span class ="respuesta"><em>${mensajes[i].mensajeRespuesta}</em></span>
-                    </div>
-                    <span class="time">${mensajes[i].created_at}</span>
-                    <span class="username">${mensajes[i].username}:</span>
-                    <span class="content">${mensajes[i].mensaje}</span>
-                    </div>`;
-                }else{
+        <% function mostrarMensajes(mensajes) { let result="" ; if (!mensajes) {
+            return "<div>No hay mensajes disponibles.</div>" ; } for (let i=0; i < mensajes.length; i++) { result +=`
+            <div class="message">
+            <span class="reply-btn">
+                <a href="/contenido/mensajes?id=${mensajes[i].id}" id="reply">
+                    <img src="/img/reply.webp">
+                </a>
+            </span>`;
 
-                    result+=`<span class="time">${mensajes[i].created_at}</span>
-                    <span class="username">${mensajes[i].username}:</span>
-                    <span class="content">${mensajes[i].mensaje}</span>
-                    </div>`;
-                }
-              
-            }
-            return result;
-        }
-        %>
-        <%- mostrarMensajes(locals.mensajes) %>
+            if(mensajes[i].mensajeRespuesta != null){
+            result+= `<div class="chat-reply">
+                <span class="respuesta"><em>${mensajes[i].mensajeRespuesta}</em></span>
+            </div>
+            <span class="time">${mensajes[i].created_at}</span>
+            <span class="username">${mensajes[i].username}:</span>
+            <span class="content">${mensajes[i].mensaje}</span>
+    </div>`;
+    }else{
+
+    result+=`<span class="time">${mensajes[i].created_at}</span>
+    <span class="username">${mensajes[i].username}:</span>
+    <span class="content">${mensajes[i].mensaje}</span>
+</div>`;
+}
+
+}
+return result;
+}
+%>
+<%- mostrarMensajes(locals.mensajes) %>
     </div>
 
     <div class="chat-input-foroG">
         <form action="/contenido/enviarmensaje" method="POST">
 
-            <%
-            function mostrarRespuesta(resp,mensajeRespuesta) {
-                if (!resp) {
-                    return "";
-                }
-                return `<div class="chat-input-reply">
-                    <img src="/img/reply.webp">
-                    <span class="reply-input-username">respondiendo a ${mensajeRespuesta.username}: ${mensajeRespuesta.mensaje}</span>
-                    <input type="hidden" name="id_respuesta" value="${mensajeRespuesta.id}">
-                </div>`;
-            
-            }%>
-            <%- mostrarRespuesta(locals.respuesta,locals.mensajeRespuesta) %>
-            
-            <div class="chat-input-enter-msg">
-                <div class="forum-btn">
-                    <button type="submit" id="send">
-                        <img src="/img/send_message.png">
-                    </button>
-                </div>
-                <% if (!session.nombre) { %>
-                    <input type="text" placeholder="No está permitido escribir sin iniciar sesión" disabled>
+            <% function mostrarRespuesta(resp,mensajeRespuesta) { if (!resp) { return "" ; } return `<div
+                class="chat-input-reply">
+                <img src="/img/reply.webp">
+                <span class="reply-input-username">respondiendo a ${mensajeRespuesta.username}:
+                    ${mensajeRespuesta.mensaje}</span>
+                <input type="hidden" name="id_respuesta" value="${mensajeRespuesta.id}">
+    </div>`;
+
+    }%>
+    <%- mostrarRespuesta(locals.respuesta,locals.mensajeRespuesta) %>
+
+        <div class="chat-input-enter-msg">
+            <div class="forum-btn">
+                <button type="submit" id="send">
+                    <img src="/img/send_message.png">
+                </button>
+            </div>
+            <% if (!session.nombre) { %>
+                <input type="text" placeholder="No está permitido escribir sin iniciar sesión" disabled>
                 <% } else { %>
                     <input type="text" name="mensaje" placeholder="Escribe un mensaje...">
-                <% } %>
-            </div>
+                    <% } %>
+        </div>
         </form>
-    </div>
-</div>
+        </div>
+        </div>

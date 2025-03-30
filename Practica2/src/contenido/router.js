@@ -1,6 +1,7 @@
 import express from 'express';
 import { Mensajes } from './mensajes.js';
 import { Usuario } from '../usuarios/Usuario.js';
+import { Eventos } from './eventos.js';
 
 const contenidoRouter = express.Router();
 
@@ -15,7 +16,7 @@ contenidoRouter.get('/foroComun', (req, res) => {
         };
     });
     mensajesConUsuarios.forEach(mEnsaje => {
-        if(mEnsaje.id_mensaje_respuesta != null){
+        if (mEnsaje.id_mensaje_respuesta != null) {
             let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
             mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
         }
@@ -31,7 +32,7 @@ contenidoRouter.get('/foroComun', (req, res) => {
 
 
 
-contenidoRouter.get('/mensajes', (req,res) => {
+contenidoRouter.get('/mensajes', (req, res) => {
     const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
@@ -43,19 +44,20 @@ contenidoRouter.get('/mensajes', (req,res) => {
         };
     });
     mensajesConUsuarios.forEach(mEnsaje => {
-        if(mEnsaje.id_mensaje_respuesta != null){
+        if (mEnsaje.id_mensaje_respuesta != null) {
             let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
             mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
         }
     });
     let resp = false;
-    if (req.session.login) {;
+    if (req.session.login) {
+        ;
         let id_mensaje_respuesta = url.searchParams.get('id');
         let mRespuesta = Mensajes.getMensajeById(id_mensaje_respuesta);
         let usuario = Usuario.getUsuarioById(mRespuesta.id_usuario);
         mRespuesta.username = usuario ? usuario.username : 'Usuario desconocido';
         resp = true;
-        
+
         res.render('pagina', {
             contenido,
             session: req.session,
@@ -72,16 +74,16 @@ contenidoRouter.get('/mensajes', (req,res) => {
 
 contenidoRouter.post('/enviarmensaje', (req, res) => {
     if (req.session.login) {
-        
+
         const mensaje = req.body.mensaje;
-        const id_usuario = Usuario.getIdByUsername(req.session.username); 
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
         const datas = new Date();
         const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
         const created_at = horaEnvio;
         console.log(req.body.id_respuesta);
         const id_mensaje_respuesta = req.body.id_respuesta;
-        const id_foro = 1; 
-        
+        const id_foro = 1;
+
         if (!mensaje || !id_usuario) {
             return res.status(400).send('Mensaje o usuario no válido');
         }
@@ -92,20 +94,26 @@ contenidoRouter.post('/enviarmensaje', (req, res) => {
         } catch (e) {
             return res.status(500).send('Error al enviar el mensaje');
         }
-    
+
     }
     res.redirect('/contenido/foroComun');
 });
 
-contenidoRouter.get('/normal', (req, res) => {
+contenidoRouter.get('/eventos', (req, res) => {
+
     let contenido = 'paginas/noPermisos';
+
     if (req.session.login) {
-        contenido = 'paginas/normal';
+        contenido = 'paginas/eventos';
     }
-    
+
+    const eventos = Eventos.getEventos();
+    console.log(eventos);
+
     res.render('pagina', {
         contenido,
-        session: req.session
+        session: req.session,
+        eventos: eventos
     });
 });
 
@@ -166,7 +174,7 @@ contenidoRouter.get('/perfil', (req, res) => {
     res.render('paginaSinSidebar', {
         contenido: 'paginas/perfil',
         session: req.session,
-        mostrarFormulario 
+        mostrarFormulario
     });
 });
 
@@ -178,14 +186,14 @@ contenidoRouter.post('/modificarPerfil', (req, res) => {
         usuario.nombre = nombre;
         usuario.apellido = apellido;
         usuario.edad = parseInt(edad);
-        usuario.username = `${nombre}@ucm.es`; 
+        usuario.username = `${nombre}@ucm.es`;
 
-        usuario.persist(); 
+        usuario.persist();
 
         req.session.nombre = nombre;
         req.session.apellido = apellido;
         req.session.edad = parseInt(edad);
-        req.session.username = `${nombre}@ucm.es`; 
+        req.session.username = `${nombre}@ucm.es`;
 
         res.redirect('/contenido/perfil');
     } catch (e) {
@@ -285,15 +293,15 @@ contenidoRouter.get('/chat', (req, res) => {
         });
     }
 
-    const amigo = req.query.amigo; 
+    const amigo = req.query.amigo;
     if (!amigo) {
         return res.status(400).send('Amigo no especificado');
     }
 
     res.render('paginaSinSidebar', {
-        contenido: 'paginas/chat', 
+        contenido: 'paginas/chat',
         session: req.session,
-        amigo 
+        amigo
     });
 });
 

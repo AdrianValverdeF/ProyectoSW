@@ -7,7 +7,7 @@ import { inicializarMensajes } from './modelos-mensajes.js';
 
 const db = getConnection();
 checkConnection(db);
-inicializaModelos(db);
+inicializaModelos(db); // inicializo Eventos aqui tambien, si no es correcto avisad (Alejandro)
 inicializarMensajes(db);
 
 
@@ -15,7 +15,7 @@ const server = app.listen(config.port, (error) => {
     if (error) return console.log(`Error: ${error}`);
     const address = server.address();
     let actualPort = 'n/a';
-    if (typeof address === 'string')  {
+    if (typeof address === 'string') {
         actualPort = address;
     } else {
         actualPort = String(address.port);
