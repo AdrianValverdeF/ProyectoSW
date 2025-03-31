@@ -1,49 +1,97 @@
 <section class="events-section">
-    <h2>Proximos Eventos</h2>
+    <h2>Próximos Eventos</h2>
     <% if (!eventos || eventos.length===0) { %>
         <div class="no-events">
             <p>No hay eventos disponibles.</p>
         </div>
         <% } else { %>
-            <% eventos.forEach(evento=> {
-                // Pre-process data to ensure proper formatting
-                const deporte = evento.deporte ? evento.deporte.toString().toLowerCase() : 'default';
-                const equipoA = evento.equipoA ? evento.equipoA.toString().toLowerCase() : 'default';
-                const equipoB = evento.equipoB ? evento.equipoB.toString().toLowerCase() : 'default';
-                const fecha = evento.fecha ? evento.fecha.toString() : 'Date TBD';
-                %>
-                <a href="/apuestas/<%= evento.id %>" class="event-banner" style="--team-a-image: url('/img/<%= deporte %>-<%= equipoA %>.jpg');
-                           --team-b-image: url('/img/<%= deporte %>-<%= equipoB %>.jpg')">
+            <% if (session?.esAdmin) { %>
+                <button onclick="crearEvento()" class="admin-btn">Crear Evento</button>
+                <% } %>
 
-                    <div class="team-background-container">
-                        <div class="team-background team-a-bg"></div>
-                        <div class="team-background team-b-bg"></div>
-                    </div>
+                    <% eventos.forEach(function(evento) { const deporte=evento.deporte ?
+                        evento.deporte.toString().toLowerCase() : 'default' ; const equipoA=evento.equipoA ?
+                        evento.equipoA.toString().toLowerCase() : 'default' ; const equipoB=evento.equipoB ?
+                        evento.equipoB.toString().toLowerCase() : 'default' ; const fecha=evento.fecha ?
+                        evento.fecha.toString() : 'Date TBD' ; %>
+                        <div class="event-container" data-event-id="<%= evento.id %>">
+                            <a href="/apuestas/<%= evento.id %>" class="event-banner" style="--team-a-image: url('/img/<%= deporte %>-<%= equipoA %>.jpg');
+                          --team-b-image: url('/img/<%= deporte %>-<%= equipoB %>.jpg')">
+                                <div class="team-background-container">
+                                    <div class="team-background team-a-bg"></div>
+                                    <div class="team-background team-b-bg"></div>
+                                </div>
 
-                    <div class="sport-logo">
-                        <img src="/img/<%= deporte %>.png" alt="<%= evento.deporte || 'Sport' %> logo">
-                    </div>
+                                <div class="sport-logo">
+                                    <img src="/img/<%= deporte %>.png" alt="<%= evento.deporte || 'Sport' %> logo">
+                                </div>
 
-                    <div class="teams-container">
-                        <div class="team">
-                            <span>
-                                <%= evento.equipoA %>
-                            </span>
+                                <div class="teams-container">
+                                    <div class="team">
+                                        <span>
+                                            <%= evento.equipoA %>
+                                        </span>
+                                    </div>
+                                    <div class="vs">VS</div>
+                                    <div class="team">
+                                        <span>
+                                            <%= evento.equipoB %>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="event-date">
+                                    <%= fecha %>
+                                </div>
+                            </a>
+
+                            <% if (session?.esAdmin) { %>
+                                <div class="event-actions">
+                                    <button onclick="editarEvento('<%= evento.id %>', event)"
+                                        class="admin-btn">Editar</button>
+                                    <button onclick="eliminarEvento('<%= evento.id %>', event)"
+                                        class="admin-btn danger">Eliminar</button>
+                                </div>
+                                <% } %>
                         </div>
-
-                        <div class="vs">VS</div>
-
-                        <div class="team">
-                            <span>
-                                <%= evento.equipoB %>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="event-date">
-                        <%= fecha %>
-                    </div>
-                </a>
-                <% }); %>
-                    <% } %>
+                        <% }); %>
+                            <% } %>
 </section>
+
+<script>
+    async function eliminarEvento(eventId, clickEvent) {
+        clickEvent.stopPropagation();
+
+        if (!confirm('¿Estás seguro de que deseas eliminar este evento?')) return;
+
+        try {
+            const response = await fetch(`/contenido/eventos/${eventId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Error al eliminar el evento');
+            }
+
+            document.querySelector(`[data-event-id="${eventId}"]`).remove();
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message);
+        }
+    }
+
+    function editarEvento(eventId, clickEvent) {
+        clickEvent.stopPropagation();
+        window.location.href = `/contenido/eventos/${eventId}/editar`;
+    }
+
+    function crearEvento(clickEvent) {
+        clickEvent.stopPropagation();
+        window.location.href = `/contenido/eventos/crear`;
+    }
+
+</script>
