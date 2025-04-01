@@ -20,46 +20,22 @@
         </div>
         <div class="amigos-content">
             <ul>
-                <li>
-                    <img src="/img/descarga.jpeg" alt="Avatar">
-                    <span class="nombre">Manolo Lama</span>
-                    <div class="acciones">
-                        <a href="/contenido/chat?amigo=Manolo%20Lama" target="_blank">
-                            <button>Mensaje</button>
-                        </a>
-                        <button>Eliminar</button>
-                    </div>
-                </li>
-                <li>
-                    <img src="/img/descarga.jpeg" alt="Avatar">
-                    <span class="nombre">Lucía García</span>
-                    <div class="acciones">
-                        <a href="/contenido/chat?amigo=Lucía%20García" target="_blank">
-                            <button>Mensaje</button>
-                        </a>
-                        <button>Eliminar</button>
-                    </div>
-                </li>
-                <li>
-                    <img src="/img/descarga.jpeg" alt="Avatar">
-                    <span class="nombre">Mateo Hernández</span>
-                    <div class="acciones">
-                        <a href="/contenido/chat?amigo=Mateo%20Hernández" target="_blank">
-                            <button>Mensaje</button>
-                        </a>
-                        <button>Eliminar</button>
-                    </div>
-                </li>
-                <li>
-                    <img src="/img/descarga.jpeg" alt="Avatar">
-                    <span class="nombre">Julián Álvarez</span>
-                    <div class="acciones">
-                        <a href="/contenido/chat?amigo=Julián%20Álvarez" target="_blank">
-                            <button>Mensaje</button>
-                        </a>
-                        <button>Eliminar</button>
-                    </div>
-                </li>
+                <% if (amigos && amigos.length > 0) { %>
+                    <% amigos.forEach(amigo => { %>
+                        <li>
+                            <img src="/img/descarga.jpeg" alt="Avatar">
+                            <span class="nombre"><%= amigo %></span>
+                            <div class="acciones">
+                                <a href="/contenido/chat?amigo=<%= amigo %>" target="_blank">
+                                    <button>Mensaje</button>
+                                </a>
+                                <button>Eliminar</button>
+                            </div>
+                        </li>
+                    <% }) %>
+                <% } else { %>
+                    <li>No tienes amigos aún.</li>
+                <% } %>
             </ul>
         </div>
     </div>
