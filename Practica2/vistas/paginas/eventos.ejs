@@ -6,7 +6,7 @@
         </div>
         <% } else { %>
             <% if (session?.esAdmin) { %>
-                <button onclick="crearEvento()" class="admin-btn">Crear Evento</button>
+                <button onclick="crearEvento(event)" class="admin-btn">Crear Evento</button>
                 <% } %>
 
                     <% eventos.forEach(function(evento) { const deporte=evento.deporte ?
@@ -58,11 +58,42 @@
                             <% } %>
 </section>
 
+<div id="deleteConfirmationModal" class="confirmation-modal">
+    <div class="modal-content">
+        <h3>Confirmar Eliminación</h3>
+        <p>¿Estás seguro de que deseas eliminar este evento?</p>
+        <div class="modal-buttons">
+            <button id="confirmDeleteBtn" class="admin-btn danger">Eliminar</button>
+            <button id="cancelDeleteBtn" class="admin-btn">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+
 <script>
     async function eliminarEvento(eventId, clickEvent) {
         clickEvent.stopPropagation();
 
-        if (!confirm('¿Estás seguro de que deseas eliminar este evento?')) return;
+        const modal = document.getElementById('deleteConfirmationModal');
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        const cancelBtn = document.getElementById('cancelDeleteBtn');
+
+        modal.style.display = 'flex';
+
+        const userConfirmed = await new Promise((resolve) => {
+
+            confirmBtn.onclick = () => {
+                modal.style.display = 'none';
+                resolve(true);
+            };
+
+            cancelBtn.onclick = () => {
+                modal.style.display = 'none';
+                resolve(false);
+            };
+        });
+
+        if (!userConfirmed) return;
 
         try {
             const response = await fetch(`/contenido/eventos/${eventId}`, {

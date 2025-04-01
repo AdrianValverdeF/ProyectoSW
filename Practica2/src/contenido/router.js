@@ -145,10 +145,65 @@ contenidoRouter.get('/eventos/crear', (req, res) => {
         return res.status(403).render('paginas/noPermisos');
     }
 
-    res.render('pagina', {
-        contenido: 'paginas/crearEvento',
-        session: req.session,
-    });
+    try {
+        const equipos = Equipos.getAll();
+        console.log(equipos);
+        res.render('pagina', {
+            contenido: 'paginas/crearEvento',
+            session: req.session,
+            equipos: equipos,
+            equipoA: null,  // valores por defecto (creo que hacen falta)
+            equipoB: null,
+            fecha: null,
+        })
+    }
+    catch (e) {
+        res.render('pagina', {
+            contenido: 'paginas/crearEvento',
+            session: req.session,
+            equipos: [],
+            error: e.message
+        })
+    }
+});
+
+contenidoRouter.post('/eventos/crear', (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).render('paginas/noPermisos');
+    }
+
+    try {
+        const { equipoA, equipoB, deporte, genero, fecha } = req.body;
+
+        if (equipoA === equipoB) {
+            throw new Error('Los equipos no pueden ser iguales');
+        }
+
+        const nuevoEvento = new Eventos(
+            equipoA,
+            equipoB,
+            deporte,
+            fecha,
+            null,
+        );
+
+        Eventos.persist(nuevoEvento);
+        res.redirect('/contenido/eventos');
+
+    } catch (e) {
+        const equipos = Equipos.getAll();
+        res.render('pagina', {
+            contenido: 'paginas/crearEvento',
+            equipos,
+            equipoA: req.body.equipoA,
+            equipoB: req.body.equipoB,
+            deporte: req.body.deporte,
+            genero: req.body.genero,
+            fecha: req.body.fecha,
+            error: e.message,
+            session: req.session
+        });
+    }
 });
 
 contenidoRouter.post('/eventos', (req, res) => {

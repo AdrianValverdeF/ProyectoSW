@@ -959,8 +959,55 @@ label {
     }
 }
 
+.confirmation-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.modal-content p {
+    margin-bottom: 1.5rem;
+    color: #555;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.admin-btn.danger {
+    background-color: #e74c3c;
+}
+
+.admin-btn.danger:hover {
+    background-color: #c0392b;
+}
+
 /* ---------------------------- EDITAR EVENTOS ---------------------------- */
-/* Container styling */
 .editor-eventos-container {
     max-width: 600px;
     margin: 2rem auto;
@@ -971,7 +1018,6 @@ label {
     border: 1px solid #e1e4e8;
 }
 
-/* Form group styling */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -984,7 +1030,6 @@ label {
     font-size: 0.95rem;
 }
 
-/* Input and select styling */
 .form-group input[type="text"],
 .form-group input[type="date"],
 .form-group select {
@@ -1012,7 +1057,6 @@ label {
     background-color: #fff;
 }
 
-/* Select dropdown styling */
 .form-group select {
     appearance: none;
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
@@ -1021,7 +1065,6 @@ label {
     background-size: 1rem;
 }
 
-/* Button styling */
 .form-actions {
     display: flex;
     gap: 1rem;
@@ -1061,7 +1104,6 @@ label {
     background-color: #3182ce;
 }
 
-/* Error message styling */
 .error-message {
     color: #c53030;
     background-color: #fff5f5;
@@ -1072,7 +1114,6 @@ label {
     font-size: 0.95rem;
 }
 
-/* Responsive adjustments */
 @media (max-width: 640px) {
     .editor-eventos-container {
         margin: 1rem;

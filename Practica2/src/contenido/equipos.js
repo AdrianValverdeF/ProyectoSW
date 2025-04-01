@@ -10,35 +10,37 @@ export class Equipos {
         if (this.#getAllStmt !== null) return;
 
         this.#getAllStmt = db.prepare(`
-            SELECT id, nombre, victorias, derrotas, empates, puntos 
+            SELECT id, nombre, deporte, victorias, derrotas, empates, puntos, genero
             FROM Equipos 
             ORDER BY nombre ASC
         `);
 
         this.#getByIdStmt = db.prepare(`
-            SELECT id, nombre, victorias, derrotas, empates, puntos 
+            SELECT id, nombre, deporte, victorias, derrotas, empates, puntos, genero
             FROM Equipos 
             WHERE id = ?
         `);
 
         this.#getByNameStmt = db.prepare(`
-            SELECT id, nombre, victorias, derrotas, empates, puntos 
+            SELECT id, nombre, deporte, victorias, derrotas, empates, puntos, genero 
             FROM Equipos 
             WHERE nombre = ?
         `);
 
         this.#insertStmt = db.prepare(`
-            INSERT INTO Equipos (nombre, victorias, derrotas, empates, puntos) 
-            VALUES (@nombre, @victorias, @derrotas, @empates, @puntos)
+            INSERT INTO Equipos (nombre, deporte, victorias, derrotas, empates, puntos, genero) 
+            VALUES (@nombre, @deporte, @victorias, @derrotas, @empates, @puntos, @genero)
         `);
 
         this.#updateStmt = db.prepare(`
             UPDATE Equipos 
             SET nombre = @nombre, 
-                victorias = @victorias, 
+                victorias = @victorias,
+                deporte = @deporte, 
                 derrotas = @derrotas, 
                 empates = @empates, 
-                puntos = @puntos 
+                puntos = @puntos,
+                genero = @genero
             WHERE id = @id
         `);
 
@@ -86,30 +88,34 @@ export class Equipos {
         }
     }
 
-    static create(nombre, victorias = 0, derrotas = 0, empates = 0, puntos = 0) {
+    static create(nombre, deporte, victorias = 0, derrotas = 0, empates = 0, puntos = 0, genero) {
         try {
             const result = this.#insertStmt.run({
                 nombre,
+                deporte,
                 victorias,
                 derrotas,
                 empates,
-                puntos
+                puntos,
+                genero
             });
-            return new Equipos(nombre, victorias, derrotas, empates, puntos, result.lastInsertRowid);
+            return new Equipos(nombre, deporte, victorias, derrotas, empates, puntos, genero, result.lastInsertRowid);
         } catch (e) {
             throw new ErrorDatos('No se ha podido crear el equipo', { cause: e });
         }
     }
 
-    static update(id, nombre, victorias, derrotas, empates, puntos) {
+    static update(id, nombre, deporte, victorias, derrotas, empates, puntos, genero) {
         try {
             const result = this.#updateStmt.run({
                 id,
                 nombre,
+                deporte,
                 victorias,
                 derrotas,
                 empates,
-                puntos
+                puntos,
+                genero
             });
             if (result.changes === 0) throw new EquipoNoEncontrado(id);
             return true;
@@ -130,13 +136,15 @@ export class Equipos {
         }
     }
 
-    constructor(nombre, victorias = 0, derrotas = 0, empates = 0, puntos = 0, id = null) {
+    constructor(nombre, deporte, victorias = 0, derrotas = 0, empates = 0, puntos = 0, genero, id = null) {
         this.id = id;
         this.nombre = nombre;
+        this.deporte = deporte;
         this.victorias = victorias;
         this.derrotas = derrotas;
         this.empates = empates;
         this.puntos = puntos;
+        this.genero = genero;
     }
 }
 
