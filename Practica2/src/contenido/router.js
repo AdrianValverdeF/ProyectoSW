@@ -1,6 +1,8 @@
 import express from 'express';
 import { Mensajes } from './mensajes.js';
 import { Usuario } from '../usuarios/Usuario.js';
+import { Eventos } from './eventos.js';
+import { Equipos } from './equipos.js';
 
 const contenidoRouter = express.Router();
 
@@ -15,6 +17,7 @@ contenidoRouter.get('/foroComun', (req, res) => {
         };
     });
     mensajesConUsuarios.forEach(mEnsaje => {
+        
         if(mEnsaje.id_mensaje_respuesta != null){
             let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
             mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
@@ -333,6 +336,125 @@ contenidoRouter.post('/enviarMensaje', (req, res) => {
         res.status(500).send('Error al enviar el mensaje');
     }
 });
+
+
+// EVENTOS
+contenidoRouter.get('/eventos', (req, res) => {
+
+    let contenido = 'paginas/noPermisos';
+
+    if (req.session.login) {
+        contenido = 'paginas/eventos';
+    }
+
+    const eventos = Eventos.getEventos();
+
+    res.render('pagina', {
+        contenido,
+        session: req.session,
+        eventos: eventos
+    });
+});
+
+contenidoRouter.delete('/eventos/:id', (req, res) => {
+
+    if (!req.session.esAdmin) {
+        return res.status(403).json({
+            success: false,
+            error: 'Requiere privilegios de administrador'
+        });
+    }
+
+    try {
+        Eventos.remove(req.params.id);
+        res.json({ success: true });
+    }
+    catch (e) {
+        const status = e instanceof EventoNoEncontrado ? 404 : 500;
+        res.status(status).json({
+            success: false,
+            error: e.message
+        });
+    }
+});
+
+contenidoRouter.get('/eventos/crear', (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).render('paginas/noPermisos');
+    }
+
+    res.render('pagina', {
+        contenido: 'paginas/crearEvento',
+        session: req.session,
+    });
+});
+
+contenidoRouter.post('/eventos', (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).send('Acceso no autorizado');
+    }
+
+    try {
+        const { equipoA, equipoB, deporte, fecha } = req.body;
+        const nuevoEvento = new Eventos(equipoA, equipoB, deporte, fecha);
+        Eventos.persist(nuevoEvento);
+        res.redirect('/contenido/eventos');
+    } catch (e) {
+        res.status(500).render('paginas/error', { error: e.message });
+    }
+});
+
+contenidoRouter.get('/eventos/:id/editar', (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).render('paginas/noPermisos');
+    }
+
+    try {
+        const evento = Eventos.getEventoById(req.params.id);
+        res.render('pagina', {
+            contenido: 'paginas/editarEvento',
+            session: req.session,
+            evento,
+            error: null
+        });
+
+    } catch (e) {
+        res.render('pagina', {
+            contenido: 'paginas/editarEvento',
+            evento: null,
+            error: e.message
+        });
+    }
+});
+
+contenidoRouter.post('/eventos/:id/actualizar', (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).send('Acceso no autorizado');
+    }
+
+    try {
+        const { equipoA, equipoB, deporte, fecha } = req.body;
+
+        const nuevoEquipoA = Equipos.getIdByName(equipoA);
+        const nuevoEquipoB = Equipos.getIdByName(equipoB);
+
+        const eventoActualizado = new Eventos(nuevoEquipoA, nuevoEquipoB, deporte, fecha, req.params.id);
+
+        Eventos.persist(eventoActualizado);
+
+        const eventos = Eventos.getEventos();
+
+        res.render('pagina', {
+            contenido: 'paginas/eventos',
+            session: req.session,
+            eventos: eventos
+        });
+    } catch (e) {
+        res.status(500).render('paginas/error', { error: e.message });
+    }
+});
+// FIN EVENTOS
+
 
 export default contenidoRouter;
 
