@@ -159,13 +159,13 @@ label {
 .respuesta {
     display: block;
     color: gray;
-    font-size: 0.9rem;   
+    font-size: 0.9rem;
 }
-  
+
 .message {
     margin-bottom: 1rem;
 }
-  
+
 .message img {
     width: 20px;
 }
@@ -179,7 +179,8 @@ label {
 .reply-btn img {
     width: 15px;
     height: 15px;
-  }
+}
+
 .message:hover .reply-btn {
     opacity: 1;
     transition: opacity 0.1s ease-in-out;
@@ -387,7 +388,7 @@ label {
     text-align: right;
     line-height: 1;
     border-radius: 0;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
 .solicitudes-btn {
@@ -794,7 +795,8 @@ label {
     background-color: #e55b5b;
 }
 
-/* ---- EVENTOS ---- */
+
+/* ------------------------------ EVENTOS ---------------------------- */
 .event-banner {
     display: flex;
     position: relative;
@@ -954,5 +956,134 @@ label {
 
     .vs {
         padding: 6px 12px;
+    }
+}
+
+/* ---------------------------- EDITAR EVENTOS ---------------------------- */
+/* Container styling */
+.editor-eventos-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e4e8;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.95rem;
+}
+
+/* Input and select styling */
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background-color: #f8fafc;
+}
+
+.form-group input[type="text"]:hover,
+.form-group input[type="date"]:hover,
+.form-group select:hover {
+    border-color: #cbd5e0;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus,
+.form-group select:focus {
+    border-color: #4299e1;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    background-color: #fff;
+}
+
+/* Select dropdown styling */
+.form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+}
+
+/* Button styling */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.admin-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-btn.danger {
+    background-color: #fff;
+    color: #e53e3e;
+    border: 1px solid #e53e3e;
+}
+
+.admin-btn.danger:hover {
+    background-color: #fff5f5;
+    border-color: #c53030;
+}
+
+.admin-btn {
+    background-color: #4299e1;
+    color: white;
+}
+
+.admin-btn:hover {
+    background-color: #3182ce;
+}
+
+/* Error message styling */
+.error-message {
+    color: #c53030;
+    background-color: #fff5f5;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 6px;
+    border-left: 4px solid #e53e3e;
+    font-size: 0.95rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .editor-eventos-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .admin-btn {
+        width: 100%;
     }
 }
