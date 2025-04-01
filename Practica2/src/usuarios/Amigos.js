@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { getConnection } from '../db.js';
 
 export class Amigos {
+    static #getSolByIdStmt = null;
     static #getSolsByIdStmt = null;
     static #getAmigosByIdStmt = null;
     static #solStmt = null;
@@ -9,13 +10,41 @@ export class Amigos {
     static #deleteStmt = null;
 
     static initStatements(db) {
-        if (this.#getSolsByIdStmt !== null) return;
+        if (this.#getSolByIdStmt !== null) return;
 
-        this.#getSolsByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id_usuario = @id_usuario AND aceptado = 0');
-        this.#getAmigosByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id_usuario = @id_usuario AND aceptado = 1');
-        this.#solStmt = db.prepare('INSERT INTO Amigos(id_usuario, id_amigo, aceptado) VALUES (@id_usuario, @id_amigo, 0)');
+        this.#getSolByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id_usuario = @id_usuario AND id_amigo = @id_amigo AND aceptado = 0');
+        this.#getSolsByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE (id_usuario = @id_usuario OR id_usuario = @id_amigo) AND aceptado = 0');
+        this.#getAmigosByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE (id_usuario = @id_usuario OR id_usuario = @id_amigo) AND aceptado = 1');
+        this.#solStmt = db.prepare('INSERT INTO Amigos(id_usuario, id_amigo, aceptado) VALUES (@id_usuario, @id_amigo, @aceptado)');
         this.#acceptStmt = db.prepare('UPDATE Usuarios SET aceptado = 1 WHERE id_usuario = @id_usuario AND id_amigo = @id_amigo');
         this.#deleteStmt = db.prepare('DELETE * FROM Usuarios WHERE id_usuario = @id_usuario AND id_amigo = @id_amigo AND aceptado = 1')
+    }
+
+    static getSolById(id_usuario, id_amigo) {
+        let result = null;
+        try {
+            if (id_usuario < id_amigo) {
+                result = this.#getSolByIdStmt.get({ id_usuario, id_amigo });
+            } else {
+                result = this.#getSolByIdStmt.get({ id_amigo, id_usuario });
+            }
+
+        } catch (e) {
+            throw new ErrorAmigos('No se ha encontrado la solicitud', { cause: e });
+        }
+
+        return result;
+    }
+
+    static getSolicitudesById(id) {
+        let result = null;
+        try {
+            result = this.#getSolsByIdStmt.all();
+        } catch (e) {
+            throw new ErrorAmigos('No tienes solicitudes pendientes', { cause: e });
+        }
+
+        return result.map(row => (row.id_usuario == id) ? Usuario.getUsuarioById(row.id_amigo) : Usuario.getUsuarioById(row.id_usuario));
     }
 
     static getAmigosById(id) {
@@ -30,38 +59,81 @@ export class Amigos {
         return result.map(row => (row.id_usuario == id) ? Usuario.getUsuarioById(row.id_amigo) : Usuario.getUsuarioById(row.id_usuario));
     }
 
-    static getSolicitudesById(id) {
+    static #insert(sol) {
         let result = null;
         try {
-            result = this.#getSolsByIdStmt.all();
+            const id_usuario = sol.id_usuario;
+            const id_amigo = sol.id_amigo;
+            const aceptado = sol.aceptado;
+            const datos = { id_usuario, id_amigo, aceptado };
+
+            result = this.#solStmt.run(datos);
 
         } catch (e) {
-            throw new ErrorAmigos('No tienes solicitudes pendientes', { cause: e });
+            if (e.code === 'SQLITE_CONSTRAINT') {
+                throw new SolYaExiste(sol.id_amigo);
+            }
+            throw new ErrorAmigos('No se ha podido procesar la solicitud', { cause: e });
         }
-
-        return result.map(row => (row.id_usuario == id) ? Usuario.getUsuarioById(row.id_amigo) : Usuario.getUsuarioById(row.id_usuario));
+        return sol;
     }
 
     static nuevaSolicitud(id_usuario, id_amigo) {
+        if (id_usuario < id_amigo) {
+            const sol = new Amigos(id_usuario, id_amigo, 0);
+        } else {
+            const sol = new Amigos(id_amigo, id_usuario, 0);
+        }
 
+        try {
+            return this.#insert(sol);
+        } catch (e) {
+            if (e instanceof SolYaExiste) {
+                throw e;
+            }
+            throw new Error('Error al procesar solicitud', { cause: e });
+        }
     }
 
     static aceptarSolicitud(id_usuario, id_amigo) {
+        let result = null;
+        if (id_usuario < id_amigo) {
+            const datos = { id_usuario, id_amigo };
+        } else {
+            const datos = { id_amigo, id_usuario };
+        }
 
+        try {
+            result = this.#acceptStmt.run(datos)
+        } catch (e) {
+            throw new Error('Error al aceptar solicitud', { cause: e });
+        }
     }
 
     static eliminar(id_usuario, id_amigo) {
+        let result = null;
 
+        if (id_usuario < id_amigo) {
+            const datos = { id_usuario, id_amigo };
+        } else {
+            const datos = { id_amigo, id_usuario };
+        }
+
+        try {
+            result = this.#deleteStmt.run(datos)
+        } catch (e) {
+            throw new Error('Error al eliminar solicitud', { cause: e });
+        }
     }
 
     id_usuario;
     id_amigo;
     aceptado;
 
-    constructor(id_usuario, id_amigo, aceptado) {
+    constructor(id_usuario, id_amigo) {
         this.id_usuario = id_usuario;
         this.id_amigo = id_amigo;
-        this.aceptado = aceptado;
+        this.aceptado = 0;
     }
 
     /*static getUsuarioById(id) {
@@ -213,5 +285,12 @@ export class ErrorAmigos extends Error {
     constructor(message, options) {
         super(message, options);
         this.name = 'ErrorAmigos';
+    }
+}
+
+export class SolYaExiste extends Error {
+    constructor(username, options) {
+        super(`Ya has solicitado a ${username}`, options);
+        this.name = 'SolYaExiste';
     }
 }

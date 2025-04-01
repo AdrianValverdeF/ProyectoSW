@@ -20,51 +20,37 @@
         </div>
         <div class="amigos-content">
             <div class="amigos-añadir">
-                <input type="text" name="mensaje" placeholder="Añade un amigo...">
+                <input type="text" name="username" placeholder="Añade un amigo...">
                 <button>Añadir</button>
             </div>
-            <ul>
-                <li>
-                    <img src="/img/descarga.jpeg" alt="Avatar">
-                    <span class="nombre">Manolo Lama</span>
-                    <div class="acciones">
-                        <a href="/contenido/chat?amigo=Manolo%20Lama" target="_blank">
-                            <button>Mensaje</button>
-                        </a>
-                        <button>Eliminar</button>
-                    </div>
-                </li>
-                <li>
-                    <img src="/img/descarga.jpeg" alt="Avatar">
-                    <span class="nombre">Lucía García</span>
-                    <div class="acciones">
-                        <a href="/contenido/chat?amigo=Lucía%20García" target="_blank">
-                            <button>Mensaje</button>
-                        </a>
-                        <button>Eliminar</button>
-                    </div>
-                </li>
-                <li>
-                    <img src="/img/descarga.jpeg" alt="Avatar">
-                    <span class="nombre">Mateo Hernández</span>
-                    <div class="acciones">
-                        <a href="/contenido/chat?amigo=Mateo%20Hernández" target="_blank">
-                            <button>Mensaje</button>
-                        </a>
-                        <button>Eliminar</button>
-                    </div>
-                </li>
-                <li>
-                    <img src="/img/descarga.jpeg" alt="Avatar">
-                    <span class="nombre">Julián Álvarez</span>
-                    <div class="acciones">
-                        <a href="/contenido/chat?amigo=Julián%20Álvarez" target="_blank">
-                            <button>Mensaje</button>
-                        </a>
-                        <button>Eliminar</button>
-                    </div>
-                </li>
-            </ul>
+            
+            <% function mostrarAmigos(amigos) { 
+                let result="" ; 
+                if (!amigos) {
+                return "<div>No has añadido amigos.</div>" ; } 
+                
+                for (let i=0; i < amigos.length; i++) {
+                let amigo = null;
+                if ()
+                result +=`
+
+                <img src="/img/descarga.jpeg" alt="Avatar">
+                <span class="nombre">${(amigos[i].id_usuario == Usuario.getUsuarioById(id).id) ? Usuario.getUsuarioById(amigos[i].id_amigo).nombre : Usuario.getUsuarioById(amigos[i].id_usuario)}</span>
+                <div class="acciones">
+                    <a href="/contenido/chat?amigo=Manolo%20Lama" target="_blank">
+                        <button>Mensaje</button>
+                    </a>
+                    <button>Eliminar</button>
+                </div>
+
+        </div>`;
+    }
+    
+    }
+    return result;
+    }
+    %>
+
         </div>
     </div>
 </body>

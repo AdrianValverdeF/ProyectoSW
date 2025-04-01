@@ -1,7 +1,11 @@
 <div class="chat-container">
     <div class="chat-messages">
-        <% function mostrarMensajes(mensajes) { let result="" ; if (!mensajes) {
-            return "<div>No hay mensajes disponibles.</div>" ; } for (let i=0; i < mensajes.length; i++) { result +=`
+        <% function mostrarMensajes(mensajes) { 
+            let result="" ; 
+            if (!mensajes) {
+            return "<div>No hay mensajes disponibles.</div>" ; } 
+            
+            for (let i=0; i < mensajes.length; i++) { result +=`
             <div class="message">
             <span class="reply-btn">
                 <a href="/contenido/mensajes?id=${mensajes[i].id}" id="reply">
