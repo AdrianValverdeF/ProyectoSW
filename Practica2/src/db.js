@@ -10,6 +10,7 @@ let db = null;
 export function getConnection() {
     if (db !== null) return db;
     db = createConnection();
+
     return db;
 }
 
@@ -19,6 +20,7 @@ function createConnection() {
     };
     const dbPath = join(__dirname, '..', 'data', 'ucm_bets.db');
     const db = new Database(dbPath, options);
+    db.exec('PRAGMA foreign_keys = ON'); 
     db.pragma('journal_mode = WAL'); // Necesario para mejorar la durabilidad y el rendimiento
     return db;
 }

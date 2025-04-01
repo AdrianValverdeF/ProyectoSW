@@ -17,7 +17,8 @@ contenidoRouter.get('/foroComun', (req, res) => {
         };
     });
     mensajesConUsuarios.forEach(mEnsaje => {
-        if (mEnsaje.id_mensaje_respuesta != null) {
+        
+        if(mEnsaje.id_mensaje_respuesta != null){
             let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
             mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
         }
@@ -33,7 +34,7 @@ contenidoRouter.get('/foroComun', (req, res) => {
 
 
 
-contenidoRouter.get('/mensajes', (req, res) => {
+contenidoRouter.get('/mensajes', (req,res) => {
     const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
@@ -45,20 +46,19 @@ contenidoRouter.get('/mensajes', (req, res) => {
         };
     });
     mensajesConUsuarios.forEach(mEnsaje => {
-        if (mEnsaje.id_mensaje_respuesta != null) {
+        if(mEnsaje.id_mensaje_respuesta != null){
             let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
             mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
         }
     });
     let resp = false;
-    if (req.session.login) {
-        ;
+    if (req.session.login) {;
         let id_mensaje_respuesta = url.searchParams.get('id');
         let mRespuesta = Mensajes.getMensajeById(id_mensaje_respuesta);
         let usuario = Usuario.getUsuarioById(mRespuesta.id_usuario);
         mRespuesta.username = usuario ? usuario.username : 'Usuario desconocido';
         resp = true;
-
+        
         res.render('pagina', {
             contenido,
             session: req.session,
@@ -75,16 +75,16 @@ contenidoRouter.get('/mensajes', (req, res) => {
 
 contenidoRouter.post('/enviarmensaje', (req, res) => {
     if (req.session.login) {
-
+        
         const mensaje = req.body.mensaje;
-        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const id_usuario = Usuario.getIdByUsername(req.session.username); 
         const datas = new Date();
         const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
         const created_at = horaEnvio;
         console.log(req.body.id_respuesta);
         const id_mensaje_respuesta = req.body.id_respuesta;
-        const id_foro = 1;
-
+        const id_foro = 1; 
+        
         if (!mensaje || !id_usuario) {
             return res.status(400).send('Mensaje o usuario no válido');
         }
@@ -95,10 +95,248 @@ contenidoRouter.post('/enviarmensaje', (req, res) => {
         } catch (e) {
             return res.status(500).send('Error al enviar el mensaje');
         }
-
+    
     }
     res.redirect('/contenido/foroComun');
 });
+
+contenidoRouter.get('/normal', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/normal';
+    }
+    
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/admin', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.esAdmin) {
+        contenido = 'paginas/admin';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/amigosPag', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/amigos';
+    }
+    res.render('paginaSinSidebar', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/gestion-apuestas', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/gestion-apuestas';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/gestion-eventos', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/gestion-eventos';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/perfil', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
+
+    const mostrarFormulario = req.query.modificar === 'true';
+
+    res.render('paginaSinSidebar', {
+        contenido: 'paginas/perfil',
+        session: req.session,
+        mostrarFormulario 
+    });
+});
+
+contenidoRouter.post('/modificarPerfil', (req, res) => {
+    const { nombre, apellido, edad, username } = req.body;
+
+    try {
+        const usuario = Usuario.getUsuarioByUsername(req.session.username);
+        usuario.nombre = nombre;
+        usuario.apellido = apellido;
+        usuario.edad = parseInt(edad);
+        usuario.username = `${nombre}@ucm.es`; 
+
+        usuario.persist(); 
+
+        req.session.nombre = nombre;
+        req.session.apellido = apellido;
+        req.session.edad = parseInt(edad);
+        req.session.username = `${nombre}@ucm.es`; 
+
+        res.redirect('/contenido/perfil');
+    } catch (e) {
+        console.error('Error al actualizar el perfil:', e);
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            mostrarFormulario: true, // formulario calentito
+            error: 'Error al actualizar el perfil. Inténtalo de nuevo.'
+        });
+    }
+});
+
+contenidoRouter.get('/futbol11', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/futbol11';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/futbolSala', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/futbolSala';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/voleibol', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/voleibol';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/rugby', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/rugby';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/baloncesto', (req, res) => {
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/baloncesto';
+    }
+    res.render('pagina', {
+        contenido,
+        session: req.session
+    });
+});
+
+contenidoRouter.get('/amigos', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
+
+    try {
+        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
+        console.log('ID del usuario logueado:', id_usuario); 
+        const amigos = Usuario.getAmigosById(id_usuario); 
+        console.log('Amigos obtenidos:', amigos); 
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/amigos',
+            session: req.session,
+            amigos 
+        });
+    } catch (e) {
+        console.error('Error al cargar la lista de amigos:', e);
+        res.status(500).send('Error al cargar la lista de amigos');
+    }
+});
+
+contenidoRouter.get('/chat', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
+
+    const amigo = req.query.amigo; 
+    if (!amigo) {
+        return res.status(400).send('Amigo no especificado');
+    }
+
+    try {
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const amigos = Usuario.getAmigosById(id_usuario); 
+        const id_amigo = Usuario.getIdByUsername(amigo);
+        const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/chat',
+            session: req.session,
+            amigo,
+            amigos,
+            mensajes
+        });
+    } catch (e) {
+        console.error('Error al cargar el chat:', e);
+        res.status(500).send('Error al cargar el chat');
+    }
+});
+
+contenidoRouter.post('/enviarMensaje', (req, res) => {
+    if (!req.session.login) {
+        return res.status(403).send('No tienes permiso para enviar mensajes');
+    }
+
+    const { mensaje, amigo } = req.body;
+
+    try {
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const id_amigo = Usuario.getIdByUsername(amigo);
+        const created_at = new Date().toISOString();
+
+        const nuevoMensaje = new Chat(mensaje, id_usuario, id_amigo, created_at);
+        Chat.persist(nuevoMensaje);
+
+        res.redirect(`/contenido/chat?amigo=${amigo}`);
+    } catch (e) {
+        console.error('Error al enviar el mensaje:', e);
+        res.status(500).send('Error al enviar el mensaje');
+    }
+});
+
 
 // EVENTOS
 contenidoRouter.get('/eventos', (req, res) => {
@@ -273,247 +511,7 @@ contenidoRouter.post('/eventos/:id/actualizar', (req, res) => {
 // FIN EVENTOS
 
 
-contenidoRouter.get('/admin', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.esAdmin) {
-        contenido = 'paginas/admin';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/amigosPag', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/amigos';
-    }
-    res.render('paginaSinSidebar', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/gestion-apuestas', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/gestion-apuestas';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/gestion-eventos', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/gestion-eventos';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/perfil', (req, res) => {
-    if (!req.session.login) {
-        return res.render('pagina', {
-            contenido: 'paginas/login',
-            session: req.session
-        });
-    }
-
-    const mostrarFormulario = req.query.modificar === 'true';
-
-    res.render('paginaSinSidebar', {
-        contenido: 'paginas/perfil',
-        session: req.session,
-        mostrarFormulario
-    });
-});
-
-contenidoRouter.post('/modificarPerfil', (req, res) => {
-    const { nombre, apellido, edad, username } = req.body;
-
-    try {
-        const usuario = Usuario.getUsuarioByUsername(req.session.username);
-        usuario.nombre = nombre;
-        usuario.apellido = apellido;
-        usuario.edad = parseInt(edad);
-        usuario.username = `${nombre}@ucm.es`;
-
-        usuario.persist();
-
-        req.session.nombre = nombre;
-        req.session.apellido = apellido;
-        req.session.edad = parseInt(edad);
-        req.session.username = `${nombre}@ucm.es`;
-
-        res.redirect('/contenido/perfil');
-    } catch (e) {
-        console.error('Error al actualizar el perfil:', e);
-
-        res.render('paginaSinSidebar', {
-            contenido: 'paginas/perfil',
-            session: req.session,
-            mostrarFormulario: true, // formulario calentito
-            error: 'Error al actualizar el perfil. Inténtalo de nuevo.'
-        });
-    }
-});
-
-contenidoRouter.get('/futbol11', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/futbol11';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/futbolSala', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/futbolSala';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/voleibol', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/voleibol';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/rugby', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/rugby';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/baloncesto', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/baloncesto';
-    }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/amigos', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/amigos';
-    }
-    res.render('paginaSinSidebar', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/solicitudes', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/solicitudes';
-    }
-    res.render('paginaSinSidebar', {
-        contenido,
-        session: req.session
-    });
-});
-
-contenidoRouter.get('/chat', (req, res) => {
-    if (!req.session.login) {
-        return res.render('pagina', {
-            contenido: 'paginas/login',
-            session: req.session
-        });
-    }
-
-    const amigo = req.query.amigo;
-    if (!amigo) {
-        return res.status(400).send('Amigo no especificado');
-    }
-
-    res.render('paginaSinSidebar', {
-        contenido: 'paginas/chat',
-        session: req.session,
-        amigo
-    });
-});
-
 export default contenidoRouter;
 
-contenidoRouter.get('/chat', (req, res) => {
-    if (!req.session.login) {
-        return res.render('pagina', {
-            contenido: 'paginas/login',
-            session: req.session
-        });
-    }
-
-    const amigo = req.query.amigo;
-    if (!amigo) {
-        return res.status(400).send('Amigo no especificado');
-    }
-
-    try {
-        const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const id_amigo = Usuario.getIdByUsername(amigo);
-        const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
-
-        res.render('paginaSinSidebar', {
-            contenido: 'paginas/chat',
-            session: req.session,
-            amigo,
-            mensajes
-        });
-    } catch (e) {
-        console.error('Error al cargar el chat:', e);
-        res.status(500).send('Error al cargar el chat');
-    }
-});
-
-
-contenidoRouter.post('/enviarMensaje', (req, res) => {
-    if (!req.session.login) {
-        return res.status(403).send('No tienes permiso para enviar mensajes');
-    }
-
-    const { mensaje, amigo } = req.body;
-
-    try {
-        const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const id_amigo = Usuario.getIdByUsername(amigo);
-        const created_at = new Date().toISOString();
-
-        const nuevoMensaje = new Chat(mensaje, id_usuario, id_amigo, created_at);
-        Chat.persist(nuevoMensaje);
-
-        res.redirect(`/contenido/chat?amigo=${amigo}`);
-    } catch (e) {
-        console.error('Error al enviar el mensaje:', e);
-        res.status(500).send('Error al enviar el mensaje');
-    }
-});
 
 
