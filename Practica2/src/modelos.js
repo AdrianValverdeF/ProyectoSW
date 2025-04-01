@@ -1,10 +1,10 @@
 import { Usuario } from "./usuarios/Usuario.js";
-import { Chat } from './contenido/chat.js';
-
+import { Eventos } from "./contenido/eventos.js";
+import { Equipos } from "./contenido/equipos.js";
 
 
 export function inicializaModelos(db) {
     Usuario.initStatements(db);
- //   Chat.initStatements(db);
-
+    Eventos.initStatements(db);
+    Equipos.initStatements(db);
 }

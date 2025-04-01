@@ -6,21 +6,21 @@
         </div>
         <div class="nav-links">
             <a href="/">Inicio</a>
-            <a href="/contenido/normal">Eventos</a>
+            <a href="/contenido/eventos">Eventos</a>
             <a href="/contenido/gestion-apuestas">Apuestas</a>
             <a href="/contenido/gestion-eventos">Competición</a>
             <a href="/contenido/perfil">Perfil</a>
         </div>
         <div class="user-menu">
-            <%
-            function mostrarSaludo(session){
-                if (session == null || ! session.login){
-                    return `<a class='login-btn' href='/usuarios/login'>Iniciar sesión</a>  <a class='login-btn' href='/usuarios/register'>Registarse</a>`;
+            <% function mostrarSaludo(session){ if (session==null || ! session.login){ return `<a class='login-btn'
+                href='/usuarios/login'>Iniciar sesión</a> <a class='login-btn'
+                    href='/usuarios/register'>Registarse</a>`;
                 }
-            
-                return ` <p>¡Bienvenido, ${session.nombre}! <a class='login-btn'  href='/usuarios/logout'>Cerrar sesión</a></p>`;
-            }%>
-            <%- mostrarSaludo(session) %>
+
+                return ` <p>¡Bienvenido, ${session.nombre}! <a class='login-btn' href='/usuarios/logout'>Cerrar
+                        sesión</a></p>`;
+                }%>
+                <%- mostrarSaludo(session) %>
         </div>
     </nav>
-</header>   
+</header>

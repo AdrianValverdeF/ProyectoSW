@@ -10,7 +10,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}   
+}
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -20,15 +20,16 @@ body {
 
 
 div#contenedor {
-	background-color:var(--primary-bg);
+    background-color: var(--primary-bg);
 }
 
 header {
-	background-color:var(--secondary-bg);
-	color: var(--text-color);
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
 }
+
 .sidebar {
-    
+
     width: 200px;
     height: 2000px;
     float: left;
@@ -37,7 +38,7 @@ header {
     border-right: 2px solid var(--border-color);
 }
 
-aside{
+aside {
     float: right;
     width: 500px;
     height: 2000px;
@@ -79,7 +80,7 @@ aside{
 .nav-links a:hover,
 .nav-links a.active {
     color: var(--accent-color);
-}   
+}
 
 .login-btn {
     background-color: var(--accent-color);
@@ -91,37 +92,37 @@ aside{
 }
 
 main {
-	background-color: var(--primary-bg);
+    background-color: var(--primary-bg);
 }
 
 button {
-    background: none;  
-    border: none;      
-    padding: 0;        
-    margin: 0;        
-    cursor: pointer;    
-    outline: none;      
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    outline: none;
 }
 
 fieldset {
-	border: 1px solid black;
-	width: 15em;
-	margin: 0 auto;
+    border: 1px solid black;
+    width: 15em;
+    margin: 0 auto;
 }
 
 legend {
-	color: #fff;
-	background: #303030;
-	border: 1px solid black;
-	padding: 2px 6px;
-} 
+    color: #fff;
+    background: #303030;
+    border: 1px solid black;
+    padding: 2px 6px;
+}
 
 label {
-	width: 4em;
-	float: left;
-	text-align: right;
-	margin-right: 0.5em;
-	display: block;
+    width: 4em;
+    float: left;
+    text-align: right;
+    margin-right: 0.5em;
+    display: block;
 }
 
 .sports-menu {
@@ -158,13 +159,13 @@ label {
 .respuesta {
     display: block;
     color: gray;
-    font-size: 0.9rem;   
+    font-size: 0.9rem;
 }
-  
+
 .message {
     margin-bottom: 1rem;
 }
-  
+
 .message img {
     width: 20px;
 }
@@ -178,7 +179,8 @@ label {
 .reply-btn img {
     width: 15px;
     height: 15px;
-  }
+}
+
 .message:hover .reply-btn {
     opacity: 1;
     transition: opacity 0.1s ease-in-out;
@@ -196,13 +198,13 @@ label {
 }
 
 .chat-input {
-    display: flex; 
-    align-items: center; 
-    position :fixed;
+    display: flex;
+    align-items: center;
+    position: fixed;
     width: 25%;
     padding: 1rem;
     border-top: 2px solid var(--border-color);
-    bottom :0;
+    bottom: 0;
 }
 
 .chat-input input {
@@ -212,27 +214,27 @@ label {
     border-radius: 4px;
     background-color: var(--secondary-bg);
     color: var(--text-color);
-   
+
 }
 
 .chat-input-foroG {
-    position :fixed;
+    position: fixed;
     width: 85%;
     padding: 1rem;
     border-top: 2px solid var(--border-color);
-    bottom :0;
+    bottom: 0;
 }
 
 .chat-input-enter-msg {
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
 }
 
 .chat-reply {
-    font-style: italic; 
+    font-style: italic;
     color: gray;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
 }
 
 .chat-reply img {
@@ -242,10 +244,10 @@ label {
 }
 
 .chat-input-reply {
-    font-style: italic; 
+    font-style: italic;
     color: gray;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     margin-bottom: 20px;
 }
 
@@ -281,6 +283,7 @@ label {
 .forum-btn img {
     width: 30px;
 }
+
 .perfil-container {
     margin: 0 auto;
     padding: 100px;
@@ -325,7 +328,8 @@ label {
     gap: 20px;
 }
 
-.datos-personales, .ultimas-apuestas {
+.datos-personales,
+.ultimas-apuestas {
     flex: 1;
     padding: 20px;
     background-color: var(--primary-bg);
@@ -334,13 +338,15 @@ label {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.datos-personales h2, .ultimas-apuestas h2 {
+.datos-personales h2,
+.ultimas-apuestas h2 {
     font-size: 30px;
     margin-bottom: 20px;
     text-align: center;
 }
 
-.datos-personales p, .ultimas-apuestas p {
+.datos-personales p,
+.ultimas-apuestas p {
     margin: 10px 0;
     font-size: 18px;
 }
@@ -377,17 +383,32 @@ label {
     cursor: pointer;
     font-size: 20px;
     position: absolute;
+    right: 220px;
+    top: 300px;
+    text-align: right;
+    line-height: 1;
+    border-radius: 0;
+    text-decoration: none;
+}
+
+.solicitudes-btn {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    padding: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
     right: 100px;
     top: 300px;
     text-align: right;
     line-height: 1;
     border-radius: 0;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
 .amigos-btn:hover {
     background-color: #e55b5b;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
 .amigos-list {
@@ -451,7 +472,7 @@ label {
 }
 
 .amigos-content li {
-    max-width: 1800px; 
+    max-width: 1800px;
     padding: 20px;
     background-color: var(--secondary-bg);
     border: 2px solid var(--accent-color);
@@ -462,7 +483,7 @@ label {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0 auto; 
+    margin: 0 auto;
 }
 
 .amigos-content li img {
@@ -481,7 +502,8 @@ label {
     gap: 10px;
 }
 
-.amigos-content li .acciones button {
+.amigos-content button {
+    width: 100px;
     background-color: var(--accent-color);
     color: var(--text-color);
     border: none;
@@ -490,19 +512,34 @@ label {
     cursor: pointer;
 }
 
-.amigos-content li .acciones button:hover {
+.amigos-content button:hover {
     background-color: #e55b5b;
+}
+
+.amigos-añadir {
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+}
+
+.amigos-añadir input {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    margin-right: 5px;
 }
 
 .modificar-btn {
     background-color: var(--accent-color);
     color: var(--text-color);
-    padding:  20px; 
+    padding: 20px;
     border: none;
     cursor: pointer;
     font-size: 16px;
     border-radius: 0;
-    text-decoration: none; 
+    text-decoration: none;
     display: block;
     width: 100%;
     margin-top: 80px;
@@ -510,7 +547,7 @@ label {
 
 .modificar-btn:hover {
     background-color: #e55b5b;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
 
@@ -587,8 +624,8 @@ label {
 }
 
 .amigos-chat-input {
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     padding: 1rem;
     border-top: 2px solid var(--border-color);
     background-color: var(--secondary-bg);
@@ -626,10 +663,10 @@ label {
     background-color: var(--secondary-bg);
     padding: 1rem;
     border-right: 2px solid var(--border-color);
-    height: calc(100vh - 100px); 
+    height: calc(100vh - 100px);
     overflow-y: auto;
     position: fixed;
-    top: 100px; 
+    top: 100px;
     left: 0;
 }
 
@@ -653,15 +690,15 @@ label {
 }
 
 .amigos-chat-container {
-    margin-left: 250px; 
+    margin-left: 250px;
     flex: 1;
     display: flex;
     flex-direction: column;
     padding: 1rem;
     background-color: var(--secondary-bg);
     border-radius: 10px;
-    width: calc(100% - 250px); 
-    height: calc(100vh - 100px); 
+    width: calc(100% - 250px);
+    height: calc(100vh - 100px);
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -712,8 +749,8 @@ label {
 }
 
 .amigos-chat-input {
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     padding: 1rem;
     border-top: 2px solid var(--border-color);
     background-color: var(--secondary-bg);
@@ -756,4 +793,297 @@ label {
 
 .volver-btn:hover {
     background-color: #e55b5b;
+}
+
+
+/* ------------------------------ EVENTOS ---------------------------- */
+.event-banner {
+    display: flex;
+    position: relative;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    transform: translateY(0);
+}
+
+.event-banner:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.team-background-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.team-background {
+    flex: 1;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.team-a-bg {
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)),
+        var(--team-a-image);
+    transform-origin: right center;
+}
+
+.team-b-bg {
+    background-image: linear-gradient(to left, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)),
+        var(--team-b-image);
+    transform-origin: left center;
+}
+
+.event-banner:hover .team-a-bg {
+    transform: scale(1.03);
+}
+
+.event-banner:hover .team-b-bg {
+    transform: scale(1.03);
+}
+
+.teams-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.team {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+    font-size: clamp(16px, 4vw, 24px);
+    transition: transform 0.3s ease;
+}
+
+.event-banner:hover .team:first-child {
+    transform: translateX(-5px);
+}
+
+.event-banner:hover .team:last-child {
+    transform: translateX(5px);
+}
+
+.vs {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 8px 16px;
+    border-radius: 50%;
+    font-weight: bold;
+    z-index: 2;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    font-size: clamp(14px, 3vw, 20px);
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.event-banner:hover .vs {
+    background-color: white;
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+}
+
+.sport-logo {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.sport-logo img {
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+    transition: all 0.3s ease;
+}
+
+.event-banner:hover .sport-logo img {
+    transform: rotate(15deg) scale(1.1);
+}
+
+.event-date {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.event-banner:hover .event-date {
+    background-color: rgba(0, 0, 0, 0.9);
+    transform: scale(1.05);
+}
+
+@media (max-width: 400px) {
+    .event-banner {
+        height: 120px;
+    }
+
+    .team {
+        padding: 10px;
+    }
+
+    .vs {
+        padding: 6px 12px;
+    }
+}
+
+/* ---------------------------- EDITAR EVENTOS ---------------------------- */
+/* Container styling */
+.editor-eventos-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e4e8;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 0.95rem;
+}
+
+/* Input and select styling */
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background-color: #f8fafc;
+}
+
+.form-group input[type="text"]:hover,
+.form-group input[type="date"]:hover,
+.form-group select:hover {
+    border-color: #cbd5e0;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="date"]:focus,
+.form-group select:focus {
+    border-color: #4299e1;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    background-color: #fff;
+}
+
+/* Select dropdown styling */
+.form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+}
+
+/* Button styling */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.admin-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-btn.danger {
+    background-color: #fff;
+    color: #e53e3e;
+    border: 1px solid #e53e3e;
+}
+
+.admin-btn.danger:hover {
+    background-color: #fff5f5;
+    border-color: #c53030;
+}
+
+.admin-btn {
+    background-color: #4299e1;
+    color: white;
+}
+
+.admin-btn:hover {
+    background-color: #3182ce;
+}
+
+/* Error message styling */
+.error-message {
+    color: #c53030;
+    background-color: #fff5f5;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-radius: 6px;
+    border-left: 4px solid #e53e3e;
+    font-size: 0.95rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .editor-eventos-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .admin-btn {
+        width: 100%;
+    }
 }

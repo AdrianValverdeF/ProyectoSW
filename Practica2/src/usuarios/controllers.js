@@ -1,5 +1,6 @@
 import { body } from 'express-validator';
 import { Usuario } from './Usuario.js';
+import { Amigos } from './Amigos.js'
 
 export function viewLogin(req, res) {
     res.render('pagina', { 
@@ -90,3 +91,25 @@ export function doLogout(req, res, next) {
         res.redirect('/');
     });
 }
+
+/*export function doSol(req, res) {
+
+    body('username').trim().escape().notEmpty().withMessage('username requerido');
+
+    const Amigos = Amigos.nuevaSolicitud(req.session.username, req.body.username);
+    try {
+        return res.render('pagina', {
+            contenido: 'paginas/amigos',
+            session: req.session
+        });
+    } catch (e) {
+        return res.render('pagina', {
+            contenido: 'paginas/amigos',
+            error: e.message || 'Error en la solicitud'
+        });
+    }
+}*/
+
+
+
+
