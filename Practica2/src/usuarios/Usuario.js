@@ -14,7 +14,7 @@ export class Usuario {
 
     static initStatements(db) {
         if (this.#getByUsernameStmt !== null) return;
-
+        this.db = db;
         this.#getByUsernameStmt = db.prepare('SELECT * FROM Usuarios WHERE username = @username');
         this.#getByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id = @id');
         this.#insertStmt = db.prepare('INSERT INTO Usuarios(username, password, nombre, apellido, edad, rol) VALUES (@username, @password, @nombre, @apellido, @edad, @rol)');
@@ -22,20 +22,27 @@ export class Usuario {
     }
 
     static getUsuarioByUsername(username) {
+        console.log('Buscando usuario con username:', username); 
         const usuario = this.#getByUsernameStmt.get({ username });
         if (usuario === undefined) throw new UsuarioNoEncontrado(username);
 
         const { password, rol, nombre, apellido, edad, id } = usuario;
+        console.log('Usuario encontrado:', usuario); // Depuración
         return new Usuario(username, password, nombre, apellido, edad, rol, id);
     }
 
     static getUsuarioById(id) {
+        console.log('Buscando usuario con ID:', id); // Depuración
         let result = null;
         try {
             result = this.#getByIdStmt.get({ id });
+            if (!result) {
+                throw new UsuarioNoEncontrado(`ID: ${id}`);
+            }
         } catch (e) {
             throw new ErrorDatos('No se ha encontrado el usuario', { cause: e });
         }
+        console.log('Usuario encontrado:', result); // Depuración
         return result;
     }
 
@@ -110,6 +117,25 @@ export class Usuario {
             }
             throw new Error('Error al registrarse', { cause: e });
         }
+    }
+
+    static getAmigosById(id_usuario) {
+        console.log("Buscando amigos para el usuario con ID:", id_usuario); // Depuración
+
+        const query = `
+            SELECT u.username, a.id_amigo, a.id_usuario 
+            FROM Usuarios u
+            INNER JOIN Amigos a ON 
+                (u.id = a.id_amigo AND a.id_usuario = ?) OR 
+                (u.id = a.id_usuario AND a.id_amigo = ?)
+        `;
+        const id = parseInt(id_usuario, 10);
+        console.log("ID convertido a entero:", id);
+
+        console.log("Ejecutando consulta SQL con parámetros:", id, id); 
+        const amigos = this.db.prepare(query).all(id, id); 
+        console.log('Resultados de la consulta SQL:', amigos);
+        return amigos.map(row => row.username);
     }
 
     #id;

@@ -7,15 +7,16 @@
     <link rel="stylesheet" href="/css/estilo.css">
 </head>
 <body>
-   
     <main class="chat-main">
         <div class="amigos-sidebar">
             <ul>
-                <li><a href="/contenido/chat?amigo=Pedro%20Gutiérrez">Pedro Gutiérrez</a></li>
-                <li><a href="/contenido/chat?amigo=Antonio%20García">Antonio García</a></li>
-                <li><a href="/contenido/chat?amigo=Miranda">Miranda</a></li>
-                <li><a href="/contenido/chat?amigo=Carlos%20Martínez">Carlos Martínez</a></li>
-                <li><a href="/contenido/chat?amigo=Martín%20Caballero">Martín Caballero</a></li>
+                <% if (amigos && amigos.length > 0) { %>
+                    <% amigos.forEach(amigo => { %>
+                        <li><a href="/contenido/chat?amigo=<%= amigo %>"><%= amigo %></a></li>
+                    <% }) %>
+                <% } else { %>
+                    <li>No tienes amigos aún.</li>
+                <% } %>
             </ul>
         </div>
         <div class="amigos-chat-container">
@@ -26,18 +27,19 @@
                 </div>
             </div>
             <div class="amigos-chat-messages">
-                <div class="amigos-message">
-                    <div class="amigos-message-content">
-                        Hola que tal
-                    </div>
-                </div>
-                <div class="amigos-message">
-                    <div class="amigos-message-content">
-                        Holaaa
-                    </div>
-                </div>
+                <% if (mensajes && mensajes.length > 0) { %>
+                    <% mensajes.forEach(mensaje => { %>
+                        <div class="amigos-message">
+                            <div class="amigos-message-content">
+                                <%= mensaje.mensaje %>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p>No hay mensajes aún.</p>
+                <% } %>
             </div>
-            <form action="/enviarMensaje" method="POST" class="amigos-chat-input">
+            <form action="/contenido/enviarMensaje" method="POST" class="amigos-chat-input">
                 <input type="hidden" name="amigo" value="<%= amigo %>">
                 <textarea name="mensaje" placeholder="Escribe tu mensaje..." required></textarea>
                 <button type="submit">Enviar</button>

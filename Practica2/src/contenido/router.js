@@ -256,14 +256,28 @@ contenidoRouter.get('/baloncesto', (req, res) => {
 });
 
 contenidoRouter.get('/amigos', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/amigos';
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
     }
-    res.render('paginaSinSidebar', {
-        contenido,
-        session: req.session
-    });
+
+    try {
+        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
+        console.log('ID del usuario logueado:', id_usuario); 
+        const amigos = Usuario.getAmigosById(id_usuario); 
+        console.log('Amigos obtenidos:', amigos); 
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/amigos',
+            session: req.session,
+            amigos 
+        });
+    } catch (e) {
+        console.error('Error al cargar la lista de amigos:', e);
+        res.status(500).send('Error al cargar la lista de amigos');
+    }
 });
 
 contenidoRouter.get('/chat', (req, res) => {
@@ -279,30 +293,9 @@ contenidoRouter.get('/chat', (req, res) => {
         return res.status(400).send('Amigo no especificado');
     }
 
-    res.render('paginaSinSidebar', {
-        contenido: 'paginas/chat', 
-        session: req.session,
-        amigo 
-    });
-});
-
-export default contenidoRouter;
-
-contenidoRouter.get('/chat', (req, res) => {
-    if (!req.session.login) {
-        return res.render('pagina', {
-            contenido: 'paginas/login',
-            session: req.session
-        });
-    }
-
-    const amigo = req.query.amigo;
-    if (!amigo) {
-        return res.status(400).send('Amigo no especificado');
-    }
-
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const amigos = Usuario.getAmigosById(id_usuario); 
         const id_amigo = Usuario.getIdByUsername(amigo);
         const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
 
@@ -310,6 +303,7 @@ contenidoRouter.get('/chat', (req, res) => {
             contenido: 'paginas/chat',
             session: req.session,
             amigo,
+            amigos,
             mensajes
         });
     } catch (e) {
@@ -317,7 +311,6 @@ contenidoRouter.get('/chat', (req, res) => {
         res.status(500).send('Error al cargar el chat');
     }
 });
-
 
 contenidoRouter.post('/enviarMensaje', (req, res) => {
     if (!req.session.login) {
@@ -340,5 +333,8 @@ contenidoRouter.post('/enviarMensaje', (req, res) => {
         res.status(500).send('Error al enviar el mensaje');
     }
 });
+
+export default contenidoRouter;
+
 
 
