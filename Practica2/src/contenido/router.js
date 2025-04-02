@@ -270,12 +270,14 @@ contenidoRouter.get('/amigos', (req, res) => {
         const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
         console.log('ID del usuario logueado:', id_usuario); 
         const amigos = Usuario.getAmigosById(id_usuario); 
-        console.log('Amigos obtenidos:', amigos); 
+        amigos.forEach(amigo => {
+            amigo.username = Usuario.getUsuarioById(amigo.id_amigo).username;
+        });
 
         res.render('paginaSinSidebar', {
             contenido: 'paginas/amigos',
             session: req.session,
-            amigos 
+            amigos : amigos
         });
     } catch (e) {
         console.error('Error al cargar la lista de amigos:', e);

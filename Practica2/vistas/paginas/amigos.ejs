@@ -20,11 +20,11 @@
         </div>
         <div class="amigos-content">
             <ul>
-                <% if (amigos && amigos.length > 0) { %>
+                <% if (amigos) { %>
                     <% amigos.forEach(amigo => { %>
                         <li>
                             <img src="/img/descarga.jpeg" alt="Avatar">
-                            <span class="nombre"><%= amigo %></span>
+                            <span class="nombre"><%= amigo.username %></span>
                             <div class="acciones">
                                 <a href="/contenido/chat?amigo=<%= amigo %>" target="_blank">
                                     <button>Mensaje</button>
