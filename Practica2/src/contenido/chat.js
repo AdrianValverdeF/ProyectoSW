@@ -1,3 +1,5 @@
+import { ErrorDatos } from '../db.js';
+
 export class Chat {
     static #getByAmigoStmt = null;
     static #insertStmt = null;
@@ -18,7 +20,7 @@ export class Chat {
         let result = null;
         try {
             const { mensaje: contenido, id_usuario, id_amigo, created_at } = mensaje;
-            const datos = { mensaje: contenido, id_usuario, id_amigo, created_at };
+            const datos = { mensaje: contenido, id_usuario, id_amigo, created_at: new Date().toISOString() };
 
             result = this.#insertStmt.run(datos);
             mensaje.id = result.lastInsertRowid;

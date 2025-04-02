@@ -29,12 +29,10 @@ export class Usuario {
         if (usuario === undefined) throw new UsuarioNoEncontrado(username);
 
         const { password, rol, nombre, apellido, edad, id } = usuario;
-        console.log('Usuario encontrado:', usuario); // Depuración
         return new Usuario(username, password, nombre, apellido, edad, rol, id);
     }
 
     static getUsuarioById(id) {
-        console.log('Buscando usuario con ID:', id); // Depuración
         let result = null;
         try {
             result = this.#getByIdStmt.get({ id });
@@ -44,7 +42,6 @@ export class Usuario {
         } catch (e) {
             throw new ErrorDatos('No se ha encontrado el usuario', { cause: e });
         }
-        console.log('Usuario encontrado:', result); // Depuración
         return result;
     }
 
@@ -124,7 +121,6 @@ export class Usuario {
     static getAmigosById(id_usuario) {
         const id = parseInt(id_usuario, 10);
         const amigos = this.#getAmigosByIdStmt.all({ id });
-        console.log('Amigos encontrados:', amigos); // Depuración
         return amigos;
     }
 

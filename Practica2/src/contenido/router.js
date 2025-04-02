@@ -8,6 +8,13 @@ import { Chat } from './chat.js';
 
 const contenidoRouter = express.Router();
 
+contenidoRouter.use((req, res, next) => {
+    console.log(`Solicitud recibida: ${req.method} ${req.url}`);
+    next();
+});
+
+//lo de arriba es porque me estoy volviendo loca
+
 contenidoRouter.get('/foroComun', (req, res) => {
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
@@ -322,7 +329,10 @@ contenidoRouter.get('/chat', (req, res) => {
     }
 });
 
-contenidoRouter.post('/enviarMensaje', (req, res) => {
+contenidoRouter.post('/enviarMensajePriv', (req, res) => {
+    console.log('Controlador /enviarMensaje llamado');
+    console.log('Datos recibidos:', req.body);
+
     if (!req.session.login) {
         return res.status(403).send('No tienes permiso para enviar mensajes');
     }
@@ -331,7 +341,10 @@ contenidoRouter.post('/enviarMensaje', (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
-        Chat.persist(new Chat(mensaje, id_usuario, id_amigo));
+
+        const nuevoMensaje = new Chat(mensaje, id_usuario, id_amigo);
+        Chat.persist(nuevoMensaje);
+
         res.redirect(`/contenido/chat?amigo=${amigo}`);
     } catch (e) {
         console.error('Error al enviar el mensaje:', e);
