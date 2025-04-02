@@ -4,6 +4,8 @@ import { Usuario } from '../usuarios/Usuario.js';
 import { Eventos } from './eventos.js';
 import { Equipos } from './equipos.js';
 
+import { Chat } from './chat.js';
+
 const contenidoRouter = express.Router();
 
 contenidoRouter.get('/foroComun', (req, res) => {
@@ -293,23 +295,26 @@ contenidoRouter.get('/chat', (req, res) => {
         });
     }
 
-    const amigo = req.query.amigo; 
+    const amigo = req.query.amigo;
+    console.log('Valor de amigo:', amigo); // Depuración
     if (!amigo) {
         return res.status(400).send('Amigo no especificado');
     }
 
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const amigos = Usuario.getAmigosById(id_usuario); 
         const id_amigo = Usuario.getIdByUsername(amigo);
         const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
+
+        // Obtener la lista de amigos para la barra lateral
+        const amigos = Usuario.getAmigosById(id_usuario);
 
         res.render('paginaSinSidebar', {
             contenido: 'paginas/chat',
             session: req.session,
             amigo,
-            amigos,
-            mensajes
+            mensajes,
+            amigos // Pasar la lista de amigos a la vista
         });
     } catch (e) {
         console.error('Error al cargar el chat:', e);
@@ -323,15 +328,10 @@ contenidoRouter.post('/enviarMensaje', (req, res) => {
     }
 
     const { mensaje, amigo } = req.body;
-
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
-        const created_at = new Date().toISOString();
-
-        const nuevoMensaje = new Chat(mensaje, id_usuario, id_amigo, created_at);
-        Chat.persist(nuevoMensaje);
-
+        Chat.persist(new Chat(mensaje, id_usuario, id_amigo));
         res.redirect(`/contenido/chat?amigo=${amigo}`);
     } catch (e) {
         console.error('Error al enviar el mensaje:', e);

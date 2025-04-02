@@ -3,12 +3,14 @@ import { app } from './app.js';
 import { getConnection, checkConnection, closeConnection } from './db.js';
 import { inicializaModelos } from './modelos.js';
 import { inicializarMensajes } from './modelos-mensajes.js';
+import { Chat } from './contenido/chat.js';
 
 
 const db = getConnection();
 checkConnection(db);
 inicializaModelos(db); // inicializo Eventos aqui tambien, si no es correcto avisad (Alejandro)
 inicializarMensajes(db);
+Chat.initStatements(db);
 
 
 const server = app.listen(config.port, (error) => {
