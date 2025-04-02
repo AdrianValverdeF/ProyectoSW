@@ -90,6 +90,22 @@ aside {
     border-radius: 4px;
     cursor: pointer;
 }
+.guardar-btn{
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.cancelar-btn{
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
 main {
     background-color: var(--primary-bg);
