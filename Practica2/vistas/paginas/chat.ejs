@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat con <%= amigo %></title>
+  <!--  <title>Chat con <%= amigo %></title>-->
     <link rel="stylesheet" href="/css/estilo.css">
 </head>
 <body>
@@ -29,7 +29,7 @@
             </div>
             <div class="amigos-chat-messages">
                 <div class="chat-container">
-                    <h1>Chat con <%= amigo %></h1>
+                  <!--  <h1>Chat con <%= amigo %></h1>-->
                     <div class="mensajes">
                         <% if (mensajes && mensajes.length > 0) { %>
                             <% mensajes.forEach(mensaje => { %>
@@ -42,10 +42,12 @@
                             <p>No hay mensajes aún.</p>
                         <% } %>
                     </div>
-                    <form action="/contenido/enviarMensajePriv" method="POST">
+                    <form class="amigos-chat-input" action="/contenido/enviarMensajePriv" method="POST">
                         <input type="hidden" name="amigo" value="<%= amigo %>">
-                        <textarea name="mensaje" placeholder="Escribe tu mensaje"></textarea>
-                        <button type="submit">Enviar</button>
+                        <div class="chat-input-enter-msg">
+                            <textarea name="mensaje" placeholder="Escribe tu mensaje..."></textarea>
+                            <button type="submit">Enviar</button>
+                        </div>
                     </form>
                 </div>
             </div>
