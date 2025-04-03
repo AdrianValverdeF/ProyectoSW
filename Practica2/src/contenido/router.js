@@ -280,7 +280,11 @@ contenidoRouter.get('/amigos', (req, res) => {
         console.log('ID del usuario logueado:', id_usuario); 
         const amigos = Usuario.getAmigosById(id_usuario); 
         amigos.forEach(amigo => {
-            amigo.username = Usuario.getUsuarioById(amigo.id_amigo).username;
+            if (amigo.id_usuario == id_usuario)
+                amigo.username = Usuario.getUsuarioById(amigo.id_amigo).username;
+            else {
+                amigo.username = Usuario.getUsuarioById(amigo.id_usuario).username;
+            }
         });
 
         res.render('paginaSinSidebar', {
@@ -313,6 +317,8 @@ contenidoRouter.get('/solicitudes', (req, res) => {
                 solicitud.username = Usuario.getUsuarioById(solicitud.id_usuario).username;
             }
         });
+
+        console.log(solicitudes);
 
         res.render('paginaSinSidebar', {
             contenido: 'paginas/solicitudes',
@@ -383,6 +389,60 @@ contenidoRouter.post('/enviarMensajePriv', (req, res) => {
     }
 });
 
+contenidoRouter.post('/nuevaSolicitud', (req, res) => {
+    console.log('Controlador /nuevaSolicitud llamado');
+    console.log('Datos recibidos:', JSON.stringify(req.body, null, 2));
+
+    const { amigo } = req.body;
+    console.log(amigo);
+    try {
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const id_amigo = Usuario.getIdByUsername(amigo);
+
+        Usuario.nuevaSolicitud(id_usuario, id_amigo);
+        console.log('hola hola');
+        res.redirect(`/contenido/amigos`);
+    } catch (e) {
+        console.error('Error al enviar solicitud:', e);
+        res.status(500).send('Error al enviar solicitud');
+    }
+});
+
+contenidoRouter.post('/aceptarSolicitud', (req, res) => {
+    console.log('Controlador /aceptarSolicitud llamado');
+    console.log('Datos recibidos:', JSON.stringify(req.body, null, 2));
+
+    const { amigo } = req.body;
+    try {
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const id_amigo = Usuario.getIdByUsername(amigo);
+
+        Usuario.aceptarSolicitud(id_usuario, id_amigo);
+        console.log('hola hola');
+        res.redirect(`/contenido/solicitudes`);
+    } catch (e) {
+        console.error('Error al eliminar amigo:', e);
+        res.status(500).send('Error al eliminar amigo');
+    }
+});
+
+contenidoRouter.post('/eliminarAmigo', (req, res) => {
+    console.log('Controlador /eliminarAmigo llamado');
+    console.log('Datos recibidos:', JSON.stringify(req.body, null, 2));
+
+    const { amigo } = req.body;
+    try {
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const id_amigo = Usuario.getIdByUsername(amigo);
+
+        Usuario.eliminar(id_usuario, id_amigo);
+        console.log('hola hola');
+        res.redirect(`/contenido/perfil`);
+    } catch (e) {
+        console.error('Error al eliminar amigo:', e);
+        res.status(500).send('Error al eliminar amigo');
+    }
+});
 
 // EVENTOS
 contenidoRouter.get('/eventos', (req, res) => {

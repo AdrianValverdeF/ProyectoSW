@@ -26,8 +26,14 @@
                             <img src="/img/descarga.jpeg" alt="Avatar">
                             <span class="nombre"><%= solicitud.username %></span>
                             <div class="acciones">
-                                <button>Aceptar</button>
-                                <button>Rechazar</button>
+                                <form action="/contenido/aceptarSolicitud" method="POST">
+                                    <input type="hidden" name="amigo" value="<%= solicitud.username %>">
+                                    <button type="submit">Aceptar</button>
+                                </form>
+                                <form action="/contenido/eliminar" method="POST">
+                                    <input type="hidden" name="amigo" value="<%= solicitud.username %>">
+                                    <button type="submit">Rechazar</button>
+                                </form>
                             </div>
                         </li>
                     <% }) %>

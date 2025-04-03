@@ -11,8 +11,12 @@ export class Usuario {
     static #insertStmt = null;
     static #updateStmt = null;
     static #getByIdStmt = null;
+
     static #getAmigosByIdStmt = null;
     static #getSolicitudesByIdStmt = null;
+    static #solStmt = null;
+    static #acceptStmt = null;
+    static #deleteStmt = null;
 
     static initStatements(db) {
         if (this.#getByUsernameStmt !== null) return;
@@ -21,8 +25,13 @@ export class Usuario {
         this.#getByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id = @id');
         this.#insertStmt = db.prepare('INSERT INTO Usuarios(username, password, nombre, apellido, edad, rol) VALUES (@username, @password, @nombre, @apellido, @edad, @rol)');
         this.#updateStmt = db.prepare('UPDATE Usuarios SET username = @username, password = @password, rol = @rol, nombre = @nombre WHERE id = @id');
+
         this.#getAmigosByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (((u.id = a.id_amigo AND a.id_usuario = @id) OR (u.id = a.id_usuario AND a.id_amigo = @id)) AND a.aceptado = 1)');
-        this.#getSolicitudesByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (((u.id = a.id_amigo AND a.id_usuario = @id) OR (u.id = a.id_usuario AND a.id_amigo = @id)) AND a.aceptado = 0)');
+        this.#getSolicitudesByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (u.id = a.id_usuario AND a.id_amigo = @id AND a.aceptado = 0)');
+        this.#solStmt = db.prepare('INSERT INTO Amigos(id_usuario, id_amigo, aceptado) SELECT @id_usuario, @id_amigo, @aceptado WHERE NOT EXISTS (SELECT 1 FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario))');
+        this.#acceptStmt = db.prepare('UPDATE Amigos SET aceptado = 1 WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');
+        this.#deleteStmt = db.prepare('DELETE FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)')
+
     }
 
     static getUsuarioByUsername(username) {
@@ -52,7 +61,7 @@ export class Usuario {
         return usuario.id_user;
     }
 
-    static #insert(usuario) {
+    static #insertUsuario(usuario) {
         let result = null;
         try {
             const username = usuario.username;
@@ -111,7 +120,7 @@ export class Usuario {
         const usuario = new Usuario(username, hashedPassword, nombre, apellido, edad, rol);
 
         try {
-            return this.#insert(usuario);
+            return this.#insertUsuario(usuario);
         } catch (e) {
             if (e instanceof UsuarioYaExiste) {
                 throw e;
@@ -130,6 +139,54 @@ export class Usuario {
         const id = parseInt(id_usuario, 10);
         const solicitudes = this.#getSolicitudesByIdStmt.all({ id });
         return solicitudes;
+    }
+
+    static #insertAmigo(id_usuario, id_amigo, aceptado) {
+            let result = null;
+            let datos = {};
+            try {
+                datos = { id_usuario, id_amigo, aceptado };
+    
+                result = this.#solStmt.run(datos);
+    
+            } catch (e) {
+                if (e.code === 'SQLITE_CONSTRAINT') {
+                    throw new SolYaExiste(id_amigo);
+                }
+                throw new ErrorAmigos('No se ha podido procesar la solicitud', { cause: e });
+            }
+            return datos;
+        }
+
+    static nuevaSolicitud(id_usuario, id_amigo) {
+        try {
+            return this.#insertAmigo(id_usuario, id_amigo, 0);
+        } catch (e) {
+            if (e instanceof SolYaExiste) {
+                throw e;
+            }
+            throw new Error('Error al procesar solicitud', { cause: e });
+        }
+    }
+
+    static aceptarSolicitud(id_usuario, id_amigo) {
+        const datos = { id_usuario, id_amigo };
+
+        try {
+            return this.#acceptStmt.run(datos)
+        } catch (e) {
+            throw new Error('Error al aceptar solicitud', { cause: e });
+        }
+    }
+
+    static eliminar(id_usuario, id_amigo) {
+        const datos = { id_usuario, id_amigo };
+
+        try {
+            return this.#deleteStmt.run(datos)
+        } catch (e) {
+            throw new Error('Error al eliminar solicitud', { cause: e });
+        }
     }
 
     #id;
@@ -163,7 +220,7 @@ export class Usuario {
     }
 
     persist() {
-        if (this.#id === null) return Usuario.#insert(this);
+        if (this.#id === null) return Usuario.#insertUsuario(this);
         return Usuario.#update(this);
     }
 }
@@ -186,5 +243,24 @@ export class UsuarioYaExiste extends Error {
     constructor(username, options) {
         super(`Usuario ya existe: ${username}`, options);
         this.name = 'UsuarioYaExiste';
+    }
+}
+
+export class ErrorAmigos extends Error {
+    /**
+     * 
+     * @param {string} message 
+     * @param {ErrorOptions} [options]
+     */
+    constructor(message, options) {
+        super(message, options);
+        this.name = 'ErrorAmigos';
+    }
+}
+
+export class SolYaExiste extends Error {
+    constructor(username, options) {
+        super(`Ya has solicitado a ${username}`, options);
+        this.name = 'SolYaExiste';
     }
 }

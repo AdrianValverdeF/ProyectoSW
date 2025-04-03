@@ -11,7 +11,7 @@
         <div class="perfil-header">
             <img src="/img/gallo.jpg" alt="Avatar" class="avatar">
             <div class="perfil-header-content">
-                <h1><%= session.nombre %></h1>
+                <h1><%= session.username %></h1>
                 <p class="tipo-usuario"><%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'Cliente VIP' : 'Cliente Normal') %></p>
             </div>
         </div>
@@ -19,6 +19,12 @@
             <h1>Amigos de <%= session.nombre %></h1>
         </div>
         <div class="amigos-content">
+            <div class="amigos-añadir">
+                <form action="/contenido/nuevaSolicitud" method="POST">
+                    <input type="text" name="amigo" placeholder="Añade un amigo...">
+                    <button type="submit">Añadir</button>
+                </form>
+            </div>
             <ul>
                 <% if (amigos) { %>
                     <% amigos.forEach(amigo => { %>
@@ -29,7 +35,10 @@
                                 <a href="/contenido/chat?amigo=<%= amigo.username %>" target="_blank">
                                     <button>Mensaje</button>
                                 </a>
-                                <button>Eliminar</button>
+                                <form action="/contenido/eliminarAmigo" method="POST">
+                                    <input type="hidden" name="amigo" value="<%= amigo.username %>">
+                                    <button type="submit">Eliminar</button>
+                                </form>
                             </div>
                         </li>
                     <% }) %>
