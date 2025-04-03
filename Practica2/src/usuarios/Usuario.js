@@ -12,6 +12,7 @@ export class Usuario {
     static #updateStmt = null;
     static #getByIdStmt = null;
     static #getAmigosByIdStmt = null;
+    static #getSolicitudesByIdStmt = null;
 
     static initStatements(db) {
         if (this.#getByUsernameStmt !== null) return;
@@ -20,7 +21,8 @@ export class Usuario {
         this.#getByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id = @id');
         this.#insertStmt = db.prepare('INSERT INTO Usuarios(username, password, nombre, apellido, edad, rol) VALUES (@username, @password, @nombre, @apellido, @edad, @rol)');
         this.#updateStmt = db.prepare('UPDATE Usuarios SET username = @username, password = @password, rol = @rol, nombre = @nombre WHERE id = @id');
-        this.#getAmigosByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (u.id = a.id_amigo AND a.id_usuario = @id)');
+        this.#getAmigosByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (((u.id = a.id_amigo AND a.id_usuario = @id) OR (u.id = a.id_usuario AND a.id_amigo = @id)) AND a.aceptado = 1)');
+        this.#getSolicitudesByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (((u.id = a.id_amigo AND a.id_usuario = @id) OR (u.id = a.id_usuario AND a.id_amigo = @id)) AND a.aceptado = 0)');
     }
 
     static getUsuarioByUsername(username) {
@@ -122,6 +124,12 @@ export class Usuario {
         const id = parseInt(id_usuario, 10);
         const amigos = this.#getAmigosByIdStmt.all({ id });
         return amigos;
+    }
+
+    static getSolicitudesById(id_usuario) {
+        const id = parseInt(id_usuario, 10);
+        const solicitudes = this.#getSolicitudesByIdStmt.all({ id });
+        return solicitudes;
     }
 
     #id;

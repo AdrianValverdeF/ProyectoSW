@@ -294,6 +294,37 @@ contenidoRouter.get('/amigos', (req, res) => {
     }
 });
 
+contenidoRouter.get('/solicitudes', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
+
+    try {
+        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
+        console.log('ID del usuario logueado:', id_usuario); 
+        const solicitudes = Usuario.getSolicitudesById(id_usuario);
+        solicitudes.forEach(solicitud => {
+            if (solicitud.id_usuario == id_usuario)
+                solicitud.username = Usuario.getUsuarioById(solicitud.id_amigo).username;
+            else {
+                solicitud.username = Usuario.getUsuarioById(solicitud.id_usuario).username;
+            }
+        });
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/solicitudes',
+            session: req.session,
+            solicitudes : solicitudes
+        });
+    } catch (e) {
+        console.error('Error al cargar la lista de solicitudes:', e);
+        res.status(500).send('Error al cargar la lista de solicitudes');
+    }
+});
+
 contenidoRouter.get('/chat', (req, res) => {
     if (!req.session.login) {
         return res.render('pagina', {
