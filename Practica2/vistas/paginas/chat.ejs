@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!--  <title>Chat con <%= amigo %></title>-->
     <link rel="stylesheet" href="/css/estilo.css">
 </head>
 <body>
@@ -20,22 +19,37 @@
                 <% } %>
             </ul>
         </div>
+
         <div class="amigos-chat-container">
+            <div class="volver-container">
+                <a href="/contenido/amigos">
+                    <button class="volver-boton">Atrás</button>
+                </a>
+            </div>
+
             <div class="amigos-chat-header">
                 <div class="amigos-chat-info">
                     <h2><%= amigo %></h2>
                     <span>Activo hace 5 minutos</span>
                 </div>
             </div>
+
             <div class="amigos-chat-messages">
                 <div class="chat-container">
-                  <!--  <h1>Chat con <%= amigo %></h1>-->
                     <div class="mensajes">
                         <% if (mensajes && mensajes.length > 0) { %>
                             <% mensajes.forEach(mensaje => { %>
                                 <div class="mensaje <%= mensaje.id_usuario === session.id ? 'propio' : 'ajeno' %>">
                                     <p><%= mensaje.mensaje %></p>
-                                    <span><%= mensaje.created_at %></span>
+                                    <span>
+                                        <%= new Date(mensaje.created_at).toLocaleString('es-ES', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        }) %>
+                                    </span>
                                 </div>
                             <% }) %>
                         <% } else { %>
