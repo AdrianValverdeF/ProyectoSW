@@ -672,7 +672,7 @@ label {
     resize: none;
     height: 50px;
     margin-right: 10px;
-    width: 90%; /* Aumenta el ancho */
+    width: 90%; 
 }
 
 .amigos-chat-input button {
@@ -685,18 +685,9 @@ label {
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   
 }
 
-.amigos-chat-input button:hover {
-    background-color: #e55b5b;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-}
-
-.amigos-chat-input button:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
 
 .amigos-sidebar {
     width: 250px;
