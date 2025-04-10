@@ -1,10 +1,6 @@
 <form action="/usuarios/register" method="POST" class="session-form">
     <fieldset>
-        <% if (locals.error) { %>
-            <p class="register-error"><strong>
-                    <%= locals.error %>
-                </strong></p>
-        <% } %>
+        
         <h3>Regístrate</h3>
         <div><label>Nombre:</label> <input type="text" name="name" /></div>
         <div><label>Apellido:</label> <input type="text" name="surname" /></div>
@@ -12,6 +8,13 @@
         <div><label>Contraseña:</label> <input type="password" name="password" /></div>
         <div><label>Edad:</label> <input type="number" name="age" /></div>
         <button class='form-register-btn' type="submit">Enviar</button>
+
+        <% if (locals.error) { %>
+            <p class="register-error"><strong>
+                    <%= locals.error %>
+                </strong></p>
+        <% } %>
+        
         <div class="login-ref">
             <p>¿Ya tienes cuenta? <a href="/usuarios/login">Inicia Sesión</a></p>
         </div>
