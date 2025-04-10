@@ -1,14 +1,17 @@
-<h1>Acceso al sistema</h1>
-
-<form action="/usuarios/login" method="POST">
+<form action="/usuarios/login" method="POST" class="session-form">
 	<fieldset>
-		<% if (locals.error) { %>
-			<p><strong>
-					<%= locals.error %>
-				</strong></p>
-			<% } %>
-				<legend>Usuario y contraseña</legend>
+		
+				<h3>Inicia Sesión</h3>
 				<div><label>Nombre:</label> <input type="text" name="username" /></div>
 				<div><label>Contraseña:</label> <input type="password" name="password" /></div>
-				<button class='login-btn' type="submit">Enviar</button>
+				<button class='form-login-btn' type="submit">Iniciar Sesión</button>
+
+				<% if (locals.error) { %>
+					<p class="login-error"><strong>
+							<%= locals.error %>
+						</strong></p>
+					<% } %>
+
+				<div class="register-ref"><p>¿No tienes cuenta? <a href="/usuarios/register">Regístrate</a></p></div>
 	</fieldset>
+</form>
