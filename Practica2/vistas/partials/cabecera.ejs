@@ -12,14 +12,19 @@
             <a href="/contenido/perfil">Perfil</a>
         </div>
         <div class="user-menu">
-            <% function mostrarSaludo(session){ if (session==null || ! session.login){ return `<a class='login-btn'
-                href='/usuarios/login'>Iniciar sesión</a>`;
+            <% function mostrarSaludo(session){ 
+                if (session==null || !session.login){ 
+                    return `<a class='login-btn' href='/usuarios/login'>Iniciar sesión</a>`;
                 }
-
-                return ` <p>¡Bienvenido, ${session.nombre}! <a class='login-btn' href='/usuarios/logout'>Cerrar
-                        sesión</a></p>`;
-                }%>
-                <%- mostrarSaludo(session) %>
+                
+                return `
+                    <div class="user-actions">
+                        <a class='login-btn' href='/usuarios/logout'>Cerrar sesión</a>
+                        <div class="welcome-popup">¡Bienvenido, ${session.nombre}!</div>
+                    </div>
+                `;
+            } %>
+            <%- mostrarSaludo(session) %>
         </div>
     </nav>
 </header>
