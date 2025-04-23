@@ -864,6 +864,8 @@ label {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
     transform: translateY(0);
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .event-banner:hover {
@@ -1053,14 +1055,6 @@ label {
     justify-content: center;
 }
 
-.admin-btn.danger {
-    background-color: #e74c3c;
-}
-
-.admin-btn.danger:hover {
-    background-color: #c0392b;
-}
-
 /* ---------------------------- EDITAR EVENTOS ---------------------------- */
 .editor-eventos-container {
     max-width: 600px;
@@ -1139,13 +1133,15 @@ label {
 }
 
 .admin-btn.danger {
-    background-color: #fff;
-    color: #e53e3e;
+    background-color: var(--accent-color);
+    color: white;
     border: 1px solid #e53e3e;
 }
 
-.admin-btn.danger:hover {
+.admin-btn.danger:hover,
+.login-btn:hover{
     background-color: #fff5f5;
+    color: var(--accent-color);
     border-color: #c53030;
 }
 
