@@ -739,6 +739,29 @@ label {
         flex-direction: column;
     }
 }
+/* ------------------------------ FONDOS CABECERA ---------------------------- */
+
+.contenedor-cartera {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 2px solid var(--accent-color);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 5px;
+    font-weight: bold;
+    color: #7fe684;
+    font-size: 1em;
+} 
+
+.contenedor-cartera i.fa-wallet {
+    color: var(--accent-color);
+    font-size: 1.2em;
+}
+
+.cantidad-fondos {
+    font-size: 1em;
+}
 
 /* ------------------------------ CHAT ---------------------------- */
 .amigos-chat-container {
