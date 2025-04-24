@@ -30,6 +30,7 @@ export function doLogin(req, res) {
         req.session.username = usuario.username;
         req.session.edad = usuario.edad;
         req.session.esAdmin = usuario.rol === "A";
+        req.session.fondos = usuario.fondos;
         return res.render('pagina', {
             contenido: 'paginas/foroComun',
             session: req.session

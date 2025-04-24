@@ -617,6 +617,30 @@ contenidoRouter.post('/eventos/:id/actualizar', (req, res) => {
 // FIN EVENTOS
 
 
+contenidoRouter.post('/agregarFondos', async (req, res) => {
+
+    const cantidad = parseInt(req.body.cantidad);
+
+    if (isNaN(cantidad) || cantidad <= 0) {
+        return res.status(400).send('Cantidad de fondos inválida');
+    }
+
+    try{    
+        const idUsuario = Usuario.getIdByUsername(req.session.username);
+        
+        await Usuario.agregarFondos(idUsuario, cantidad);
+        req.session.fondos = Usuario.getFondosById(idUsuario); // Actualiza la sesión con los nuevos fondos
+        
+        res.redirect('/contenido/perfil');
+    }   
+    catch (e) {
+        console.error('Error al agregar fondos:', e);
+        res.redirect('/contenido/perfil');
+        return res.status(500).send('Error al agregar fondos');
+    }
+});
+
+
 export default contenidoRouter;
 
 

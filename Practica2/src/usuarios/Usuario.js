@@ -18,20 +18,29 @@ export class Usuario {
     static #acceptStmt = null;
     static #deleteStmt = null;
 
+    static #getFondosByIdStmt = null;
+
     static initStatements(db) {
         if (this.#getByUsernameStmt !== null) return;
         this.db = db;
         this.#getByUsernameStmt = db.prepare('SELECT * FROM Usuarios WHERE username = @username');
         this.#getByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id = @id');
-        this.#insertStmt = db.prepare('INSERT INTO Usuarios(username, password, nombre, apellido, edad, rol) VALUES (@username, @password, @nombre, @apellido, @edad, @rol)');
-        this.#updateStmt = db.prepare('UPDATE Usuarios SET username = @username, password = @password, rol = @rol, nombre = @nombre WHERE id = @id');
-
+        this.#insertStmt = db.prepare(`
+            INSERT INTO Usuarios(username, password, nombre, apellido, edad, rol, fondos) 
+            VALUES (@username, @password, @nombre, @apellido, @edad, @rol, @fondos)
+        `);
+        this.#updateStmt = db.prepare(`
+            UPDATE Usuarios 
+            SET username = @username, password = @password, rol = @rol, nombre = @nombre, apellido = @apellido, edad = @edad, fondos = @fondos
+            WHERE id = @id
+        `);
         this.#getAmigosByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (((u.id = a.id_amigo AND a.id_usuario = @id) OR (u.id = a.id_usuario AND a.id_amigo = @id)) AND a.aceptado = 1)');
         this.#getSolicitudesByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (u.id = a.id_usuario AND a.id_amigo = @id AND a.aceptado = 0)');
         this.#solStmt = db.prepare('INSERT INTO Amigos(id_usuario, id_amigo, aceptado) SELECT @id_usuario, @id_amigo, @aceptado WHERE NOT EXISTS (SELECT 1 FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario))');
         this.#acceptStmt = db.prepare('UPDATE Amigos SET aceptado = 1 WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');
         this.#deleteStmt = db.prepare('DELETE FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)')
-
+        this.#getFondosByIdStmt = db.prepare('SELECT fondos FROM Usuarios WHERE id = ?');
+        
     }
 
     static getUsuarioByUsername(username) {
@@ -70,7 +79,8 @@ export class Usuario {
             const apellido = usuario.apellido;
             const edad = usuario.edad;
             const rol = usuario.rol;
-            const datos = { username, password, nombre, apellido, edad, rol };
+            const fondos = usuario.fondos;
+            const datos = { username, password, nombre, apellido, edad, rol, fondos};
 
             result = this.#insertStmt.run(datos);
 
@@ -92,8 +102,9 @@ export class Usuario {
         const apellido = usuario.apellido; 
         const edad = usuario.edad; 
         const rol = usuario.rol;
+        const fondos = usuario.fondos;
 
-        const datos = { id, username, password, nombre, apellido, edad, rol };
+        const datos = { id, username, password, nombre, apellido, edad, rol, fondos };
 
         const result = this.#updateStmt.run(datos);
 
@@ -115,9 +126,9 @@ export class Usuario {
         return usuario;
     }
 
-    static register(username, password, nombre, apellido, edad, rol = RolesEnum.USUARIO) {
+    static register(username, password, nombre, apellido, edad, rol = RolesEnum.USUARIO, fondos = 0) {
         const hashedPassword = bcrypt.hashSync(password, 10);
-        const usuario = new Usuario(username, hashedPassword, nombre, apellido, edad, rol);
+        const usuario = new Usuario(username, hashedPassword, nombre, apellido, edad, rol, fondos);
 
         try {
             return this.#insertUsuario(usuario);
@@ -189,6 +200,33 @@ export class Usuario {
         }
     }
 
+    static agregarFondos(id_usuario, cantidad) {
+
+        try{  
+            const { username, password, nombre, apellido, edad, rol, fondos } = this.getUsuarioById(id_usuario);
+            const usuario = new Usuario(username, password, nombre, apellido, edad, rol, id_usuario, fondos);
+
+            const nuevosFondos = usuario.fondos + cantidad;
+            usuario.fondos = nuevosFondos;
+
+            return this.#update(usuario);   
+        }
+        catch (e) {
+            throw new Error('Error al agregar fondos', { cause: e });
+        }
+    }
+
+    static getFondosById(id_usuario) {
+
+        try {
+            const fondos = this.#getFondosByIdStmt.get([id_usuario]);
+            return fondos.fondos;
+        }
+        catch (e) {
+            throw new Error('Error al obtener los fondos del usuario', { cause: e });
+        }
+    }
+
     #id;
     username;
     #password;
@@ -196,8 +234,9 @@ export class Usuario {
     nombre;
     apellido;
     edad;
+    fondos;
 
-    constructor(username, password, nombre, apellido, edad, rol = RolesEnum.USUARIO, id = null) {
+    constructor(username, password, nombre, apellido, edad, rol = RolesEnum.USUARIO, id = null, fondos = 0) {
         this.username = username;
         this.#password = password;
         this.nombre = nombre;
@@ -205,6 +244,7 @@ export class Usuario {
         this.edad = edad;
         this.rol = rol;
         this.#id = id;
+        this.fondos = fondos;
     }
 
     get id_user() {
