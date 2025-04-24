@@ -67,6 +67,17 @@
                     <p>INFORMÁTICA 2 - 5 FARMACIA <span class="resultado-ganado">✔</span></p>
                 </div>
             </div>
+            <div class="seccion-cartera">
+                <h2>Cartera</h2>
+                <p class="fondos-actuales"><strong>Fondos actuales:</strong> <span id="fondos-cartera"><%= session.fondos %></span> €</p>
+            
+                <h2>Añade fondos</h2>
+                <form class="cartera-form" action="/contenido/agregarFondos" method="POST">
+                    <p for="cantidad">Cantidad a añadir (€):</p>
+                    <input type="text" id="cantidad" name="cantidad" min="1" required>
+                    <button type="submit">Añadir Fondos</button>
+                </form>
+            </div>
         </div>
     </div>
 </body>
