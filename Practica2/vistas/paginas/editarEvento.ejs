@@ -7,17 +7,17 @@
 
             <form action="/contenido/eventos/<%= evento.id %>/actualizar" method="POST">
 
-                <div class="form-group">
+                <div class="form-editar-evento">
                     <label for="equipoA">EquipoA:</label>
                     <input type="text" id="equipoA" name="equipoA" value="<%= evento.equipoA %>" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-editar-evento">
                     <label for="equipoB">EquipoB:</label>
                     <input type="text" id="equipoB" name="equipoB" value="<%= evento.equipoB %>" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-editar-evento">
                     <label for="deporte">Deporte:</label>
                     <select id="deporte" name="deporte" required>
                         <option value="fútbol 11" <%=evento.deporte==='fútbol' ? 'selected' : '' %>>Fútbol 11</option>
@@ -31,13 +31,13 @@
                     </select>
                 </div>
 
-                <div class="form-group">
+                <div class="form-editar-evento">
                     <label for="fecha">Fecha:</label>
                     <input type="date" id="fecha" name="fecha"
                         value="<%= evento.fecha ? new Date(evento.fecha).toISOString().split('T')[0] : '' %>" required>
                 </div>
 
-                <div class="form-actions">
+                <div class="form-confirmar-evento">
                     <a href="/contenido/eventos" class="admin-btn danger">Cancelar</a>
                     <button type="submit" class="admin-btn">Guardar Cambios</button>
                 </div>

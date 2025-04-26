@@ -1,70 +1,64 @@
-<section class="events-section">
+<section class="seccion-eventos">
     <h2>Próximos Eventos</h2>
-    <% if (!eventos || eventos.length===0) { %>
-        <div class="no-events">
+    <% if (!eventos || eventos.length === 0) { %>
+        <div class="sin-eventos">
             <p>No hay eventos disponibles.</p>
         </div>
-        <% } else { %>
+    <% } else { %>
+        <% if (session?.esAdmin) { %>
+            <button onclick="crearEvento(event)" class="admin-btn">Crear Evento</button>
+        <% } %>
+
+        <% eventos.forEach(function(evento) { 
+            const deporte = evento.deporte ? evento.deporte.toString().toLowerCase() : 'default';
+            const equipoA = evento.equipoA ? evento.equipoA.toString().toLowerCase() : 'default';
+            const equipoB = evento.equipoB ? evento.equipoB.toString().toLowerCase() : 'default';
+            const fecha = evento.fecha ? evento.fecha.toString() : 'Fecha por confirmar';
+        %>
+        <div class="contenedor-evento" data-evento-id="<%= evento.id %>">
+            <a href="/contenido/apuestas/<%= evento.id %>" class="banner-evento" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'); --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg')">
+                <div class="contenedor-fondos-equipos">
+                    <div class="fondo-equipo fondo-equipo-a"></div>
+                    <div class="fondo-equipo fondo-equipo-b"></div>
+                </div>
+
+                <div class="logo-deporte">
+                    <img src="/img/<%= deporte %>.png" alt="<%= evento.deporte || 'Deporte' %> logo">
+                </div>
+
+                <div class="contenedor-equipos">
+                    <div class="equipo">
+                        <span><%= evento.equipoA %></span>
+                    </div>
+                    <div class="vs">VS</div>
+                    <div class="equipo">
+                        <span><%= evento.equipoB %></span>
+                    </div>
+                </div>
+
+                <div class="fecha-evento">
+                    <%= fecha %>
+                </div>
+            </a>
+
             <% if (session?.esAdmin) { %>
-                <button onclick="crearEvento(event)" class="admin-btn">Crear Evento</button>
-                <% } %>
-
-                    <% eventos.forEach(function(evento) { const deporte=evento.deporte ?
-                        evento.deporte.toString().toLowerCase() : 'default' ; const equipoA=evento.equipoA ?
-                        evento.equipoA.toString().toLowerCase() : 'default' ; const equipoB=evento.equipoB ?
-                        evento.equipoB.toString().toLowerCase() : 'default' ; const fecha=evento.fecha ?
-                        evento.fecha.toString() : 'Date TBD' ; %>
-                        <div class="event-container" data-event-id="<%= evento.id %>">
-                            <a href="/apuestas/<%= evento.id %>" class="event-banner" style="--team-a-image: url('/img/<%= deporte %>-<%= equipoA %>.jpg');
-                          --team-b-image: url('/img/<%= deporte %>-<%= equipoB %>.jpg')">
-                                <div class="team-background-container">
-                                    <div class="team-background team-a-bg"></div>
-                                    <div class="team-background team-b-bg"></div>
-                                </div>
-
-                                <div class="sport-logo">
-                                    <img src="/img/<%= deporte %>.png" alt="<%= evento.deporte || 'Sport' %> logo">
-                                </div>
-
-                                <div class="teams-container">
-                                    <div class="team">
-                                        <span>
-                                            <%= evento.equipoA %>
-                                        </span>
-                                    </div>
-                                    <div class="vs">VS</div>
-                                    <div class="team">
-                                        <span>
-                                            <%= evento.equipoB %>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="event-date">
-                                    <%= fecha %>
-                                </div>
-                            </a>
-
-                            <% if (session?.esAdmin) { %>
-                                <div class="event-actions">
-                                    <button onclick="editarEvento('<%= evento.id %>', event)"
-                                        class="admin-btn">Editar</button>
-                                    <button onclick="eliminarEvento('<%= evento.id %>', event)"
-                                        class="admin-btn danger">Eliminar</button>
-                                </div>
-                                <% } %>
-                        </div>
-                        <% }); %>
-                            <% } %>
+                <div class="acciones-evento">
+                    <button onclick="editarEvento('<%= evento.id %>', event)" class="admin-btn">Editar</button>
+                    <button onclick="eliminarEvento('<%= evento.id %>', event)" class="admin-btn danger">Eliminar</button>
+                </div>
+            <% } %>
+        </div>
+        <% }); %>
+    <% } %>
 </section>
 
-<div id="deleteConfirmationModal" class="confirmation-modal">
-    <div class="modal-content">
+<div id="modalConfirmacionEliminar" class="modal-confirmacion">
+    <div class="contenido-modal">
         <h3>Confirmar Eliminación</h3>
         <p>¿Estás seguro de que deseas eliminar este evento?</p>
-        <div class="modal-buttons">
-            <button id="confirmDeleteBtn" class="admin-btn danger">Eliminar</button>
-            <button id="cancelDeleteBtn" class="admin-btn">Cancelar</button>
+        <div class="botones-modal">
+            <button id="botonConfirmarEliminar" class="admin-btn danger">Eliminar</button>
+            <button id="botonCancelarEliminar" class="admin-btn">Cancelar</button>
         </div>
     </div>
 </div>

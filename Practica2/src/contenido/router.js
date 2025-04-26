@@ -641,6 +641,31 @@ contenidoRouter.post('/agregarFondos', async (req, res) => {
 });
 
 
+// APUESTAS
+
+contenidoRouter.get('/apuestas/:id', (req, res) => {
+
+    const id_evento = req.params.id;
+
+    try{
+        const evento = Eventos.getEventoById(id_evento);
+
+        if (!evento) {
+            return res.status(404).send('Evento no encontrado');
+        }
+
+        res.render('pagina', {
+            contenido: 'paginas/apuestas',
+            session: req.session,
+            evento: evento
+        });
+    }
+    catch (e) {
+        return res.status(500).send('Error al obtener el evento de apuesta');
+    }
+});
+
+
 export default contenidoRouter;
 
 

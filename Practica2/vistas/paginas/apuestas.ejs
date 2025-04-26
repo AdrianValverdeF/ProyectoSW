@@ -1,0 +1,87 @@
+<div class="contenedor-apuesta">
+  <div class="encabezado-apuesta">
+    <div class="info-evento">
+      <h1><%= evento.equipoA %> vs <%= evento.equipoB %></h1>
+      <p>Selecciona tus apuestas</p>
+    </div>
+  </div>
+
+  <%
+    const deporte = evento.deporte ? evento.deporte.toString().toLowerCase() : 'default';
+    const equipoA = evento.equipoA ? evento.equipoA.toString().toLowerCase() : 'default';
+    const equipoB = evento.equipoB ? evento.equipoB.toString().toLowerCase() : 'default';
+    const fecha = evento.fecha ? evento.fecha.toString() : 'Fecha por confirmar';
+  %>
+  <form class="formulario-apuesta" action="/contenido/apuestas/<%= evento.id %>/apostar" method="POST">
+    <!-- Sección Ganador -->
+    <div class="grupo-formulario">
+      <label class="requerido">Resultado del Evento</label>
+
+      <div class="opciones-ganador" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'); 
+        --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg'); --imagen-empate: url('/img/<%= deporte %>.png');">
+        <!-- Equipo A -->
+        <input type="radio" name="ganador" value="equipoA">
+        <label for="radio-equipoA" class="boton-radio equipoA"><%= evento.equipoA %></label>
+    
+        <!-- Empate -->
+        <input type="radio" name="ganador" value="empate">
+        <label for="radio-empate" class="boton-radio empate">EMPATE</label>
+    
+        <!-- Equipo B -->
+        <input type="radio" name="ganador" value="equipoB">
+        <label for="radio-equipoB" class="boton-radio equipoB"><%= evento.equipoB %></label>
+      </div>
+    </div>
+
+    <!-- Deslizadores de Puntos -->
+    <div class="grupo-formulario">
+
+      <label>Puntos <%= evento.equipoA %></label>
+
+      <div class="control-deslizador">
+
+        <div class="botones-puntos-toggle">
+          <button type="button" class="boton-toggle" data-tipo="mas" data-equipo="A">Más de</button>
+          <button type="button" class="boton-toggle" data-tipo="menos" data-equipo="A">Menos de</button>
+        </div>
+
+        <input type="range" min="0.5" max="20" step="1" value="2.5" class="deslizador-puntos" data-equipo="A">
+        <span id="marcadorEquipoA" class="marca-deslizador">Más de 50</span>
+
+      </div>
+    </div>
+
+    <div class="grupo-formulario">
+
+      <label>Puntos <%= evento.equipoB %></label>
+
+      <div class="control-deslizador">
+
+        <div class="botones-puntos-toggle">
+          <button type="button" class="boton-toggle" data-tipo="mas" data-equipo="B">Más de</button>
+          <button type="button" class="boton-toggle" data-tipo="menos" data-equipo="B">Menos de</button>
+        </div>
+
+        <input type="range" min="0.5" max="20" step="1" value="2.5" class="deslizador-puntos" data-equipo="B">
+        <span id="marcadorEquipoB" class="marca-deslizador">Más de 50</span>
+
+      </div>
+    </div>
+
+    <!-- Resultado Exacto -->
+    <div class="grupo-formulario">
+      <label>Resultado Exacto</label>
+      <div class="contenedor-puntuacion-grid">
+        <input type="text" id="resultadoExacto" name="resultadoExacto" placeholder="Ej: 2-1">
+      </div>
+    </div>
+
+    <!-- Diferencia de Puntos -->
+    <div class="grupo-formulario">
+      <label>Diferencia de Puntos</label>
+      <input type="number" id="diferenciaPuntos" name="diferenciaPuntos" placeholder="Ej: 1">
+    </div>
+
+    <button type="submit" class="boton-enviar">Realizar Apuesta</button>
+  </form>
+</div>

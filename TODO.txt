@@ -2,9 +2,8 @@
 
 
 - Posibilidad de hacer a otros usuarios admin
-- Monedero
 - Cesta de apuestas
-- Apuestas
+- Apuestas (GUI casi completa)
 - Competiciones
-- Ajustar tamaño movil (bastante css)
+- Ajustar tamaño movil
 - Cambiar foto usuario?
