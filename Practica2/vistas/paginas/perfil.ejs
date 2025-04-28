@@ -22,6 +22,14 @@
                 <h1><%= session.username %></h1>
                 <p class="tipo-usuario"><%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'Cliente VIP' : 'Cliente Normal') %></p>
             </div>
+            <%- mostrarBoton(session.esAdmin) %>
+            <% function mostrarBoton(Admin) { 
+                let result="" ; 
+                if (Admin) {
+                    result += `<a href="listaUsuarios" class="listaUsuarios-btn">Usuarios</a>`;
+                }
+                return result;
+            }%>
             <a href="amigos" class="amigos-btn">Amigos</a>
             <a href="solicitudes" class="solicitudes-btn">Solicitudes</a>
         </div>

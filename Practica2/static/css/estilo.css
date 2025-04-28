@@ -594,6 +594,7 @@ label {
 }
 
 .amigos-btn,
+.listaUsuarios-btn,
 .solicitudes-btn {
     background-color: var(--accent-color);
     color: white;
