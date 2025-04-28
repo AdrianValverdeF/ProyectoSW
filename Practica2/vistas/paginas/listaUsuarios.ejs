@@ -3,20 +3,18 @@
     <ul>
         <% if (locals.usuarios && locals.usuarios.length > 0) { %>
             <% locals.usuarios.forEach(function(usuario) { %>
-                <li>
+                <li class="usuario-card">
                     <p><strong>Username: </strong> <%= usuario.username %> 
-                        <strong>Nombre: </strong> <%= usuario.nombre %> 
+                        <strong>Nombre: </strong> <%= usuario.nombre %>
                         <strong>Apellidos: </strong> <%= usuario.apellido %> 
                         <strong>Edad: </strong> <%= usuario.edad %>
-                        <strong>Fondos: </strong> <%= usuario.fondos %>
+                        <strong>Fondos: </strong> <%= usuario.fondos %> 
                         <strong>Rol: </strong> <%= usuario.rol %>
                     </p>
-
                 </li>
             <% }); %>
         <% } else { %>
             <p>No hay usuarios disponibles.</p>
         <% } %>
     </ul>
-
 </html>
