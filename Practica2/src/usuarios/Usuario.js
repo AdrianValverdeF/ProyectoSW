@@ -7,6 +7,7 @@ export const RolesEnum = Object.freeze({
 });
 
 export class Usuario {
+    static #getAll = null;
     static #getByUsernameStmt = null;
     static #insertStmt = null;
     static #updateStmt = null;
@@ -23,6 +24,7 @@ export class Usuario {
     static initStatements(db) {
         if (this.#getByUsernameStmt !== null) return;
         this.db = db;
+        this.#getAll = db.prepare('SELECT * FROM Usuarios');
         this.#getByUsernameStmt = db.prepare('SELECT * FROM Usuarios WHERE username = @username');
         this.#getByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id = @id');
         this.#insertStmt = db.prepare(`
@@ -64,6 +66,24 @@ export class Usuario {
         }
         return result;
     }
+
+    static getAll() {
+        let result = null;
+        try{
+            result = this.#getAll.all();
+            if (!result) {
+                throw new UsuarioNoEncontrado('No hay usuarios registrados');
+            }
+            result = result.map(usuario => {
+                const { password, ...rest } = usuario;
+                return rest;
+            });
+        }  catch (e) {  
+            throw new ErrorDatos('No se han encontrado usuarios', { cause: e });
+        }
+        return result; 
+    }
+
 
     static getIdByUsername(username) {
         const usuario = this.getUsuarioByUsername(username);

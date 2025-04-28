@@ -267,6 +267,32 @@ contenidoRouter.get('/baloncesto', (req, res) => {
     });
 });
 
+
+
+contenidoRouter.get('/listaUsuarios', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
+
+    try {
+        
+        const Users = Usuario.getAll();
+        console.log(Users);
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/listaUsuarios',
+            session: req.session,
+            usuarios: Users
+        });
+    } catch (e) {
+        console.error('Error al cargar la lista de Usuarios:', e);
+        res.status(500).send('Error al cargar la lista de Usuarios');
+    }
+});
+
+
 contenidoRouter.get('/amigos', (req, res) => {
     if (!req.session.login) {
         return res.render('pagina', {
