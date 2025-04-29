@@ -19,6 +19,10 @@ export class Usuario {
     static #acceptStmt = null;
     static #deleteStmt = null;
 
+    static #insertImgStmt = null;
+    static #getImgStmt = null;
+    static #updateImgStmt = null;
+
     static #getFondosByIdStmt = null;
 
     static initStatements(db) {
@@ -40,10 +44,47 @@ export class Usuario {
         this.#getSolicitudesByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (u.id = a.id_usuario AND a.id_amigo = @id AND a.aceptado = 0)');
         this.#solStmt = db.prepare('INSERT INTO Amigos(id_usuario, id_amigo, aceptado) SELECT @id_usuario, @id_amigo, @aceptado WHERE NOT EXISTS (SELECT 1 FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario))');
         this.#acceptStmt = db.prepare('UPDATE Amigos SET aceptado = 1 WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');
-        this.#deleteStmt = db.prepare('DELETE FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)')
+        this.#deleteStmt = db.prepare('DELETE FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');
         this.#getFondosByIdStmt = db.prepare('SELECT fondos FROM Usuarios WHERE id = ?');
-        
+
+        this.#insertImgStmt = db.prepare(`INSERT INTO Imagenes (id_usuario, rutaImg) VALUES (@id_usuario, @rutaImg)`);
+        this.#getImgStmt = db.prepare(`SELECT * FROM Imagenes WHERE id_usuario = @id_usuario`);
+        this.#updateImgStmt = db.prepare(`UPDATE Imagenes SET rutaImg = @rutaImg WHERE id_usuario = @id_usuario`);
     }
+
+    static insertImagen(id_usuario, rutaImg) {
+        const datos = { id_usuario, rutaImg };
+        try {
+            this.#insertImgStmt.run(datos);
+        } catch (e) {
+            throw new Error('No se ha podido insertar la imagen', { cause: e });
+        }
+    }
+
+    static getImagen(id_usuario) {
+        let result = null;
+        try {
+            result = this.#getImgStmt.get({ id_usuario });
+            if (!result) {
+                throw new UsuarioNoEncontrado(`ID: ${id_usuario}`);
+            }
+        }
+        catch (e) {
+            throw new Error('No se ha encontrado la imagen', { cause: e });
+        }
+        return result;
+    }
+
+    static updateImagen(id_usuario, rutaImg) {
+        const datos = { id_usuario, rutaImg };
+        try {
+            this.#updateImgStmt.run(datos);
+        } catch (e) {
+            throw new Error('No se ha podido actualizar la imagen', { cause: e });
+        }
+    }
+
+
 
     static getUsuarioByUsername(username) {
         console.log('Buscando usuario con username:', username); 
@@ -151,7 +192,9 @@ export class Usuario {
         const usuario = new Usuario(username, hashedPassword, nombre, apellido, edad, rol, fondos);
 
         try {
-            return this.#insertUsuario(usuario);
+            this.#insertUsuario(usuario);
+            usuario.id = this.getIdByUsername(usuario.username);
+            return usuario;
         } catch (e) {
             if (e instanceof UsuarioYaExiste) {
                 throw e;

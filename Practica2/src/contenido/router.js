@@ -181,7 +181,8 @@ contenidoRouter.get('/perfil', (req, res) => {
             session: req.session
         });
     }
-
+    const id_usuario = Usuario.getIdByUsername(req.session.username);
+    req.session.imagePath = Usuario.getImagen(id_usuario);
     const mostrarFormulario = req.query.modificar === 'true';
 
     res.render('paginaSinSidebar', {

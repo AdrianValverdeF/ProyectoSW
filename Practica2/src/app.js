@@ -9,7 +9,7 @@ export const app = express();
 app.set('view engine', 'ejs');
 app.set('views', config.vistas);
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(session(config.session));
 
 app.use('/', express.static(config.recursos));

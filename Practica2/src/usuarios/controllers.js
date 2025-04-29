@@ -1,6 +1,8 @@
 import { body } from 'express-validator';
 import { Usuario } from './Usuario.js';
-import { Amigos } from './Amigos.js'
+import { Amigos } from './Amigos.js';
+import { uploadProfileImage } from '../upload.js'; 
+import path from 'node:path';
 
 export function viewLogin(req, res) {
     res.render('pagina', { 
@@ -46,7 +48,7 @@ export function doLogin(req, res) {
 
 }
 
-export function doRegister(req, res) {
+export async function doRegister(req, res) {
 
     body('name').trim().escape().notEmpty().withMessage('Nombre requerido');
     body('surname').trim().escape().notEmpty().withMessage('Apellido requerido');
@@ -62,23 +64,94 @@ export function doRegister(req, res) {
     const { name, surname, username, password, age } = req.body;
 
     try {
-        const usuario = Usuario.register(username, password, name, surname, parseInt(age));
-
-        req.session.login = true;
-        req.session.nombre = usuario.nombre;
-        req.session.apellido = usuario.apellido;
-        req.session.username = usuario.username;
-        req.session.edad = usuario.edad;
-        req.session.esAdmin = usuario.rol === "A";
+        
+        try {
+            // Procesar la imagen si existe
+            let imagePath = null;
+            if (req.file) {
+                imagePath = `/img/${req.file.filename}`;
+            }
+            const usuario = Usuario.register(username, password, name, surname, parseInt(age));
+            Usuario.insertImagen(usuario.id, imagePath);
+        
+            req.session.login = true;
+            req.session.nombre = usuario.nombre;
+            req.session.apellido = usuario.apellido;
+            req.session.username = usuario.username;
+            req.session.edad = usuario.edad;
+            req.session.esAdmin = usuario.rol === "A";
+            req.session.fondos = usuario.fondos;
+            req.session.imagePath = imagePath;
 
         return res.render('pagina', {
             contenido: 'paginas/foroComun',
             session: req.session
         });
+        }catch (e) {
+            // Si hubo un error al procesar la imagen, eliminar el usuario creado
+            if (req.file) {
+                const fs = await import('node:fs');
+                fs.unlinkSync(path.join('static', req.file.filename));
+            }
+        }
     } catch (e) {
         return res.render('pagina', {
             contenido: 'paginas/register',
             error: e.message || 'Error en el registro'
+        });
+    }
+}
+
+export async function updateProfile(req, res) {
+    const { name, surname, age, username } = req.body;
+
+    try {
+        const usuario = Usuario.getUsuarioByUsername(req.session.username);
+        usuario.nombre = name;
+        usuario.apellido = surname;
+        usuario.edad = parseInt(age);
+        usuario.username = username;
+
+        // Procesar nueva imagen si se subió
+        if (req.file) {
+            // Eliminar la imagen anterior si existe
+            if (usuario.rutaimg) {
+                const fs = await import('node:fs');
+                const oldImagePath = path.join('static', usuario.rutaimg.replace('/img/', ''));
+                if (fs.existsSync(oldImagePath)) {
+                    fs.unlinkSync(oldImagePath);
+                }
+            }
+            
+            // Guardar la nueva imagen
+            const imagePath = `/img/${req.file.filename}`;
+            usuario.rutaimg = imagePath;
+            req.session.imagePath = imagePath;
+        }
+
+        usuario.persist();
+
+        // Actualizar datos de sesión
+        req.session.nombre = name;
+        req.session.apellido = surname;
+        req.session.edad = parseInt(age);
+        req.session.username = username;
+
+        res.redirect('/contenido/perfil');
+    } catch (e) {
+        console.error('Error al actualizar el perfil:', e);
+        
+        // Eliminar la imagen subida si hubo un error
+        if (req.file) {
+            const fs = await import('node:fs');
+            fs.unlinkSync(path.join('static', req.file.filename));
+        }
+        
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            mostrarFormulario: true,
+            error: 'Error al actualizar el perfil. Inténtalo de nuevo.'
         });
     }
 }
@@ -93,23 +166,6 @@ export function doLogout(req, res, next) {
     });
 }
 
-/*export function doSol(req, res) {
-
-    body('username').trim().escape().notEmpty().withMessage('username requerido');
-
-    const Amigos = Amigos.nuevaSolicitud(req.session.username, req.body.username);
-    try {
-        return res.render('pagina', {
-            contenido: 'paginas/amigos',
-            session: req.session
-        });
-    } catch (e) {
-        return res.render('pagina', {
-            contenido: 'paginas/amigos',
-            error: e.message || 'Error en la solicitud'
-        });
-    }
-}*/
 
 
 
