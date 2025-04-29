@@ -1,4 +1,4 @@
-<form action="/usuarios/register" method="POST" class="session-form">
+<form action="/usuarios/register" method="POST" enctype="multipart/form-data" class="session-form">
     <fieldset>
         
         <h3>Regístrate</h3>
@@ -7,6 +7,7 @@
         <div><label>Usuario:</label> <input type="text" name="username" /></div>
         <div><label>Contraseña:</label> <input type="password" name="password" /></div>
         <div><label>Edad:</label> <input type="number" name="age" /></div>
+        <div><label>Imagen de perfil:</label> <input type="file" name="profileImage" accept="image/*" /></div>
         <button class='form-register-btn' type="submit">Enviar</button>
 
         <% if (locals.error) { %>
