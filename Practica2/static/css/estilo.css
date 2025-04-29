@@ -2035,3 +2035,12 @@ input::placeholder {
     color: #fff;
 }
 
+.titulo-centro {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+    letter-spacing: 1px;
+}
+

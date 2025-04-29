@@ -10,11 +10,13 @@ export class MisApuestas {
                 Apuestas.cantidad_apuesta, 
                 Apuestas.multiplicador, 
                 Apuestas.combinada, 
-                Eventos.equipoA, 
-                Eventos.equipoB, 
-                Eventos.fecha
+                Eventos.fecha,
+                equipoA.nombre AS nombre_equipoA,
+                equipoB.nombre AS nombre_equipoB
             FROM Apuestas
             JOIN Eventos ON Eventos.id = Apuestas.id_eventos
+            JOIN Equipos AS equipoA ON equipoA.id = Eventos.equipoA
+            JOIN Equipos AS equipoB ON equipoB.id = Eventos.equipoB
             WHERE Apuestas.id_usuario = ?
         `);
     }

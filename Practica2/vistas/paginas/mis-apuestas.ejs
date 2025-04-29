@@ -14,24 +14,34 @@
             <ul class="apuestas-lista">
                 <% apuestas.forEach(apuesta => { %>
                     <li class="apuesta-card">
-                        <div class="apuesta-titulo">
-                            Partido: <%= apuesta.equipoA %> vs <%= apuesta.equipoB %>
+                        <div class="apuesta-titulo titulo-centro">
+                            <%= apuesta.nombre_equipoA %> vs <%= apuesta.nombre_equipoB %>
                         </div>
                         <div class="apuesta-header">
-                            <span class="apuesta-equipos">
-                                <%= apuesta.equipoA %>
-                                <span class="apuesta-vs">vs</span>
-                                <%= apuesta.equipoB %>
-                            </span>
                             <span class="apuesta-fecha">
                                 <i class="fa-regular fa-calendar"></i>
                                 <%= apuesta.fecha ? new Date(apuesta.fecha).toLocaleDateString() : 'Sin fecha' %>
                             </span>
                         </div>
                         <div class="apuesta-detalles">
-                            <span>Cantidad:<strong><%= apuesta.cantidad_apuesta %> €</strong></span>
-                            <span>Multiplicador:<strong><%= apuesta.multiplicador %></strong></span>
-                            <span>Combinada:<strong><%= apuesta.combinada ? 'Sí' : 'No' %></strong></span>
+                            <span>ID Apuesta: <strong><%= apuesta.id %></strong></span>
+                            <% if (apuesta.deporte) { %>
+                                <span>Deporte: <strong><%= apuesta.deporte %></strong></span>
+                            <% } %>
+                            <% if (apuesta.ganador) { %>
+                                <span>Has apostado a: 
+                                    <strong>
+                                        <%= apuesta.ganador === 'A' ? apuesta.nombre_equipoA : apuesta.nombre_equipoB %>
+                                    </strong>
+                                </span>
+                            <% } %>
+                            <span>Cantidad: <strong><%= apuesta.cantidad_apuesta %> €</strong></span>
+                            <span>Multiplicador: <strong><%= apuesta.multiplicador %></strong></span>
+                            <span>Combinada: 
+                                <strong>
+                                    <%= apuesta.combinada ? 'Sí' : 'No' %>
+                                </strong>
+                            </span>
                         </div>
                     </li>
                 <% }) %>
