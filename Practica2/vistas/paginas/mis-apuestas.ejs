@@ -8,20 +8,38 @@
 </head>
 <body>
     <main>
-        <h1>Mis Apuestas</h1>
+        <h1 class="titulo-mis-apuestas">Mis Apuestas</h1>
+        <a href="/contenido/eventos" class="btn-volver">← Volver a eventos</a>
         <% if (apuestas && apuestas.length > 0) { %>
             <ul class="apuestas-lista">
                 <% apuestas.forEach(apuesta => { %>
-                    <li class="apuesta-item">
-                        <h2><%= apuesta.equipoA %> vs <%= apuesta.equipoB %></h2>
-                        <p><strong>Fecha:</strong> <%= new Date(apuesta.fecha).toLocaleDateString() %></p>
-                        <p><strong>Monto:</strong> <%= apuesta.monto %> €</p>
-                        <p><strong>Estado:</strong> <%= apuesta.estado %></p>
+                    <li class="apuesta-card">
+                        <div class="apuesta-titulo">
+                            Partido: <%= apuesta.equipoA %> vs <%= apuesta.equipoB %>
+                        </div>
+                        <div class="apuesta-header">
+                            <span class="apuesta-equipos">
+                                <%= apuesta.equipoA %>
+                                <span class="apuesta-vs">vs</span>
+                                <%= apuesta.equipoB %>
+                            </span>
+                            <span class="apuesta-fecha">
+                                <i class="fa-regular fa-calendar"></i>
+                                <%= apuesta.fecha ? new Date(apuesta.fecha).toLocaleDateString() : 'Sin fecha' %>
+                            </span>
+                        </div>
+                        <div class="apuesta-detalles">
+                            <span>Cantidad:<strong><%= apuesta.cantidad_apuesta %> €</strong></span>
+                            <span>Multiplicador:<strong><%= apuesta.multiplicador %></strong></span>
+                            <span>Combinada:<strong><%= apuesta.combinada ? 'Sí' : 'No' %></strong></span>
+                        </div>
                     </li>
                 <% }) %>
             </ul>
         <% } else { %>
-            <p>No tienes apuestas registradas.</p>
+            <div class="apuestas-vacio">
+                <p>No tienes apuestas registradas.</p>
+            </div>
         <% } %>
     </main>
 </body>

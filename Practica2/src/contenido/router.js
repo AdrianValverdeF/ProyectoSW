@@ -152,7 +152,8 @@ contenidoRouter.get('/mis-apuestas', (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const apuestas = MisApuestas.getByUserId(id_usuario);
-        res.render('paginas/mis-apuestas', {
+        res.render('pagina', {
+            contenido: 'paginas/mis-apuestas',
             session: req.session,
             apuestas
         });
