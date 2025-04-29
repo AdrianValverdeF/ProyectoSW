@@ -150,7 +150,7 @@ contenidoRouter.get('/mis-apuestas', (req, res) => {
     }
 
     try {
-        const id_usuario = req.session.id_user; 
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
         const apuestas = MisApuestas.getByUserId(id_usuario);
         res.render('paginas/mis-apuestas', {
             session: req.session,
@@ -704,7 +704,7 @@ contenidoRouter.post('/apuestas/:id/apostar', (req, res) => {
         return res.redirect('/usuarios/login');
     }
 
-    const id_usuario = req.session.id_user;
+    const id_usuario = Usuario.getIdByUsername(req.session.username);
     const id_evento = req.params.id;
     const { ganador, resultadoExacto, diferenciaPuntos } = req.body;
 
