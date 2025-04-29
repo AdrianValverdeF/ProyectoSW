@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Apuestas</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+</head>
+<body>
+    <main>
+        <h1>Mis Apuestas</h1>
+        <% if (apuestas && apuestas.length > 0) { %>
+            <ul class="apuestas-lista">
+                <% apuestas.forEach(apuesta => { %>
+                    <li class="apuesta-item">
+                        <h2><%= apuesta.equipoA %> vs <%= apuesta.equipoB %></h2>
+                        <p><strong>Fecha:</strong> <%= new Date(apuesta.fecha).toLocaleDateString() %></p>
+                        <p><strong>Monto:</strong> <%= apuesta.monto %> €</p>
+                        <p><strong>Estado:</strong> <%= apuesta.estado %></p>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No tienes apuestas registradas.</p>
+        <% } %>
+    </main>
+</body>
+</html>

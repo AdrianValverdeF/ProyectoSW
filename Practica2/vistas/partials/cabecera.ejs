@@ -7,31 +7,27 @@
         <div class="nav-links">
             <a href="/">Inicio</a>
             <a href="/contenido/eventos">Eventos</a>
-            <a href="/contenido/gestion-apuestas">Apuestas</a>
+            <a href="/contenido/mis-apuestas">Mis Apuestas</a>
             <a href="/contenido/gestion-eventos">Competición</a>
             <a href="/contenido/perfil">Perfil</a>
         </div>
         <div class="user-menu">
-            <% function mostrarSaludo(session){ if (session==null || !session.login){ return `<a class='login-btn'
-                href='/usuarios/login'>Iniciar sesión</a>`;
+            <% function mostrarSaludo(session){ 
+                if (session == null || !session.login) { 
+                    return `<a class='login-btn' href='/usuarios/login'>Iniciar sesión</a>`;
                 }
 
                 return `
-                    
                     <div class="user-actions">
-
-                        <!-- <div class="welcome-popup">¡Bienvenido, ${session.nombre}!</div> -->
-
                         <div class="contenedor-cartera">
                             <i class="fa-solid fa-wallet"></i>
                             <span class="cantidad-fondos">${session.fondos}€</span>
                         </div>
-
                         <a class='login-btn' href='/usuarios/logout'>Cerrar sesión</a>
                     </div>
                 `;
-                } %>
-                <%- mostrarSaludo(session) %>
+            } %>
+            <%- mostrarSaludo(session) %>
         </div>
     </nav>
 </header>

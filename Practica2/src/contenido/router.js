@@ -3,8 +3,9 @@ import { Mensajes } from './mensajes.js';
 import { Usuario } from '../usuarios/Usuario.js';
 import { Eventos } from './eventos.js';
 import { Equipos } from './equipos.js';
-
+import { MisApuestas } from './misApuestas.js';
 import { Chat } from './chat.js';
+import { Apuestas } from './apuestas.js';
 
 const contenidoRouter = express.Router();
 
@@ -143,15 +144,22 @@ contenidoRouter.get('/amigosPag', (req, res) => {
     });
 });
 
-contenidoRouter.get('/gestion-apuestas', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/gestion-apuestas';
+contenidoRouter.get('/mis-apuestas', (req, res) => {
+    if (!req.session.login) {
+        return res.redirect('/usuarios/login'); 
     }
-    res.render('pagina', {
-        contenido,
-        session: req.session
-    });
+
+    try {
+        const id_usuario = req.session.id_user; 
+        const apuestas = MisApuestas.getByUserId(id_usuario);
+        res.render('paginas/mis-apuestas', {
+            session: req.session,
+            apuestas
+        });
+    } catch (e) {
+        console.error('Error al cargar las apuestas del usuario:', e);
+        res.status(500).send('Error al cargar tus apuestas.');
+    }
 });
 
 contenidoRouter.get('/gestion-eventos', (req, res) => {
@@ -688,6 +696,30 @@ contenidoRouter.get('/apuestas/:id', (req, res) => {
     }
     catch (e) {
         return res.status(500).send('Error al obtener el evento de apuesta');
+    }
+});
+
+contenidoRouter.post('/apuestas/:id/apostar', (req, res) => {
+    if (!req.session.login) {
+        return res.redirect('/usuarios/login');
+    }
+
+    const id_usuario = req.session.id_user;
+    const id_evento = req.params.id;
+    const { ganador, resultadoExacto, diferenciaPuntos } = req.body;
+
+    try {
+        Apuestas.insertarApuesta({
+        id_usuario,
+        multiplicador: 1, 
+        cantidad_apuesta: 10, 
+        id_eventos: id_evento, 
+        combinada: 0 
+    });
+        res.redirect('/contenido/mis-apuestas'); // he puesto que te lleve aqui pero no se si deberia de llevarte aqui la verdad
+    } catch (e) {
+        console.error('Error al insertar apuesta:', e);
+        res.status(500).send('Error al insertar apuesta');
     }
 });
 
