@@ -102,6 +102,7 @@ export class Usuario {
             if (!result) {
                 throw new UsuarioNoEncontrado(`ID: ${id}`);
             }
+          result.password = undefined; 
         } catch (e) {
             throw new ErrorDatos('No se ha encontrado el usuario', { cause: e });
         }

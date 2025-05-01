@@ -163,6 +163,21 @@ contenidoRouter.get('/mis-apuestas', (req, res) => {
     }
 });
 
+contenidoRouter.get('/modificarUsuario', (req, res) => {
+
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/modificarUsuario'; 
+    }
+        const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
+        usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
+        res.render('paginaSinSidebar', {
+            contenido,
+            user: usuarioParaModificar,
+            session: req.session
+        });
+});
+
 contenidoRouter.get('/gestion-eventos', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {
@@ -192,6 +207,31 @@ contenidoRouter.get('/perfil', (req, res) => {
     });
 });
 
+contenidoRouter.post('/modificarPerfilUsuario', (req, res) => {
+    const { nombre, apellido, edad, username,rol,fondos } = req.body;
+    try{
+        const usuario = Usuario.getUsuarioByUsername(username);
+        usuario.nombre = nombre;
+        usuario.apellido = apellido;
+        usuario.edad = parseInt(edad);
+        usuario.username = username;
+        usuario.rol = rol;
+        usuario.fondos = parseInt(fondos);
+        usuario.id = parseInt(req.query.id);
+        usuario.persist(usuario);
+        res.redirect('/contenido/listaUsuarios'); 
+    }
+     catch (e) {
+        console.error('Error al actualizar el perfil:', e);
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            error: 'Error al actualizar el perfil. Inténtalo de nuevo.'
+    });
+}
+
+});
 contenidoRouter.post('/modificarPerfil', (req, res) => {
     const { nombre, apellido, edad, username } = req.body;
 
@@ -200,14 +240,14 @@ contenidoRouter.post('/modificarPerfil', (req, res) => {
         usuario.nombre = nombre;
         usuario.apellido = apellido;
         usuario.edad = parseInt(edad);
-        usuario.username = nombre; 
+        usuario.username = username; 
 
         usuario.persist(); 
 
         req.session.nombre = nombre;
         req.session.apellido = apellido;
         req.session.edad = parseInt(edad);
-        req.session.username = nombre; 
+        req.session.username = username; 
 
         res.redirect('/contenido/perfil');
     } catch (e) {
