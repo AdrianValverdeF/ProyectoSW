@@ -1,9 +1,17 @@
 <html>
     <h1>Lista de Usuarios</h1>
-    <form method="GET" action="/buscarUsuarios" style="display: flex; gap: 10px; align-items: flex-start;">
+    <form method="GET" action="/contenido/buscarUsuarios" style="display: flex; gap: 10px; align-items: flex-start;">
+        <div style="display: flex; flex-direction: column;">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username">
+        </div>
         <div style="display: flex; flex-direction: column;">
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre">
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" name="apellido">
         </div>
         <div style="display: flex; flex-direction: column;">
             <label for="edad">Edad:</label>

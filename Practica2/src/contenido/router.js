@@ -317,7 +317,34 @@ contenidoRouter.get('/baloncesto', (req, res) => {
     });
 });
 
+contenidoRouter.get('/buscarUsuarios', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
 
+    try {
+        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username));
+        const username = req.query.username || '';
+        const nombre = req.query.nombre || '';
+        const apellido = req.query.apellido|| '';
+        const edad = parseInt(req.query.edad) || '';
+        const rol = req.query.rol || '';
+        const Users = Usuario.getListaUsuarios(username,nombre,apellido,edad,rol, id_usuario);
+    
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/listaUsuarios',
+            session: req.session,
+            usuarios: Users
+        });
+    } catch (e) {
+        console.error('Error al cargar la lista de Usuarios:', e);
+        res.status(500).send('Error al cargar la lista de Usuarios');
+    }
+
+});
 
 contenidoRouter.get('/listaUsuarios', (req, res) => {
     if (!req.session.login) {
@@ -328,9 +355,8 @@ contenidoRouter.get('/listaUsuarios', (req, res) => {
     }
 
     try {
-        
-        const Users = Usuario.getAll();
-        console.log(Users);
+        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username));
+        const Users = Usuario.getAll(id_usuario);
         res.render('paginaSinSidebar', {
             contenido: 'paginas/listaUsuarios',
             session: req.session,

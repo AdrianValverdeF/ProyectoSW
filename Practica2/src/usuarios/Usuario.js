@@ -22,6 +22,7 @@ export class Usuario {
     static #insertImgStmt = null;
     static #getImgStmt = null;
     static #updateImgStmt = null;
+    static #getListaUsuariosStmt = null;
 
     static #getFondosByIdStmt = null;
 
@@ -46,6 +47,18 @@ export class Usuario {
         this.#acceptStmt = db.prepare('UPDATE Amigos SET aceptado = 1 WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');
         this.#deleteStmt = db.prepare('DELETE FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');
         this.#getFondosByIdStmt = db.prepare('SELECT fondos FROM Usuarios WHERE id = ?');
+        
+        this.#getListaUsuariosStmt = db.prepare(`
+            SELECT *
+            FROM Usuarios
+            WHERE 
+                (:username IS NULL OR username = :username) AND
+                (:nombre IS NULL OR nombre = :nombre) AND
+                (:apellido IS NULL OR apellido = :apellido) AND
+                (:rol IS NULL OR rol = :rol) AND
+                (:edad IS NULL OR edad = :edad) AND
+                id != @id;
+        `);
 
         this.#insertImgStmt = db.prepare(`INSERT INTO Imagenes (id_usuario, rutaImg) VALUES (@id_usuario, @rutaImg)`);
         this.#getImgStmt = db.prepare(`SELECT * FROM Imagenes WHERE id_usuario = @id_usuario`);
@@ -59,6 +72,7 @@ export class Usuario {
         } catch (e) {
             throw new Error('No se ha podido insertar la imagen', { cause: e });
         }
+
     }
 
     static getImagen(id_usuario) {
@@ -82,6 +96,30 @@ export class Usuario {
         } catch (e) {
             throw new Error('No se ha podido actualizar la imagen', { cause: e });
         }
+    }
+
+    static getListaUsuarios(username, nombre,apellido, edad, rol, id) {
+        let result = null;
+        try {
+            if (username === '') username = null;
+            if (nombre === '') nombre = null;
+            if (apellido === '') apellido = null;
+            if (edad === '') edad = null;
+            if (rol === '') rol = null;
+            console.log('Buscando usuarios con:', { username, nombre, apellido, edad, rol, id });
+            result = this.#getListaUsuariosStmt.all({ username, nombre,apellido, edad, rol, id});
+            if (!result) {
+                throw new UsuarioNoEncontrado('No hay usuarios registrados');
+            }
+            result = result
+            .map(usuario => {
+                const { password, ...rest } = usuario;
+                return rest;
+            });
+        } catch (e) {
+            throw new ErrorDatos('No se han encontrado usuarios', { cause: e });
+        }
+        return result;
     }
 
 
@@ -109,17 +147,20 @@ export class Usuario {
         return result;
     }
 
-    static getAll() {
+    static getAll(id) {
         let result = null;
         try{
             result = this.#getAll.all();
             if (!result) {
                 throw new UsuarioNoEncontrado('No hay usuarios registrados');
             }
-            result = result.map(usuario => {
-                const { password, ...rest } = usuario;
-                return rest;
-            });
+            result = result
+                .filter(usuario => usuario.id !== id)
+                .map(usuario => {
+                    const { password, ...rest } = usuario;
+                    return rest;
+                });
+
         }  catch (e) {  
             throw new ErrorDatos('No se han encontrado usuarios', { cause: e });
         }
