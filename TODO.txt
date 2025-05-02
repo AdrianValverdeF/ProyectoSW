@@ -3,7 +3,9 @@
 
 - Posibilidad de hacer a otros usuarios admin
 - Cesta de apuestas
-- Apuestas (GUI casi completa)
 - Competiciones
 - Ajustar tamaño movil
 - Cambiar foto usuario?
+
+
+error al iniciar sesion con datos incorrectos? 
