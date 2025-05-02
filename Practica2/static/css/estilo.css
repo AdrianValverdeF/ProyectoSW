@@ -82,7 +82,7 @@ aside {
     color: var(--accent-color);
 }
 
-.guardar-btn {
+.guardar-btn{
     background-color: var(--accent-color);
     color: var(--text-color);
     border: none;
@@ -597,14 +597,14 @@ label {
     border: 1px solid var(--accent-color);
     border-radius: 10px; 
     padding: 15px;
-    margin: 10px 0; 
+    margin: 10px ;
     background-color: var(--secondary-bg); 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
     list-style: none; 
 }
 
 .usuario-card p {
-    margin: 0;
+
     color: var(--text-color);
 }
 
@@ -1887,7 +1887,17 @@ input::placeholder {
 /** ---------------------------- LOGIN ---------------------------- */
 
 
-.login-btn {
+.login-btn{
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-btn,
+.modify-btn{
     background-color: var(--accent-color);
     color: var(--text-color);
     border: none;

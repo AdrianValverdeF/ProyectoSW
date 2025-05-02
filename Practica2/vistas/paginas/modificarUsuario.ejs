@@ -1,0 +1,37 @@
+    <script>
+        function habilitarEdicion() {
+            const inputs = document.querySelectorAll(".datos-personales input");
+            inputs.forEach(input => input.removeAttribute("disabled"));
+            document.getElementById("guardar-btn").style.display = "inline-block";
+            document.getElementById("modificar-btn").style.display = "none";
+        }
+    </script>
+
+    <div class="perfil-container">
+        <div class="perfil-header">
+            <% if (user.imagePath.rutaImg) { %>
+                <img src="<%= user.imagePath.rutaImg %>" alt="Avatar" class="avatar">
+            <% } else { %>
+                <img src="/img/gallo.jpg" alt="Avatar" class="avatar">
+            <% } %>
+            <div class="perfil-header-content">
+                <h1><%= user.username %></h1>
+                <p class="tipo-usuario"><%= user.esAdmin ? 'Administrador' : (user.esVIP ? 'Cliente VIP' : 'Cliente Normal') %></p>
+            </div>
+        </div>
+        <div class="perfil-content">
+            <div class="datos-personales">
+                <h2>Datos Personales</h2>
+                    <form id="formulario-modificar" action="/contenido/modificarPerfilUsuario?id=<%=user.id%>" method="POST">
+                        <p><strong>Nombre:</strong> <input type="text" name="nombre" value="<%= user.nombre %>" required></p>
+                        <p><strong>Apellidos:</strong> <input type="text" name="apellido" value="<%= user.apellido %>" required></p>
+                        <p><strong>Edad:</strong> <input type="number" name="edad" value="<%= user.edad %>" required></p>
+                        <p><strong>Username:</strong> <input type="text" name="username" value="<%= user.username %>" required></p>
+                        <p><strong>Rol:</strong> <input type="text" name="rol" value="<%= user.rol %>" required></p>
+                        <p><strong>Fondos:</strong> <input type="number" name="fondos" value="<%= user.fondos %>" required></p>
+
+                        <button class="guardar-btn" type="submit">Guardar Cambios</button>
+                        <a href="/contenido/perfil" class="cancelar-btn">Cancelar</a>
+                    </form>    </div>
+        </div>
+    </div>

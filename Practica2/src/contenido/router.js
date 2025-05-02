@@ -163,6 +163,21 @@ contenidoRouter.get('/mis-apuestas', (req, res) => {
     }
 });
 
+contenidoRouter.get('/modificarUsuario', (req, res) => {
+
+    let contenido = 'paginas/noPermisos';
+    if (req.session.login) {
+        contenido = 'paginas/modificarUsuario'; 
+    }
+        const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
+        usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
+        res.render('paginaSinSidebar', {
+            contenido,
+            user: usuarioParaModificar,
+            session: req.session
+        });
+});
+
 contenidoRouter.get('/gestion-eventos', (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.login) {
@@ -194,6 +209,31 @@ contenidoRouter.get('/perfil', (req, res) => {
     });
 });
 
+contenidoRouter.post('/modificarPerfilUsuario', (req, res) => {
+    const { nombre, apellido, edad, username,rol,fondos } = req.body;
+    try{
+        const usuario = Usuario.getUsuarioByUsername(username);
+        usuario.nombre = nombre;
+        usuario.apellido = apellido;
+        usuario.edad = parseInt(edad);
+        usuario.username = username;
+        usuario.rol = rol;
+        usuario.fondos = parseInt(fondos);
+        usuario.id = parseInt(req.query.id);
+        usuario.persist(usuario);
+        res.redirect('/contenido/listaUsuarios'); 
+    }
+     catch (e) {
+        console.error('Error al actualizar el perfil:', e);
+
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            error: 'Error al actualizar el perfil. Inténtalo de nuevo.'
+    });
+}
+
+});
 contenidoRouter.post('/modificarPerfil', (req, res) => {
     const { nombre, apellido, edad, username } = req.body;
 
@@ -202,14 +242,14 @@ contenidoRouter.post('/modificarPerfil', (req, res) => {
         usuario.nombre = nombre;
         usuario.apellido = apellido;
         usuario.edad = parseInt(edad);
-        usuario.username = nombre; 
+        usuario.username = username; 
 
         usuario.persist(); 
 
         req.session.nombre = nombre;
         req.session.apellido = apellido;
         req.session.edad = parseInt(edad);
-        req.session.username = nombre; 
+        req.session.username = username; 
 
         res.redirect('/contenido/perfil');
     } catch (e) {
@@ -279,7 +319,34 @@ contenidoRouter.get('/baloncesto', (req, res) => {
     });
 });
 
+contenidoRouter.get('/buscarUsuarios', (req, res) => {
+    if (!req.session.login) {
+        return res.render('pagina', {
+            contenido: 'paginas/login',
+            session: req.session
+        });
+    }
 
+    try {
+        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username));
+        const username = req.query.username || '';
+        const nombre = req.query.nombre || '';
+        const apellido = req.query.apellido|| '';
+        const edad = parseInt(req.query.edad) || '';
+        const rol = req.query.rol || '';
+        const Users = Usuario.getListaUsuarios(username,nombre,apellido,edad,rol, id_usuario);
+    
+        res.render('paginaSinSidebar', {
+            contenido: 'paginas/listaUsuarios',
+            session: req.session,
+            usuarios: Users
+        });
+    } catch (e) {
+        console.error('Error al cargar la lista de Usuarios:', e);
+        res.status(500).send('Error al cargar la lista de Usuarios');
+    }
+
+});
 
 contenidoRouter.get('/listaUsuarios', (req, res) => {
     if (!req.session.login) {
@@ -290,9 +357,8 @@ contenidoRouter.get('/listaUsuarios', (req, res) => {
     }
 
     try {
-        
-        const Users = Usuario.getAll();
-        console.log(Users);
+        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username));
+        const Users = Usuario.getAll(id_usuario);
         res.render('paginaSinSidebar', {
             contenido: 'paginas/listaUsuarios',
             session: req.session,
