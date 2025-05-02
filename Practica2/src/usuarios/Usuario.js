@@ -91,8 +91,8 @@ export class Usuario {
         const usuario = this.#getByUsernameStmt.get({ username });
         if (usuario === undefined) throw new UsuarioNoEncontrado(username);
 
-        const { password, rol, nombre, apellido, edad, id } = usuario;
-        return new Usuario(username, password, nombre, apellido, edad, rol, id);
+        const { password, rol, nombre, apellido, edad, id, fondos } = usuario;
+        return new Usuario(username, password, nombre, apellido, edad, rol, id, fondos);
     }
 
     static getUsuarioById(id) {
@@ -184,6 +184,8 @@ export class Usuario {
         
         if (!bcrypt.compareSync(password, usuario.#password)) throw new UsuarioOPasswordNoValido(username);
 
+      
+
         return usuario;
     }
 
@@ -264,14 +266,13 @@ export class Usuario {
     }
 
     static agregarFondos(id_usuario, cantidad) {
-
-        try{  
-            const { username, password, nombre, apellido, edad, rol, fondos } = this.getUsuarioById(id_usuario);
-            const usuario = new Usuario(username, password, nombre, apellido, edad, rol, id_usuario, fondos);
-
-            const nuevosFondos = usuario.fondos + cantidad;
-            usuario.fondos = nuevosFondos;
-
+        try {  
+            const datos = this.getUsuarioById(id_usuario);
+            // Creamos la instancia aquí
+            const usuario = new Usuario(
+                datos.username, datos.password, datos.nombre, datos.apellido, datos.edad, datos.rol, datos.id, datos.fondos
+            );
+            usuario.fondos += cantidad;
             return this.#update(usuario);   
         }
         catch (e) {
@@ -287,6 +288,21 @@ export class Usuario {
         }
         catch (e) {
             throw new Error('Error al obtener los fondos del usuario', { cause: e });
+        }
+    }
+
+    static restarFondos(id_usuario, cantidad) {
+        try {
+            const datos = this.getUsuarioById(id_usuario);
+            // Creamos la instancia aquí
+            const usuario = new Usuario(
+                datos.username, datos.password, datos.nombre, datos.apellido, datos.edad, datos.rol, datos.id, datos.fondos
+            );
+            if (usuario.fondos < cantidad) throw new Error('Fondos insuficientes');
+            usuario.fondos -= cantidad;
+            return this.#update(usuario);
+        } catch (e) {
+            throw new Error('Error al restar fondos', { cause: e });
         }
     }
 

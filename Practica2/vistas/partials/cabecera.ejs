@@ -7,7 +7,9 @@
         <div class="nav-links">
             <a href="/">Inicio</a>
             <a href="/contenido/eventos">Eventos</a>
-            <a href="/contenido/mis-apuestas">Mis Apuestas</a>
+            <% if (session.login && !session.esAdmin) { %>
+                <a href="/contenido/mis-apuestas">Mis Apuestas</a>
+            <% } %>
             <a href="/contenido/gestion-eventos">Competición</a>
             <a href="/contenido/perfil">Perfil</a>
         </div>

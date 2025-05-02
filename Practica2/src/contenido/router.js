@@ -182,6 +182,8 @@ contenidoRouter.get('/perfil', (req, res) => {
         });
     }
     const id_usuario = Usuario.getIdByUsername(req.session.username);
+    req.session.fondos = Usuario.getFondosById(id_usuario);
+
     req.session.imagePath = Usuario.getImagen(id_usuario);
     const mostrarFormulario = req.query.modificar === 'true';
 
@@ -709,19 +711,23 @@ contenidoRouter.post('/apuestas/:id/apostar', (req, res) => {
     const id_usuario = Usuario.getIdByUsername(req.session.username);
     const id_evento = req.params.id;
     const { ganador, resultadoExacto, diferenciaPuntos } = req.body;
-
+    const cantidad_apuesta = 10;
     try {
+        Usuario.restarFondos(id_usuario, cantidad_apuesta);
+        req.session.fondos = Usuario.getFondosById(id_usuario);
+
         Apuestas.insertarApuesta({
-        id_usuario,
-        multiplicador: 1, 
-        cantidad_apuesta: 10, 
-        id_eventos: id_evento, 
-        combinada: 0 
-    });
-        res.redirect('/contenido/mis-apuestas'); // he puesto que te lleve aqui pero no se si deberia de llevarte aqui la verdad
+            id_usuario,
+            multiplicador: 1, 
+            cantidad_apuesta, 
+            id_eventos: id_evento, 
+            combinada: 0 
+        });
+
+        res.redirect('/contenido/mis-apuestas');
     } catch (e) {
         console.error('Error al insertar apuesta:', e);
-        res.status(500).send('Error al insertar apuesta');
+        res.status(400).send(e.message || 'Error al insertar apuesta');
     }
 });
 
