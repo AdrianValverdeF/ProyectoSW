@@ -27,15 +27,15 @@ Apuestas:
     - logica de apuestas (calcular dinamicamente el multiplicador)
     - poder seleccionar campos unicos de apuesta
 
-Monedero:   //Alejandro
-    - arreglar añadir fondos
+✅Monedero:   //Alejandro
+    - ✅arreglar añadir fondos
 
 Cabecera: //Adrián
     - subrayar menu actual del usuario
 
 Eventos: //Alejandro
     - poder filtar Eventos
-    - añadir distintivo para genero del deporte
+    - ✅añadir distintivo para genero del deporte
 
 Perfil: //Adrián
     - actualizar ultimas apuestas
