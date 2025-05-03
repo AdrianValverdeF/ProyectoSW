@@ -395,13 +395,14 @@ contenidoRouter.get('/buscarUsuarios', (req, res) => {
     }
 
     try {
+
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const username = req.query.username || '';
         const nombre = req.query.nombre || '';
         const apellido = req.query.apellido|| '';
         const edad = parseInt(req.query.edad) || '';
         const rol = req.query.rol || '';
-        const Users = Usuario.getListaUsuarios(username,nombre,apellido,edad,rol, id_usuario.id);
+        const Users = Usuario.getListaUsuarios(username,nombre,apellido,edad,rol, id_usuario);
     
         res.render('paginaSinSidebar', {
             contenido: 'paginas/listaUsuarios',
