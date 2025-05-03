@@ -77,9 +77,14 @@ aside {
     font-size: 0.9rem;
 }
 
-.nav-links a:hover,
+.nav-links a:hover{
+    color: var(--accent-color);
+}
+
 .nav-links a.active {
     color: var(--accent-color);
+    font-weight: bold; 
+    text-decoration: underline; 
 }
 
 .guardar-btn{

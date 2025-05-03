@@ -30,8 +30,8 @@ Apuestas:
 Monedero:   //Alejandro
     - arreglar añadir fondos
 
-Cabecera: //Adrián
-    - subrayar menu actual del usuario
+✅Cabecera: //Adrián
+    - ✅subrayar menu actual del usuario
 
 Eventos: //Alejandro
     - poder filtar Eventos
