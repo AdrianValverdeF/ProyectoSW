@@ -38,6 +38,11 @@ header {
     border-right: 2px solid var(--border-color);
 }
 
+.sport-item.selected {
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+}
+
 aside {
     float: right;
     width: 500px;
