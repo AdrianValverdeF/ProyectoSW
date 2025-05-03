@@ -550,6 +550,14 @@ contenidoRouter.get('/eventos', (req, res) => {
 
     const eventos = Eventos.getEventos();
 
+    eventos.forEach(evento => {
+        if (evento.genero === 'M') {
+            evento.genero = 'Masculino';
+        } else if (evento.genero === 'F') {
+            evento.genero = 'Femenino';
+        }
+    });
+    
     res.render('pagina', {
         contenido,
         session: req.session,

@@ -10,7 +10,8 @@ export class Eventos {
 
         this.#getAllStmt = db.prepare(`
             SELECT e.id, e.fecha, e.deporte, 
-                   eqA.nombre AS equipoA_nombre, eqB.nombre AS equipoB_nombre 
+                   eqA.nombre AS equipoA_nombre, eqB.nombre AS equipoB_nombre,
+                   eqA.genero AS genero
             FROM Eventos e 
             LEFT JOIN Equipos eqA ON e.equipoA = eqA.id 
             LEFT JOIN Equipos eqB ON e.equipoB = eqB.id
@@ -19,7 +20,8 @@ export class Eventos {
 
         this.#getByIdStmt = db.prepare(`
             SELECT e.id, e.fecha, e.deporte, 
-                   eqA.nombre AS equipoA_nombre, eqB.nombre AS equipoB_nombre 
+                   eqA.nombre AS equipoA_nombre, eqB.nombre AS equipoB_nombre,
+                   eqA.genero AS genero
             FROM Eventos e 
             LEFT JOIN Equipos eqA ON e.equipoA = eqA.id 
             LEFT JOIN Equipos eqB ON e.equipoB = eqB.id
@@ -46,7 +48,7 @@ export class Eventos {
         try {
             const result = this.#getAllStmt.all();
             return result.map(row => new Eventos(
-                row.equipoA_nombre, row.equipoB_nombre, row.deporte, row.fecha, row.id
+                row.equipoA_nombre, row.equipoB_nombre, row.deporte, row.fecha, row.id, row.genero
             ));
         } catch (e) {
             throw new ErrorDatos('No se han encontrado eventos', { cause: e });
@@ -59,7 +61,7 @@ export class Eventos {
             if (!row) throw new EventoNoEncontrado(id);
 
             return new Eventos(
-                row.equipoA_nombre, row.equipoB_nombre, row.deporte, row.fecha, row.id
+                row.equipoA_nombre, row.equipoB_nombre, row.deporte, row.fecha, row.id, row.genero
             );
 
         } catch (e) {
@@ -128,12 +130,13 @@ export class Eventos {
         }
     }
 
-    constructor(equipoA, equipoB, deporte, fecha = new Date(), id = null) {
+    constructor(equipoA, equipoB, deporte, fecha = new Date(), id = null, genero = null) {
         this.equipoA = equipoA;
         this.equipoB = equipoB;
         this.deporte = deporte;
         this.fecha = fecha;
         this.id = id;
+        this.genero = genero;
     }
 }
 
