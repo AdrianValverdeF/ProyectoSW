@@ -2,16 +2,13 @@
 
 Ficheros correccion:
  -src/contenido:
-    - Equipo.js //Alejandro
     - Router.js //Marta
  -src/usuarios:
     - Amigos.js //Dani
     - router.js //Dani
     - Usuario.js //Adrián
- -data:
-    - borrar carpeta //Alejandro
  -static:
-    - Perfil.ejs //Alejandro   
+    - Perfil.ejs //Alejandro   -> Comentario: "XXX Pues no me habéis preguntado :D"
 
 General:
     - Ajustar tamaño movil

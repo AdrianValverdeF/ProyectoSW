@@ -47,9 +47,22 @@ export class Equipos {
         this.#deleteStmt = db.prepare('DELETE FROM Equipos WHERE id = ?');
     }
 
+    static fromRow(row) {
+        return new Equipos(
+            row.nombre,
+            row.deporte,
+            row.victorias,
+            row.derrotas,
+            row.empates,
+            row.puntos,
+            row.genero,
+            row.id
+        );
+    }
+
     static getAll() {
         try {
-            return this.#getAllStmt.all();
+            return this.#getAllStmt.all().map(this.fromRow);
         } catch (e) {
             throw new ErrorDatos('No se han podido obtener los equipos', { cause: e });
         }
@@ -59,18 +72,18 @@ export class Equipos {
         try {
             const equipo = this.#getByIdStmt.get(id);
             if (!equipo) throw new EquipoNoEncontrado(id);
-            return equipo;
+            return this.fromRow(equipo);
         } catch (e) {
             if (e instanceof EquipoNoEncontrado) throw e;
             throw new ErrorDatos(`Error al buscar equipo con ID ${id}`, { cause: e });
         }
     }
-
+    
     static getByName(nombre) {
         try {
             const equipo = this.#getByNameStmt.get(nombre);
             if (!equipo) throw new EquipoNoEncontrado(nombre);
-            return equipo;
+            return this.fromRow(equipo);
         } catch (e) {
             if (e instanceof EquipoNoEncontrado) throw e;
             throw new ErrorDatos(`Error al buscar equipo: ${nombre}`, { cause: e });
