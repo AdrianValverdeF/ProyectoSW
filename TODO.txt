@@ -1,5 +1,18 @@
 -> Poner con que tarea estais por wass
 
+Ficheros correccion:
+ -src/contenido:
+    - Equipo.js //Alejandro
+    - Router.js //Marta
+ -src/usuarios:
+    - Amigos.js //Dani
+    - router.js //Dani
+    - Usuario.js //Adrián
+ -data:
+    - borrar carpeta //Alejandro
+ -static:
+    - Perfil.ejs //Alejandro   
+
 General:
     - Ajustar tamaño movil
     - poder usar la barra izquierda como filtro para cada seccion de la pagina 
@@ -41,3 +54,5 @@ Chat: //Dani
 
 Competiciones:
     - Competiciones
+
+    
