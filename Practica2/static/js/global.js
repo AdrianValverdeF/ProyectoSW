@@ -1,23 +1,3 @@
-// if(document.querySelector('.welcome-popup')) {
-
-//     if(!sessionStorage.getItem('welcomePopupShown')) {
-
-//         // Show the popup if it hasn't been shown before
-//         const popup = document.querySelector('.welcome-popup');
-//         popup.style.opacity = '1';
-//         popup.style.display = 'block';
-        
-//         setTimeout(() => {
-//             popup.style.opacity = '0';
-//             setTimeout(() => {
-//                 popup.style.display = 'none';
-//             }, 500);
-//         }, 3000);
-        
-//         sessionStorage.setItem('welcomePopupShown', 'true');
-//     }
-
-// }
 
 document.addEventListener('DOMContentLoaded', () => {
     // Lógica de los deslizadores de puntos
@@ -53,3 +33,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   });
+
+  // Lógica para el filtro de eventos por deporte
+  document.querySelectorAll('.sport-item').forEach(item => {
+    item.addEventListener('click', e => {
+        e.preventDefault();
+
+        const deporteSeleccionado = item.dataset.deporte;
+        
+        document.querySelectorAll('.sport-item').forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+
+        const eventos = document.querySelectorAll('.contenedor-evento');
+        eventos.forEach(evento => {
+            const deporteEvento = evento.dataset.deporte;
+            if (deporteSeleccionado === 'todos' || deporteEvento === deporteSeleccionado) {
+                evento.style.display = 'block';
+            } else {
+                evento.style.display = 'none';
+            }
+        });
+    });
+});
