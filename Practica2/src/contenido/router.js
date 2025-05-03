@@ -6,6 +6,7 @@ import { Equipos } from './equipos.js';
 import { MisApuestas } from './misApuestas.js';
 import { Chat } from './chat.js';
 import { Apuestas } from './apuestas.js';
+import { Amigos } from '../usuarios/Amigos.js';
 
 const contenidoRouter = express.Router();
 
@@ -95,12 +96,12 @@ contenidoRouter.post('/enviarmensaje', (req, res) => {
         const id_mensaje_respuesta = req.body.id_respuesta;
         const id_foro = 1; 
         
-        if (!mensaje || !id_usuario) {
+        if (!mensaje || !id_usuario.id) {
             return res.status(400).send('Mensaje o usuario no válido');
         }
 
         try {
-            const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+            const nuevoMensaje = new Mensajes(mensaje, id_usuario.id, created_at, id_mensaje_respuesta, id_foro);
             Mensajes.persist(nuevoMensaje);
         } catch (e) {
             return res.status(500).send('Error al enviar el mensaje');
@@ -151,7 +152,7 @@ contenidoRouter.get('/mis-apuestas', (req, res) => {
 
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const apuestas = MisApuestas.getByUserId(id_usuario);
+        const apuestas = MisApuestas.getByUserId(id_usuario.id);
         res.render('pagina', {
             contenido: 'paginas/mis-apuestas',
             session: req.session,
@@ -170,6 +171,7 @@ contenidoRouter.get('/modificarUsuario', (req, res) => {
         contenido = 'paginas/modificarUsuario'; 
     }
         const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
+        usuarioParaModificar.id = parseInt(req.query.id);
         usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
         res.render('paginaSinSidebar', {
             contenido,
@@ -197,9 +199,9 @@ contenidoRouter.get('/perfil', (req, res) => {
         });
     }
     const id_usuario = Usuario.getIdByUsername(req.session.username);
-    req.session.fondos = Usuario.getFondosById(id_usuario);
+    req.session.fondos = Usuario.getFondosById(id_usuario.id).fondos;
 
-    req.session.imagePath = Usuario.getImagen(id_usuario);
+    req.session.imagePath = Usuario.getImagen(id_usuario.id);
     const mostrarFormulario = req.query.modificar === 'true';
 
     res.render('paginaSinSidebar', {
@@ -328,13 +330,13 @@ contenidoRouter.get('/buscarUsuarios', (req, res) => {
     }
 
     try {
-        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username));
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
         const username = req.query.username || '';
         const nombre = req.query.nombre || '';
         const apellido = req.query.apellido|| '';
         const edad = parseInt(req.query.edad) || '';
         const rol = req.query.rol || '';
-        const Users = Usuario.getListaUsuarios(username,nombre,apellido,edad,rol, id_usuario);
+        const Users = Usuario.getListaUsuarios(username,nombre,apellido,edad,rol, id_usuario.id);
     
         res.render('paginaSinSidebar', {
             contenido: 'paginas/listaUsuarios',
@@ -357,8 +359,8 @@ contenidoRouter.get('/listaUsuarios', (req, res) => {
     }
 
     try {
-        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username));
-        const Users = Usuario.getAll(id_usuario);
+        const id_usuario = Usuario.getIdByUsername(req.session.username);
+        const Users = Usuario.getAll(id_usuario.id);
         res.render('paginaSinSidebar', {
             contenido: 'paginas/listaUsuarios',
             session: req.session,
@@ -380,16 +382,8 @@ contenidoRouter.get('/amigos', (req, res) => {
     }
 
     try {
-        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
-        console.log('ID del usuario logueado:', id_usuario); 
-        const amigos = Usuario.getAmigosById(id_usuario); 
-        amigos.forEach(amigo => {
-            if (amigo.id_usuario == id_usuario)
-                amigo.username = Usuario.getUsuarioById(amigo.id_amigo).username;
-            else {
-                amigo.username = Usuario.getUsuarioById(amigo.id_usuario).username;
-            }
-        });
+        const id_usuario = Usuario.getIdByUsername(req.session.username); 
+        const amigos = Amigos.getAmigosById(parseInt(id_usuario.id)); 
 
         res.render('paginaSinSidebar', {
             contenido: 'paginas/amigos',
@@ -411,11 +405,10 @@ contenidoRouter.get('/solicitudes', (req, res) => {
     }
 
     try {
-        const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
-        console.log('ID del usuario logueado:', id_usuario); 
-        const solicitudes = Usuario.getSolicitudesById(id_usuario);
+        const id_usuario = Usuario.getIdByUsername(req.session.username); 
+        const solicitudes = Amigos.getSolicitudesById(id_usuario.id);
         solicitudes.forEach(solicitud => {
-            if (solicitud.id_usuario == id_usuario)
+            if (solicitud.id_usuario == id_usuario.id)
                 solicitud.username = Usuario.getUsuarioById(solicitud.id_amigo).username;
             else {
                 solicitud.username = Usuario.getUsuarioById(solicitud.id_usuario).username;
@@ -444,7 +437,6 @@ contenidoRouter.get('/chat', (req, res) => {
     }
 
     const amigo = req.query.amigo;
-    console.log('Valor de amigo:', amigo); // Depuración
     if (!amigo) {
         return res.status(400).send('Amigo no especificado');
     }
@@ -452,10 +444,10 @@ contenidoRouter.get('/chat', (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
-        const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
+        const mensajes = Chat.getMensajesByAmigo(id_usuario.id, id_amigo.id);
 
         // Obtener la lista de amigos para la barra lateral
-        const amigos = Usuario.getAmigosById(id_usuario);
+        const amigos = Amigos.getAmigosById(parseInt(id_usuario.id));
 
         res.render('paginaSinSidebar', {
             contenido: 'paginas/chat',
@@ -483,7 +475,7 @@ contenidoRouter.post('/enviarMensajePriv', (req, res) => {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
 
-        const nuevoMensaje = new Chat(mensaje, id_usuario, id_amigo);
+        const nuevoMensaje = new Chat(mensaje, id_usuario.id, id_amigo);
         Chat.persist(nuevoMensaje);
 
         res.redirect(`/contenido/chat?amigo=${amigo}`);
@@ -498,12 +490,11 @@ contenidoRouter.post('/nuevaSolicitud', (req, res) => {
     console.log('Datos recibidos:', JSON.stringify(req.body, null, 2));
 
     const { amigo } = req.body;
-    console.log(amigo);
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
 
-        Usuario.nuevaSolicitud(id_usuario, id_amigo);
+        Usuario.nuevaSolicitud(id_usuario.id, id_amigo);
         console.log('hola hola');
         res.redirect(`/contenido/amigos`);
     } catch (e) {
@@ -521,7 +512,7 @@ contenidoRouter.post('/aceptarSolicitud', (req, res) => {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
 
-        Usuario.aceptarSolicitud(id_usuario, id_amigo);
+        Usuario.aceptarSolicitud(id_usuario.id, id_amigo);
         console.log('hola hola');
         res.redirect(`/contenido/solicitudes`);
     } catch (e) {
@@ -539,7 +530,7 @@ contenidoRouter.post('/eliminarAmigo', (req, res) => {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
 
-        Usuario.eliminar(id_usuario, id_amigo);
+        Usuario.eliminar(id_usuario.id, id_amigo);
         console.log('hola hola');
         res.redirect(`/contenido/perfil`);
     } catch (e) {
@@ -732,9 +723,8 @@ contenidoRouter.post('/agregarFondos', async (req, res) => {
     try{    
         const idUsuario = Usuario.getIdByUsername(req.session.username);
         
-        await Usuario.agregarFondos(idUsuario, cantidad);
-        req.session.fondos = Usuario.getFondosById(idUsuario); // Actualiza la sesión con los nuevos fondos
-        
+        await Usuario.agregarFondos(idUsuario.id, cantidad);
+        req.session.fondos = Usuario.getFondosById(idUsuario.id).fondos; 
         res.redirect('/contenido/perfil');
     }   
     catch (e) {
@@ -779,11 +769,10 @@ contenidoRouter.post('/apuestas/:id/apostar', (req, res) => {
     const { ganador, resultadoExacto, diferenciaPuntos } = req.body;
     const cantidad_apuesta = 10;
     try {
-        Usuario.restarFondos(id_usuario, cantidad_apuesta);
-        req.session.fondos = Usuario.getFondosById(id_usuario);
-
+        Usuario.restarFondos(id_usuario.id, cantidad_apuesta);
+        req.session.fondos = Usuario.getFondosById(id_usuario.id).fondos;
         Apuestas.insertarApuesta({
-            id_usuario,
+            id_usuario: id_usuario.id,
             multiplicador: 1, 
             cantidad_apuesta, 
             id_eventos: id_evento, 

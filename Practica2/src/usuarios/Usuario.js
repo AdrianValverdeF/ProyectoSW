@@ -13,7 +13,6 @@ export class Usuario {
     static #updateStmt = null;
     static #getByIdStmt = null;
 
-    static #getAmigosByIdStmt = null;
     static #getSolicitudesByIdStmt = null;
     static #solStmt = null;
     static #acceptStmt = null;
@@ -23,7 +22,7 @@ export class Usuario {
     static #getImgStmt = null;
     static #updateImgStmt = null;
     static #getListaUsuariosStmt = null;
-
+    static #getIDbyUsernameStmt = null;
     static #getFondosByIdStmt = null;
 
     static initStatements(db) {
@@ -41,13 +40,12 @@ export class Usuario {
             SET username = @username, password = @password, rol = @rol, nombre = @nombre, apellido = @apellido, edad = @edad, fondos = @fondos
             WHERE id = @id
         `);
-        this.#getAmigosByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (((u.id = a.id_amigo AND a.id_usuario = @id) OR (u.id = a.id_usuario AND a.id_amigo = @id)) AND a.aceptado = 1)');
         this.#getSolicitudesByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (u.id = a.id_usuario AND a.id_amigo = @id AND a.aceptado = 0)');
         this.#solStmt = db.prepare('INSERT INTO Amigos(id_usuario, id_amigo, aceptado) SELECT @id_usuario, @id_amigo, @aceptado WHERE NOT EXISTS (SELECT 1 FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario))');
         this.#acceptStmt = db.prepare('UPDATE Amigos SET aceptado = 1 WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');
         this.#deleteStmt = db.prepare('DELETE FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');
         this.#getFondosByIdStmt = db.prepare('SELECT fondos FROM Usuarios WHERE id = ?');
-        
+        this.#getIDbyUsernameStmt = db.prepare('SELECT id FROM Usuarios WHERE username = @username');
         this.#getListaUsuariosStmt = db.prepare(`
             SELECT *
             FROM Usuarios
@@ -114,7 +112,9 @@ export class Usuario {
             result = result
             .map(usuario => {
                 const { password, ...rest } = usuario;
-                return rest;
+                rest.password = undefined;
+                result = new Usuario(rest.username, rest.password, rest.nombre, rest.apellido, rest.edad, rest.rol, id, rest.fondos);
+                return result;
             });
         } catch (e) {
             throw new ErrorDatos('No se han encontrado usuarios', { cause: e });
@@ -141,6 +141,7 @@ export class Usuario {
                 throw new UsuarioNoEncontrado(`ID: ${id}`);
             }
           result.password = undefined; 
+          result = new Usuario(result.username, result.password, result.nombre, result.apellido, result.edad, result.rol, id, result.fondos);
         } catch (e) {
             throw new ErrorDatos('No se ha encontrado el usuario', { cause: e });
         }
@@ -158,7 +159,9 @@ export class Usuario {
                 .filter(usuario => usuario.id !== id)
                 .map(usuario => {
                     const { password, ...rest } = usuario;
-                    return rest;
+                    rest.password = undefined;
+                    result = new Usuario(rest.username, rest.password, rest.nombre, rest.apellido, rest.edad, rest.rol, id, rest.fondos);
+                    return result;
                 });
 
         }  catch (e) {  
@@ -169,8 +172,8 @@ export class Usuario {
 
 
     static getIdByUsername(username) {
-        const usuario = this.getUsuarioByUsername(username);
-        return usuario.id_user;
+        const id = this.#getIDbyUsernameStmt.get({ username });
+        return id;
     }
 
     static #insertUsuario(usuario) {
@@ -246,13 +249,6 @@ export class Usuario {
             throw new Error('Error al registrarse', { cause: e });
         }
     }
-
-    static getAmigosById(id_usuario) {
-        const id = parseInt(id_usuario, 10);
-        const amigos = this.#getAmigosByIdStmt.all({ id });
-        return amigos;
-    }
-
     static getSolicitudesById(id_usuario) {
         const id = parseInt(id_usuario, 10);
         const solicitudes = this.#getSolicitudesByIdStmt.all({ id });
@@ -310,7 +306,6 @@ export class Usuario {
     static agregarFondos(id_usuario, cantidad) {
         try {  
             const datos = this.getUsuarioById(id_usuario);
-            // Creamos la instancia aquí
             const usuario = new Usuario(
                 datos.username, datos.password, datos.nombre, datos.apellido, datos.edad, datos.rol, datos.id, datos.fondos
             );
@@ -326,7 +321,7 @@ export class Usuario {
 
         try {
             const fondos = this.#getFondosByIdStmt.get([id_usuario]);
-            return fondos.fondos;
+            return new Usuario(id_usuario, undefined, undefined, undefined, undefined, undefined, undefined, fondos.fondos);
         }
         catch (e) {
             throw new Error('Error al obtener los fondos del usuario', { cause: e });
