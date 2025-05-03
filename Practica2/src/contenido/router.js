@@ -6,16 +6,10 @@ import { Equipos } from './equipos.js';
 import { MisApuestas } from './misApuestas.js';
 import { Chat } from './chat.js';
 import { Apuestas } from './apuestas.js';
-import { body, validationResult, matchedData, query } from 'express-validator';
+import { body, validationResult, matchedData, query, param } from 'express-validator';
 
 const contenidoRouter = express.Router();
 
-contenidoRouter.use((req, res, next) => {
-    console.log(`Solicitud recibida: ${req.method} ${req.url}`);
-    next();
-});
-
-//lo de arriba es porque me estoy volviendo loca
 
 
 function auth(req, res, next) {
@@ -134,39 +128,42 @@ contenidoRouter.get('/mensajes', auth, [query('id').optional().isInt().toInt()],
 
 });
 
-contenidoRouter.post('/enviarmensaje', (req, res) => {
-    if (req.session.login) {
-        
-        const mensaje = req.body.mensaje;
-        const id_usuario = Usuario.getIdByUsername(req.session.username); 
-        const datas = new Date();
-        const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
-        const created_at = horaEnvio;
-        console.log(req.body.id_respuesta);
-        const id_mensaje_respuesta = req.body.id_respuesta;
-        const id_foro = 1; 
-        
-        if (!mensaje || !id_usuario) {
-            return res.status(400).send('Mensaje o usuario no válido');
-        }
-
-        try {
-            const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
-            Mensajes.persist(nuevoMensaje);
-        } catch (e) {
-            return res.status(500).send('Error al enviar el mensaje');
-        }
-    
+//hecho
+contenidoRouter.post('/enviarmensaje', auth, [
+    body('mensaje').isString().notEmpty().withMessage('El mensaje no puede estar vacío')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('pagina', {
+            contenido: 'paginas/foroComun',
+            session: req.session,
+            error: errors.array().map(e => e.msg).join(', ')
+        });
     }
-    res.redirect('/contenido/foroComun');
+
+    const { mensaje } = matchedData(req);
+    const id_usuario = Usuario.getIdByUsername(req.session.username);
+    const datas = new Date();
+    const horaEnvio = datas.getHours() + ":" + datas.getMinutes();
+    const created_at = horaEnvio;
+    const id_mensaje_respuesta = req.body.id_respuesta;
+    const id_foro = 1;
+
+    try {
+        const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+        Mensajes.persist(nuevoMensaje);
+        res.redirect('/contenido/foroComun');
+    } catch (e) {
+        res.status(500).render('pagina', {
+            contenido: 'paginas/foroComun',
+            session: req.session,
+            error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
+        });
+    }
 });
 
-contenidoRouter.get('/normal', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/normal';
-    }
-    
+//hecho
+contenidoRouter.get('/normal', auth, (req, res) => {
     res.render('pagina', {
         contenido: 'paginas/normal',
         session: req.session
@@ -225,28 +222,23 @@ contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
     }
 });
 
-contenidoRouter.get('/modificarUsuario', (req, res) => {
 
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/modificarUsuario'; 
-    }
-        const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
-        usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
-        res.render('paginaSinSidebar', {
-            contenido,
-            user: usuarioParaModificar,
-            session: req.session
-        });
+//hecho
+contenidoRouter.get('/modificarUsuario', auth, (req, res) => {
+    const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
+    usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
+    res.render('paginaSinSidebar', {
+        contenido: 'paginas/modificarUsuario',
+        user: usuarioParaModificar,
+        session: req.session
+    });
 });
 
-contenidoRouter.get('/gestion-eventos', (req, res) => {
-    let contenido = 'paginas/noPermisos';
-    if (req.session.login) {
-        contenido = 'paginas/gestion-eventos';
-    }
+
+//hecho
+contenidoRouter.get('/gestion-eventos', auth, (req, res) => {
     res.render('pagina', {
-        contenido,
+        contenido: 'paginas/gestion-eventos',
         session: req.session
     });
 });
@@ -254,6 +246,7 @@ contenidoRouter.get('/gestion-eventos', (req, res) => {
 
 //
 //-------------------------------------------------------------------------------//
+// es una sugerencia pero me da palo
 contenidoRouter.get('/perfil', auth, (req, res) => {
     const id_usuario = Usuario.getIdByUsername(req.session.username);
     req.session.fondos = Usuario.getFondosById(id_usuario);
@@ -385,25 +378,18 @@ contenidoRouter.get('/baloncesto', auth, (req, res) => {
         session: req.session
     });
 });
-//-----------------------------------------------------------------//
-contenidoRouter.get('/buscarUsuarios', (req, res) => {
-    if (!req.session.login) {
-        return res.render('pagina', {
-            contenido: 'paginas/login',
-            session: req.session
-        });
-    }
 
+//hecho
+contenidoRouter.get('/buscarUsuarios', auth, (req, res) => {
     try {
-
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const username = req.query.username || '';
         const nombre = req.query.nombre || '';
-        const apellido = req.query.apellido|| '';
+        const apellido = req.query.apellido || '';
         const edad = parseInt(req.query.edad) || '';
         const rol = req.query.rol || '';
-        const Users = Usuario.getListaUsuarios(username,nombre,apellido,edad,rol, id_usuario);
-    
+        const Users = Usuario.getListaUsuarios(username, nombre, apellido, edad, rol, id_usuario);
+
         res.render('paginaSinSidebar', {
             contenido: 'paginas/listaUsuarios',
             session: req.session,
@@ -413,17 +399,10 @@ contenidoRouter.get('/buscarUsuarios', (req, res) => {
         console.error('Error al cargar la lista de Usuarios:', e);
         res.status(500).send('Error al cargar la lista de Usuarios');
     }
-
 });
-//-----------------------------------------------------------------//
-contenidoRouter.get('/listaUsuarios', (req, res) => {
-    if (!req.session.login) {
-        return res.render('pagina', {
-            contenido: 'paginas/login',
-            session: req.session
-        });
-    }
 
+//hecho
+contenidoRouter.get('/listaUsuarios', auth, (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const Users = Usuario.getAll(id_usuario.id);
@@ -438,6 +417,8 @@ contenidoRouter.get('/listaUsuarios', (req, res) => {
     }
 });
 
+
+//-------------------------------------------------------------------------------
 
 contenidoRouter.get('/amigos', (req, res) => {
     if (!req.session.login) {
@@ -509,126 +490,179 @@ contenidoRouter.get('/solicitudes', auth, (req, res) => {
     }
 });
 
-contenidoRouter.get('/chat', (req, res) => {
-    if (!req.session.login) {
-        return res.render('pagina', {
-            contenido: 'paginas/login',
-            session: req.session
+//hecho
+contenidoRouter.get('/chat', auth, [
+    query('amigo').isString().notEmpty().withMessage('Debes especificar un amigo')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginaSinSidebar', {
+            contenido: 'paginas/chat',
+            session: req.session,
+            mensajes: [],
+            amigos: [],
+            error: errors.array().map(e => e.msg).join(', ')
         });
     }
 
-    const amigo = req.query.amigo;
-    if (!amigo) {
-        return res.status(400).send('Amigo no especificado');
-    }
-
+    const { amigo } = matchedData(req);
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
-        const mensajes = Chat.getMensajesByAmigo(id_usuario.id, id_amigo.id);
+        const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
 
-        // Obtener la lista de amigos para la barra lateral
-        const amigos = Amigos.getAmigosById(parseInt(id_usuario.id));
+        const amigos = Usuario.getAmigosById(id_usuario);
 
         res.render('paginaSinSidebar', {
             contenido: 'paginas/chat',
             session: req.session,
             amigo,
             mensajes,
-            amigos // Pasar la lista de amigos a la vista
+            amigos
         });
     } catch (e) {
         console.error('Error al cargar el chat:', e);
-        res.status(500).send('Error al cargar el chat');
+        res.status(500).render('paginaSinSidebar', {
+            contenido: 'paginas/chat',
+            session: req.session,
+            mensajes: [],
+            amigos: [],
+            error: 'Error al cargar el chat. Inténtalo de nuevo.'
+        });
     }
 });
 
-contenidoRouter.post('/enviarMensajePriv', (req, res) => {
-    console.log('Controlador /enviarMensaje llamado');
-    console.log('Datos recibidos:', req.body);
-
-    if (!req.session.login) {
-        return res.status(403).send('No tienes permiso para enviar mensajes');
-    }
-
+//hecho
+contenidoRouter.post('/enviarMensajePriv', auth, (req, res) => {
     const { mensaje, amigo } = req.body;
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
 
-        const nuevoMensaje = new Chat(mensaje, id_usuario.id, id_amigo);
+        const nuevoMensaje = new Chat(mensaje, id_usuario, id_amigo);
         Chat.persist(nuevoMensaje);
 
         res.redirect(`/contenido/chat?amigo=${amigo}`);
     } catch (e) {
         console.error('Error al enviar el mensaje:', e);
-        res.status(500).send('Error al enviar el mensaje');
+        res.status(500).render('paginaSinSidebar', {
+            contenido: 'paginas/chat',
+            session: req.session,
+            mensajes: [],
+            amigos: [],
+            error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
+        });
     }
 });
 
-contenidoRouter.post('/nuevaSolicitud', (req, res) => {
-    console.log('Controlador /nuevaSolicitud llamado');
-    console.log('Datos recibidos:', JSON.stringify(req.body, null, 2));
+//hecho
+contenidoRouter.post('/nuevaSolicitud', auth, [
+    body('amigo').isString().notEmpty().withMessage('Debes especificar un amigo')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginaSinSidebar', {
+            contenido: 'paginas/amigos',
+            session: req.session,
+            amigos: [],
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
 
-    const { amigo } = req.body;
+    const { amigo } = matchedData(req);
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const id_amigo = Usuario.getIdByUsername(amigo);
+        let id_amigo;
+        try {
+            id_amigo = Usuario.getIdByUsername(amigo);
+        } catch (e) {
+            return res.status(400).render('paginaSinSidebar', {
+                contenido: 'paginas/amigos',
+                session: req.session,
+                amigos: [],
+                error: `El usuario "${amigo}" no existe.`
+            });
+        }
 
-        Usuario.nuevaSolicitud(id_usuario.id, id_amigo);
-        console.log('hola hola');
+        Usuario.nuevaSolicitud(id_usuario, id_amigo);
         res.redirect(`/contenido/amigos`);
     } catch (e) {
         console.error('Error al enviar solicitud:', e);
-        res.status(500).send('Error al enviar solicitud');
+        res.status(500).render('paginaSinSidebar', {
+            contenido: 'paginas/amigos',
+            session: req.session,
+            amigos: [],
+            error: 'Error al enviar la solicitud. Inténtalo de nuevo.'
+        });
     }
 });
 
-contenidoRouter.post('/aceptarSolicitud', (req, res) => {
-    console.log('Controlador /aceptarSolicitud llamado');
-    console.log('Datos recibidos:', JSON.stringify(req.body, null, 2));
+//hecho
+contenidoRouter.post('/aceptarSolicitud', auth, [
+    body('amigo').isString().notEmpty().withMessage('Debes especificar un amigo')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginaSinSidebar', {
+            contenido: 'paginas/solicitudes',
+            session: req.session,
+            solicitudes: [],
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
 
-    const { amigo } = req.body;
+    const { amigo } = matchedData(req);
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
 
-        Usuario.aceptarSolicitud(id_usuario.id, id_amigo);
-        console.log('hola hola');
+        Usuario.aceptarSolicitud(id_usuario, id_amigo);
         res.redirect(`/contenido/solicitudes`);
     } catch (e) {
-        console.error('Error al eliminar amigo:', e);
-        res.status(500).send('Error al eliminar amigo');
+        console.error('Error al aceptar solicitud:', e);
+        res.status(500).render('paginaSinSidebar', {
+            contenido: 'paginas/solicitudes',
+            session: req.session,
+            solicitudes: [],
+            error: 'Error al aceptar la solicitud. Inténtalo de nuevo.'
+        });
     }
 });
 
-contenidoRouter.post('/eliminarAmigo', (req, res) => {
-    console.log('Controlador /eliminarAmigo llamado');
-    console.log('Datos recibidos:', JSON.stringify(req.body, null, 2));
+//hecho
+contenidoRouter.post('/eliminarAmigo', auth, [
+    body('amigo').isString().notEmpty().withMessage('Debes especificar un amigo')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
 
-    const { amigo } = req.body;
+    const { amigo } = matchedData(req);
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
 
-        Usuario.eliminar(id_usuario.id, id_amigo);
-        console.log('hola hola');
+        Usuario.eliminar(id_usuario, id_amigo);
         res.redirect(`/contenido/perfil`);
     } catch (e) {
         console.error('Error al eliminar amigo:', e);
-        res.status(500).send('Error al eliminar amigo');
+        res.status(500).render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            error: 'Error al eliminar amigo. Inténtalo de nuevo.'
+        });
     }
 });
 
 // EVENTOS
-contenidoRouter.get('/eventos', (req, res) => {
 
-    let contenido = 'paginas/noPermisos';
-
-    if (req.session.login) {
-        contenido = 'paginas/eventos';
-    }
-
+//hecho
+contenidoRouter.get('/eventos', auth, (req, res) => {
     const eventos = Eventos.getEventos();
 
     eventos.forEach(evento => {
@@ -638,16 +672,17 @@ contenidoRouter.get('/eventos', (req, res) => {
             evento.genero = 'Femenino';
         }
     });
-    
+
     res.render('pagina', {
-        contenido,
+        contenido: 'paginas/eventos',
         session: req.session,
         eventos: eventos
     });
 });
-
-contenidoRouter.delete('/eventos/:id', (req, res) => {
-
+//hecho
+contenidoRouter.delete('/eventos/:id', auth, [
+    param('id').isInt().withMessage('ID de evento inválido')
+], (req, res) => {
     if (!req.session.esAdmin) {
         return res.status(403).json({
             success: false,
@@ -655,8 +690,17 @@ contenidoRouter.delete('/eventos/:id', (req, res) => {
         });
     }
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
+
+    const { id } = matchedData(req);
     try {
-        Eventos.remove(req.params.id);
+        Eventos.remove(id);
         res.json({ success: true });
     }
     catch (e) {
@@ -668,22 +712,22 @@ contenidoRouter.delete('/eventos/:id', (req, res) => {
     }
 });
 
-contenidoRouter.get('/eventos/crear', (req, res) => {
+//hecho
+contenidoRouter.get('/eventos/crear', auth, (req, res) => {
     if (!req.session.esAdmin) {
         return res.status(403).render('paginas/noPermisos');
     }
 
     try {
         const equipos = Equipos.getAll();
-        console.log(equipos);
         res.render('pagina', {
             contenido: 'paginas/crearEvento',
             session: req.session,
             equipos: equipos,
-            equipoA: null,  // valores por defecto (creo que hacen falta)
+            equipoA: null,
             equipoB: null,
             fecha: null,
-        })
+        });
     }
     catch (e) {
         res.render('pagina', {
@@ -691,36 +735,25 @@ contenidoRouter.get('/eventos/crear', (req, res) => {
             session: req.session,
             equipos: [],
             error: e.message
-        })
+        });
     }
 });
 
-contenidoRouter.post('/eventos/crear', (req, res) => {
+//hecho
+contenidoRouter.post('/eventos/crear', auth, [
+    body('equipoA').isString().notEmpty().withMessage('Debes seleccionar el equipo A'),
+    body('equipoB').isString().notEmpty().withMessage('Debes seleccionar el equipo B'),
+    body('deporte').isString().notEmpty().withMessage('Debes seleccionar el deporte'),
+    body('genero').isString().notEmpty().withMessage('Debes seleccionar el género'),
+    body('fecha').isString().notEmpty().withMessage('Debes indicar la fecha')
+], (req, res) => {
     if (!req.session.esAdmin) {
         return res.status(403).render('paginas/noPermisos');
     }
-
-    try {
-        const { equipoA, equipoB, deporte, genero, fecha } = req.body;
-
-        if (equipoA === equipoB) {
-            throw new Error('Los equipos no pueden ser iguales');
-        }
-
-        const nuevoEvento = new Eventos(
-            equipoA,
-            equipoB,
-            deporte,
-            fecha,
-            null,
-        );
-
-        Eventos.persist(nuevoEvento);
-        res.redirect('/contenido/eventos');
-
-    } catch (e) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
         const equipos = Equipos.getAll();
-        res.render('pagina', {
+        return res.status(400).render('pagina', {
             contenido: 'paginas/crearEvento',
             equipos,
             equipoA: req.body.equipoA,
@@ -728,19 +761,50 @@ contenidoRouter.post('/eventos/crear', (req, res) => {
             deporte: req.body.deporte,
             genero: req.body.genero,
             fecha: req.body.fecha,
+            error: errors.array().map(e => e.msg).join(', '),
+            session: req.session
+        });
+    }
+    const { equipoA, equipoB, deporte, genero, fecha } = matchedData(req);
+    try {
+        if (equipoA === equipoB) {
+            throw new Error('Los equipos no pueden ser iguales');
+        }
+        const nuevoEvento = new Eventos(equipoA, equipoB, deporte, fecha, null, genero);
+        Eventos.persist(nuevoEvento);
+        res.redirect('/contenido/eventos');
+    } catch (e) {
+        const equipos = Equipos.getAll();
+        res.render('pagina', {
+            contenido: 'paginas/crearEvento',
+            equipos,
+            equipoA,
+            equipoB,
+            deporte,
+            genero,
+            fecha,
             error: e.message,
             session: req.session
         });
     }
 });
 
-contenidoRouter.post('/eventos', (req, res) => {
+//hecho
+contenidoRouter.post('/eventos', auth, [
+    body('equipoA').isString().notEmpty(),
+    body('equipoB').isString().notEmpty(),
+    body('deporte').isString().notEmpty(),
+    body('fecha').isString().notEmpty()
+], (req, res) => {
     if (!req.session.esAdmin) {
         return res.status(403).send('Acceso no autorizado');
     }
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginas/error', { error: errors.array().map(e => e.msg).join(', ') });
+    }
+    const { equipoA, equipoB, deporte, fecha } = matchedData(req);
     try {
-        const { equipoA, equipoB, deporte, fecha } = req.body;
         const nuevoEvento = new Eventos(equipoA, equipoB, deporte, fecha);
         Eventos.persist(nuevoEvento);
         res.redirect('/contenido/eventos');
@@ -749,20 +813,26 @@ contenidoRouter.post('/eventos', (req, res) => {
     }
 });
 
-contenidoRouter.get('/eventos/:id/editar', (req, res) => {
+//hecho
+contenidoRouter.get('/eventos/:id/editar', auth, [
+    param('id').isInt().withMessage('ID de evento inválido')
+], (req, res) => {
     if (!req.session.esAdmin) {
         return res.status(403).render('paginas/noPermisos');
     }
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginas/error', { error: errors.array().map(e => e.msg).join(', ') });
+    }
+    const { id } = matchedData(req);
     try {
-        const evento = Eventos.getEventoById(req.params.id);
+        const evento = Eventos.getEventoById(id);
         res.render('pagina', {
             contenido: 'paginas/editarEvento',
             session: req.session,
             evento,
             error: null
         });
-
     } catch (e) {
         res.render('pagina', {
             contenido: 'paginas/editarEvento',
@@ -772,28 +842,28 @@ contenidoRouter.get('/eventos/:id/editar', (req, res) => {
     }
 });
 
-contenidoRouter.post('/eventos/:id/actualizar', (req, res) => {
+//hecho
+contenidoRouter.post('/eventos/:id/actualizar', auth, [
+    param('id').isInt().withMessage('ID de evento inválido'),
+    body('equipoA').isString().notEmpty(),
+    body('equipoB').isString().notEmpty(),
+    body('deporte').isString().notEmpty(),
+    body('fecha').isString().notEmpty()
+], (req, res) => {
     if (!req.session.esAdmin) {
         return res.status(403).send('Acceso no autorizado');
     }
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginas/error', { error: errors.array().map(e => e.msg).join(', ') });
+    }
+    const { id, equipoA, equipoB, deporte, fecha } = matchedData(req);
     try {
-        const { equipoA, equipoB, deporte, fecha } = req.body;
-
         const nuevoEquipoA = Equipos.getIdByName(equipoA);
         const nuevoEquipoB = Equipos.getIdByName(equipoB);
-
-        const eventoActualizado = new Eventos(nuevoEquipoA, nuevoEquipoB, deporte, fecha, req.params.id);
-
+        const eventoActualizado = new Eventos(nuevoEquipoA, nuevoEquipoB, deporte, fecha, id);
         Eventos.persist(eventoActualizado);
-
-        const eventos = Eventos.getEventos();
-
-        res.render('pagina', {
-            contenido: 'paginas/eventos',
-            session: req.session,
-            eventos: eventos
-        });
+        res.redirect('/contenido/eventos');
     } catch (e) {
         res.status(500).render('paginas/error', { error: e.message });
     }
@@ -801,73 +871,79 @@ contenidoRouter.post('/eventos/:id/actualizar', (req, res) => {
 // FIN EVENTOS
 
 
-contenidoRouter.post('/agregarFondos', async (req, res) => {
-
-    const cantidad = parseInt(req.body.cantidad);
-
-    if (isNaN(cantidad) || cantidad <= 0) {
-        return res.status(400).send('Cantidad de fondos inválida');
+//hecho
+contenidoRouter.post('/agregarFondos', auth, [
+    body('cantidad').isInt({ min: 1 }).withMessage('Cantidad de fondos inválida')
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            error: errors.array().map(e => e.msg).join(', ')
+        });
     }
-
-    try{    
+    const { cantidad } = matchedData(req);
+    try {
         const idUsuario = Usuario.getIdByUsername(req.session.username);
-        
         await Usuario.agregarFondos(idUsuario.id, cantidad);
-        req.session.fondos = Usuario.getFondosById(idUsuario.id).fondos; 
+        req.session.fondos = Usuario.getFondosById(idUsuario.id).fondos;
         res.redirect('/contenido/perfil');
-    }   
-    catch (e) {
+    } catch (e) {
         console.error('Error al agregar fondos:', e);
-        res.redirect('/contenido/perfil');
-        return res.status(500).send('Error al agregar fondos');
+        res.status(500).render('paginaSinSidebar', {
+            contenido: 'paginas/perfil',
+            session: req.session,
+            error: 'Error al agregar fondos. Inténtalo de nuevo.'
+        });
     }
 });
 
-
-// APUESTAS
-
-contenidoRouter.get('/apuestas/:id', (req, res) => {
-
-    const id_evento = req.params.id;
-
-    try{
-        const evento = Eventos.getEventoById(id_evento);
-
+//hecho
+contenidoRouter.get('/apuestas/:id', auth, [
+    param('id').isInt().withMessage('ID de evento inválido')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).send('Evento no válido');
+    }
+    const { id } = matchedData(req);
+    try {
+        const evento = Eventos.getEventoById(id);
         if (!evento) {
             return res.status(404).send('Evento no encontrado');
         }
-
         res.render('pagina', {
             contenido: 'paginas/apuestas',
             session: req.session,
-            evento: evento
+            evento
         });
-    }
-    catch (e) {
+    } catch (e) {
         return res.status(500).send('Error al obtener el evento de apuesta');
     }
 });
 
-contenidoRouter.post('/apuestas/:id/apostar', (req, res) => {
-    if (!req.session.login) {
-        return res.redirect('/usuarios/login');
+//hecho
+contenidoRouter.post('/apuestas/:id/apostar', auth, [
+    param('id').isInt().withMessage('ID de evento inválido')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).send('Evento no válido');
     }
-
+    const { id } = matchedData(req);
     const id_usuario = Usuario.getIdByUsername(req.session.username);
-    const id_evento = req.params.id;
-    const { ganador, resultadoExacto, diferenciaPuntos } = req.body;
     const cantidad_apuesta = 10;
     try {
         Usuario.restarFondos(id_usuario.id, cantidad_apuesta);
         req.session.fondos = Usuario.getFondosById(id_usuario.id).fondos;
         Apuestas.insertarApuesta({
             id_usuario: id_usuario.id,
-            multiplicador: 1, 
-            cantidad_apuesta, 
-            id_eventos: id_evento, 
-            combinada: 0 
+            multiplicador: 1,
+            cantidad_apuesta,
+            id_eventos: id,
+            combinada: 0
         });
-
         res.redirect('/contenido/mis-apuestas');
     } catch (e) {
         console.error('Error al insertar apuesta:', e);
