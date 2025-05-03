@@ -16,7 +16,8 @@
             const fecha = evento.fecha ? evento.fecha.toString() : 'Fecha por confirmar';
         %>
         <div class="contenedor-evento" data-evento-id="<%= evento.id %>">
-            <a href="/contenido/apuestas/<%= evento.id %>" class="banner-evento" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'); --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg')">
+            <a href="/contenido/apuestas/<%= evento.id %>" class="banner-evento" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
+          --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg'), url('/img/<%= deporte %>-defaultB.jpg')">
                 <div class="contenedor-fondos-equipos">
                     <div class="fondo-equipo fondo-equipo-a"></div>
                     <div class="fondo-equipo fondo-equipo-b"></div>
@@ -30,7 +31,7 @@
                     <div class="equipo">
                         <span><%= evento.equipoA %></span>
                     </div>
-                    <div class="vs">VS</div>
+                    <!-- <div class="vs">VS</div> -->
                     <div class="equipo">
                         <span><%= evento.equipoB %></span>
                     </div>

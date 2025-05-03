@@ -1,9 +1,9 @@
 async function eliminarEvento(eventId, clickEvent) {
     clickEvent.stopPropagation();
 
-    const modal = document.getElementById('deleteConfirmationModal');
-    const confirmBtn = document.getElementById('confirmDeleteBtn');
-    const cancelBtn = document.getElementById('cancelDeleteBtn');
+    const modal = document.getElementById('modalConfirmacionEliminar');
+    const confirmBtn = document.getElementById('botonConfirmarEliminar');
+    const cancelBtn = document.getElementById('botonCancelarEliminar');
 
     modal.style.display = 'flex';
 
@@ -34,7 +34,7 @@ async function eliminarEvento(eventId, clickEvent) {
             throw new Error(data.error || 'Error al eliminar el evento');
         }
 
-        document.querySelector(`[data-event-id="${eventId}"]`).remove();
+        document.querySelector(`[data-evento-id="${eventId}"]`).remove();
 
     } catch (error) {
         console.error('Error:', error);

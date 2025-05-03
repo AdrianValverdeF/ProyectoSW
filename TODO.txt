@@ -1,6 +1,6 @@
 -> Poner con que tarea estais por wass
 
 - Cesta de apuestas
-- Apuestas (GUI casi completa)
 - Competiciones
 - Ajustar tamaño movil
+- Cambiar foto usuario?
