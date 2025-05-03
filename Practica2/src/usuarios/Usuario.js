@@ -348,6 +348,13 @@ export class Usuario {
         }
     }
 
+    static getUsuariosByIds(ids) {
+        if (!ids || ids.length === 0) return [];
+        const placeholders = ids.map(() => '?').join(',');
+        const stmt = this.db.prepare(`SELECT id, username FROM Usuarios WHERE id IN (${placeholders})`);
+        return stmt.all(...ids);
+    }
+
     #id;
     username;
     #password;
