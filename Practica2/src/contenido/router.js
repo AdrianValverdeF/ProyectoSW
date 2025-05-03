@@ -6,6 +6,7 @@ import { Equipos } from './equipos.js';
 import { MisApuestas } from './misApuestas.js';
 import { Chat } from './chat.js';
 import { Apuestas } from './apuestas.js';
+import { body, validationResult, matchedData, query } from 'express-validator';
 
 const contenidoRouter = express.Router();
 
