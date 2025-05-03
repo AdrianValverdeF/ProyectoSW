@@ -1,40 +1,43 @@
 -> Poner con que tarea estais por wass
 
-- Cesta de apuestas
-- Competiciones
-- Ajustar tamaño movil
-- Cambiar foto usuario
+General:
+    - Ajustar tamaño movil
+    - poder usar la barra izquierda como filtro para cada seccion de la pagina 
 
-- poder usar la barra izquierda como filtro para cada seccion de la pagina
-
-Lista de usuarios perfil:
+Lista de usuarios perfil: //Adrián
     - comprobar campos posiblemente erroneos
     - Darle una vuelta al css
 
 Apuestas:
-    - añadir campo de dinero
+    - Cesta de apuestas 
+    - añadir campo de dinero //Marta
     - logica de apuestas (calcular dinamicamente el multiplicador)
     - poder seleccionar campos unicos de apuesta
 
-Monedero:
+Monedero:   //Alejandro
     - arreglar añadir fondos
 
-Cabecera:
+Cabecera: //Adrián
     - subrayar menu actual del usuario
 
-Eventos:
+Eventos: //Alejandro
     - poder filtar Eventos
     - añadir distintivo para genero del deporte
 
-Perfil:
+Perfil: //Adrián
     - actualizar ultimas apuestas
+    - Cambiar foto usuario
 
-Mis Apuestas:
+Mis Apuestas: //Marta
     - que aparezca informacion de la apuesta (modificar bbdd para ello)
 
-BBDD:
+BBDD: //Marta
     - Terminar de añadir datos en equipos
 
-Chat: 
+Chat: //Dani 
     - css de mensaje respuesta ("respondiendo a:") y cancelar respuesta
     - arreglar horas del foro
+    - mensajes
+
+Competiciones:
+    - Competiciones
