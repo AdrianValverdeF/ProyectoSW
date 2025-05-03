@@ -77,9 +77,14 @@ aside {
     font-size: 0.9rem;
 }
 
-.nav-links a:hover,
+.nav-links a:hover{
+    color: var(--accent-color);
+}
+
 .nav-links a.active {
     color: var(--accent-color);
+    font-weight: bold; 
+    text-decoration: underline; 
 }
 
 .guardar-btn{
@@ -1422,6 +1427,19 @@ input::placeholder {
         position: absolute;
         bottom: 10px;
         right: 10px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+
+    .genero-evento {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
         background-color: rgba(0, 0, 0, 0.7);
         color: white;
         padding: 5px 10px;

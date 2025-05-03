@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import { getConnection } from '../db.js';
 
 export class Amigos {
-    static #getSolByIdStmt = null;
     static #getSolsByIdStmt = null;
     static #getAmigosByIdStmt = null;
     static #solStmt = null;
@@ -10,53 +9,38 @@ export class Amigos {
     static #deleteStmt = null;
 
     static initStatements(db) {
-        if (this.#getSolByIdStmt !== null) return;
-
-        this.#getSolByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE id_usuario = @id_usuario AND id_amigo = @id_amigo AND aceptado = 0');
-        this.#getSolsByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE (id_usuario = @id_usuario OR id_usuario = @id_amigo) AND aceptado = 0');
-        this.#getAmigosByIdStmt = db.prepare('SELECT * FROM Usuarios WHERE (id_usuario = @id_usuario OR id_usuario = @id_amigo) AND aceptado = 1');
+        this.db = db;
+        this.#getSolsByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (u.id = a.id_usuario AND a.id_amigo = @id AND a.aceptado = 0)');
+        this.#getAmigosByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (((u.id = a.id_amigo AND a.id_usuario = @id) OR (u.id = a.id_usuario AND a.id_amigo = @id)) AND a.aceptado = 1)');
         this.#solStmt = db.prepare('INSERT INTO Amigos(id_usuario, id_amigo, aceptado) VALUES (@id_usuario, @id_amigo, @aceptado)');
-        this.#acceptStmt = db.prepare('UPDATE Usuarios SET aceptado = 1 WHERE id_usuario = @id_usuario AND id_amigo = @id_amigo');
-        this.#deleteStmt = db.prepare('DELETE * FROM Usuarios WHERE id_usuario = @id_usuario AND id_amigo = @id_amigo AND aceptado = 1')
-    }
-
-    static getSolById(id_usuario, id_amigo) {
-        let result = null;
-        try {
-            if (id_usuario < id_amigo) {
-                result = this.#getSolByIdStmt.get({ id_usuario, id_amigo });
-            } else {
-                result = this.#getSolByIdStmt.get({ id_amigo, id_usuario });
-            }
-
-        } catch (e) {
-            throw new ErrorAmigos('No se ha encontrado la solicitud', { cause: e });
-        }
-
-        return result;
+        this.#acceptStmt = db.prepare('UPDATE Amigos SET aceptado = 1 WHERE id_usuario = @id_usuario AND id_amigo = @id_amigo');
+        this.#deleteStmt = db.prepare('DELETE FROM Amigos WHERE id_usuario = @id_usuario AND id_amigo = @id_amigo AND aceptado = 1');
     }
 
     static getSolicitudesById(id) {
-        let result = null;
+        let ret = null;
         try {
-            result = this.#getSolsByIdStmt.all();
+            let result = null;
+            result = this.#getSolsByIdStmt.all({id});
+            ret = result.map(row => new Amigos(row.username, row.id_usuario, row.id_amigo, 0));
         } catch (e) {
             throw new ErrorAmigos('No tienes solicitudes pendientes', { cause: e });
         }
 
-        return result.map(row => (row.id_usuario == id) ? Usuario.getUsuarioById(row.id_amigo) : Usuario.getUsuarioById(row.id_usuario));
+        return ret;
     }
 
     static getAmigosById(id) {
-        let result = null;
+        let ret = null;
         try {
-            result = this.#getAmigosByIdStmt.all();
-
+            let result = null;
+            result = this.#getAmigosByIdStmt.all({ id });
+            ret = result.map(row => new Amigos(row.username, row.id_usuario, row.id_amigo, 1));
         } catch (e) {
             throw new ErrorAmigos('No has añadido a ningún usuario', { cause: e });
         }
 
-        return result.map(row => (row.id_usuario == id) ? Usuario.getUsuarioById(row.id_amigo) : Usuario.getUsuarioById(row.id_usuario));
+        return ret;
     }
 
     static #insert(sol) {
@@ -130,10 +114,11 @@ export class Amigos {
     id_amigo;
     aceptado;
 
-    constructor(id_usuario, id_amigo) {
+    constructor(username,id_usuario, id_amigo, aceptado) {
+        this.username = username;
         this.id_usuario = id_usuario;
         this.id_amigo = id_amigo;
-        this.aceptado = 0;
+        this.aceptado = aceptado;
     }
 
     /*static getUsuarioById(id) {
