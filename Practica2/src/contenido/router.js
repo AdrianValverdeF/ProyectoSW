@@ -875,6 +875,7 @@ contenidoRouter.post('/eventos/:id/actualizar', auth, [
 contenidoRouter.post('/agregarFondos', auth, [
     body('cantidad').isInt({ min: 1 }).withMessage('Cantidad de fondos inválida')
 ], async (req, res) => {
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).render('paginaSinSidebar', {
@@ -883,7 +884,9 @@ contenidoRouter.post('/agregarFondos', auth, [
             error: errors.array().map(e => e.msg).join(', ')
         });
     }
+    
     const { cantidad } = matchedData(req);
+
     try {
         const idUsuario = Usuario.getIdByUsername(req.session.username);
         await Usuario.agregarFondos(idUsuario, cantidad);
