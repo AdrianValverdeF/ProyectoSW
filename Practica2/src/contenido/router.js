@@ -210,7 +210,7 @@ contenidoRouter.get('/gestion-eventos', auth, (req, res) => {
 contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const apuestas = MisApuestas.getByUserId(id_usuario.id);
+        const apuestas = MisApuestas.getByUserId(id_usuario);
         res.render('pagina', {
             contenido: 'paginas/mis-apuestas',
             session: req.session,
@@ -405,7 +405,7 @@ contenidoRouter.get('/buscarUsuarios', auth, (req, res) => {
 contenidoRouter.get('/listaUsuarios', auth, (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const Users = Usuario.getAll(id_usuario.id);
+        const Users = Usuario.getAll(id_usuario);
         res.render('paginaSinSidebar', {
             contenido: 'paginas/listaUsuarios',
             session: req.session,
@@ -884,13 +884,13 @@ contenidoRouter.post('/agregarFondos', auth, [
             error: errors.array().map(e => e.msg).join(', ')
         });
     }
-    
+
     const { cantidad } = matchedData(req);
 
     try {
         const idUsuario = Usuario.getIdByUsername(req.session.username);
         await Usuario.agregarFondos(idUsuario, cantidad);
-        req.session.fondos = Usuario.getFondosById(idUsuario).fondos;
+        req.session.fondos = Usuario.getFondosById(idUsuario);
         res.redirect('/contenido/perfil');
     } catch (e) {
         console.error('Error al agregar fondos:', e);
