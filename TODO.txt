@@ -33,8 +33,8 @@ Apuestas:
 ✅Cabecera: //Adrián
     - ✅subrayar menu actual del usuario
 
-Eventos: //Alejandro
-    - poder filtar Eventos
+✅Eventos: //Alejandro
+    - ✅poder filtar Eventos
     - ✅añadir distintivo para genero del deporte
 
 Perfil: //Adrián
