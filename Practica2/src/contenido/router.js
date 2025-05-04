@@ -886,8 +886,8 @@ contenidoRouter.post('/agregarFondos', auth, [
     const { cantidad } = matchedData(req);
     try {
         const idUsuario = Usuario.getIdByUsername(req.session.username);
-        await Usuario.agregarFondos(idUsuario.id, cantidad);
-        req.session.fondos = Usuario.getFondosById(idUsuario.id).fondos;
+        await Usuario.agregarFondos(idUsuario, cantidad);
+        req.session.fondos = Usuario.getFondosById(idUsuario).fondos;
         res.redirect('/contenido/perfil');
     } catch (e) {
         console.error('Error al agregar fondos:', e);
@@ -932,13 +932,15 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
         return res.status(400).send('Evento no válido');
     }
     const { id } = matchedData(req);
+    // NO usar id_usuario.id, id_usuario ya es un int
     const id_usuario = Usuario.getIdByUsername(req.session.username);
     const cantidad_apuesta = 10;
+
     try {
-        Usuario.restarFondos(id_usuario.id, cantidad_apuesta);
-        req.session.fondos = Usuario.getFondosById(id_usuario.id).fondos;
+        Usuario.restarFondos(id_usuario, cantidad_apuesta);
+        req.session.fondos = Usuario.getFondosById(id_usuario).fondos;
         Apuestas.insertarApuesta({
-            id_usuario: id_usuario.id,
+            id_usuario: id_usuario,
             multiplicador: 1,
             cantidad_apuesta,
             id_eventos: id,
