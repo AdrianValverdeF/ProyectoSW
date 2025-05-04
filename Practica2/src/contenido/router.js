@@ -941,7 +941,7 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
 
     try {
         Usuario.restarFondos(id_usuario, cantidad_apuesta);
-        req.session.fondos = Usuario.getFondosById(id_usuario).fondos;
+        req.session.fondos = Usuario.getFondosById(id_usuario);
         Apuestas.insertarApuesta({
             id_usuario: id_usuario,
             multiplicador: 1,
