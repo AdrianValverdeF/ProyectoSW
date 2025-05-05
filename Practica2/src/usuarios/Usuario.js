@@ -326,7 +326,7 @@ export class Usuario {
     static agregarFondos(id_usuario, cantidad) {
         try {
             const fondosActuales = this.getFondosById(id_usuario);
-            const nuevosFondos = fondosActuales + cantidad;
+            const nuevosFondos = Number(fondosActuales) + Number(cantidad);;
             return this.updateFondos(id_usuario, nuevosFondos);
         } catch (e) {
             throw new Error('Error al agregar fondos', { cause: e });

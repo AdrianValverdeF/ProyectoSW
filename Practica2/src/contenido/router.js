@@ -210,7 +210,7 @@ contenidoRouter.get('/gestion-eventos', auth, (req, res) => {
 contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const apuestas = MisApuestas.getByUserId(id_usuario.id);
+        const apuestas = MisApuestas.getByUserId(id_usuario);
         res.render('pagina', {
             contenido: 'paginas/mis-apuestas',
             session: req.session,
@@ -405,7 +405,7 @@ contenidoRouter.get('/buscarUsuarios', auth, (req, res) => {
 contenidoRouter.get('/listaUsuarios', auth, (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const Users = Usuario.getAll(id_usuario.id);
+        const Users = Usuario.getAll(id_usuario);
         res.render('paginaSinSidebar', {
             contenido: 'paginas/listaUsuarios',
             session: req.session,
@@ -875,6 +875,7 @@ contenidoRouter.post('/eventos/:id/actualizar', auth, [
 contenidoRouter.post('/agregarFondos', auth, [
     body('cantidad').isInt({ min: 1 }).withMessage('Cantidad de fondos inválida')
 ], async (req, res) => {
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).render('paginaSinSidebar', {
@@ -883,11 +884,13 @@ contenidoRouter.post('/agregarFondos', auth, [
             error: errors.array().map(e => e.msg).join(', ')
         });
     }
+
     const { cantidad } = matchedData(req);
+
     try {
         const idUsuario = Usuario.getIdByUsername(req.session.username);
-        await Usuario.agregarFondos(idUsuario.id, cantidad);
-        req.session.fondos = Usuario.getFondosById(idUsuario.id).fondos;
+        await Usuario.agregarFondos(idUsuario, cantidad);
+        req.session.fondos = Usuario.getFondosById(idUsuario);
         res.redirect('/contenido/perfil');
     } catch (e) {
         console.error('Error al agregar fondos:', e);
@@ -932,13 +935,15 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
         return res.status(400).send('Evento no válido');
     }
     const { id } = matchedData(req);
+    // NO usar id_usuario.id, id_usuario ya es un int
     const id_usuario = Usuario.getIdByUsername(req.session.username);
     const cantidad_apuesta = 10;
+
     try {
-        Usuario.restarFondos(id_usuario.id, cantidad_apuesta);
-        req.session.fondos = Usuario.getFondosById(id_usuario.id).fondos;
+        Usuario.restarFondos(id_usuario, cantidad_apuesta);
+        req.session.fondos = Usuario.getFondosById(id_usuario);
         Apuestas.insertarApuesta({
-            id_usuario: id_usuario.id,
+            id_usuario: id_usuario,
             multiplicador: 1,
             cantidad_apuesta,
             id_eventos: id,
