@@ -17,8 +17,8 @@ General:
     - Ajustar tamaño movil
     - poder usar la barra izquierda como filtro para cada seccion de la pagina 
 
-Lista de usuarios perfil: //Adrián
-    - comprobar campos posiblemente erroneos
+⚠️Lista de usuarios perfil: //Adrián
+    - ⚠️comprobar campos posiblemente erroneos
     - ✅Darle una vuelta al css
 
 Apuestas:
