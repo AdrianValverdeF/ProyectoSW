@@ -23,7 +23,7 @@ Lista de usuarios perfil: //Adrián
 
 Apuestas:
     - Cesta de apuestas 
-    - añadir campo de dinero //Marta
+    - ✅añadir campo de dinero //Marta
     - logica de apuestas (calcular dinamicamente el multiplicador)
     - poder seleccionar campos unicos de apuesta
 
@@ -41,11 +41,11 @@ Apuestas:
     - ⚠️actualizar ultimas apuestas
     - ⚠️Cambiar foto usuario
 
-Mis Apuestas: //Marta
-    - que aparezca informacion de la apuesta (modificar bbdd para ello)
+✅Mis Apuestas: //Marta
+    -✅ que aparezca informacion de la apuesta (modificar bbdd para ello)
 
-BBDD: //Marta
-    - Terminar de añadir datos en equipos
+✅BBDD: //Marta
+    - ✅Terminar de añadir datos en equipos
 
 Chat: //Dani 
     - css de mensaje respuesta ("respondiendo a:") y cancelar respuesta

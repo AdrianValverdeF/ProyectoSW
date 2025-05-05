@@ -936,10 +936,8 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
         return res.status(400).send('Evento no válido');
     }
     const { id } = matchedData(req);
-    // NO usar id_usuario.id, id_usuario ya es un int
     const id_usuario = Usuario.getIdByUsername(req.session.username);
-    const cantidad_apuesta = 10;
-
+    const cantidad_apuesta = parseInt(req.body.cantidad_apuesta, 10);
     try {
         Usuario.restarFondos(id_usuario, cantidad_apuesta);
         req.session.fondos = Usuario.getFondosById(id_usuario);
