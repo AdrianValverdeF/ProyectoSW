@@ -10,7 +10,13 @@ export class MisApuestas {
                 Apuestas.cantidad_apuesta, 
                 Apuestas.multiplicador, 
                 Apuestas.combinada, 
+                Apuestas.ganador,
+                Apuestas.resultado_exacto,
+                Apuestas.diferencia_puntos,
+                Apuestas.puntos_equipoA,
+                Apuestas.puntos_equipoB,
                 Eventos.fecha,
+                Eventos.deporte,
                 equipoA.nombre AS nombre_equipoA,
                 equipoB.nombre AS nombre_equipoB
             FROM Apuestas

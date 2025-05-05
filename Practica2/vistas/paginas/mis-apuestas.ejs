@@ -8,14 +8,16 @@
 </head>
 <body>
     <main>
-        <h1 class="titulo-mis-apuestas">Mis Apuestas</h1>
-        <a href="/contenido/eventos" class="btn-volver">← Volver a eventos</a>
+        <div class="mis-apuestas-header">
+            <h1 class="titulo-mis-apuestas">Mis Apuestas</h1>
+            <a href="/contenido/eventos" class="btn-volver esquina">← Volver a eventos</a>
+        </div>
         <% if (apuestas && apuestas.length > 0) { %>
             <ul class="apuestas-lista">
                 <% apuestas.forEach(apuesta => { %>
                     <li class="apuesta-card">
                         <div class="apuesta-titulo titulo-centro">
-                            <%= apuesta.nombre_equipoA %> vs <%= apuesta.nombre_equipoB %>
+                            <%= apuesta.nombre_equipoA %> <span class="apuesta-vs">vs</span> <%= apuesta.nombre_equipoB %>
                         </div>
                         <div class="apuesta-header">
                             <span class="apuesta-fecha">
@@ -24,24 +26,70 @@
                             </span>
                         </div>
                         <div class="apuesta-detalles">
-                            <span>ID Apuesta: <strong><%= apuesta.id %></strong></span>
-                            <% if (apuesta.deporte) { %>
-                                <span>Deporte: <strong><%= apuesta.deporte %></strong></span>
-                            <% } %>
-                            <% if (apuesta.ganador) { %>
-                                <span>Has apostado a: 
-                                    <strong>
-                                        <%= apuesta.ganador === 'A' ? apuesta.nombre_equipoA : apuesta.nombre_equipoB %>
-                                    </strong>
-                                </span>
-                            <% } %>
-                            <span>Cantidad: <strong><%= apuesta.cantidad_apuesta %> €</strong></span>
-                            <span>Multiplicador: <strong><%= apuesta.multiplicador %></strong></span>
-                            <span>Combinada: 
-                                <strong>
-                                    <%= apuesta.combinada ? 'Sí' : 'No' %>
-                                </strong>
-                            </span>
+                            <div class="apuesta-info-col">
+                                <div class="apuesta-info-box">
+                                    <span>ID:</span>
+                                    <span class="apuesta-valor"><%= apuesta.id %></span>
+                                </div>
+                                <div class="apuesta-info-box">
+                                    <span>Deporte:</span>
+                                    <span class="apuesta-valor"><%= apuesta.deporte %></span>
+                                </div>
+                                <% if (apuesta.ganador) { %>
+                                    <div class="apuesta-info-box">
+                                        <span>Ganador:</span>
+                                        <span class="apuesta-valor">
+                                            <% if (apuesta.ganador === 'equipoA') { %>
+                                                <%= apuesta.nombre_equipoA %>
+                                            <% } else if (apuesta.ganador === 'equipoB') { %>
+                                                <%= apuesta.nombre_equipoB %>
+                                            <% } else if (apuesta.ganador === 'empate') { %>
+                                                Empate
+                                            <% } else { %>
+                                                <%= apuesta.ganador %>
+                                            <% } %>
+                                        </span>
+                                    </div>
+                                <% } %>
+                                <% if (apuesta.resultado_exacto) { %>
+                                    <div class="apuesta-info-box">
+                                        <span>Resultado exacto:</span>
+                                        <span class="apuesta-valor"><%= apuesta.resultado_exacto %></span>
+                                    </div>
+                                <% } %>
+                                <% if (apuesta.diferencia_puntos) { %>
+                                    <div class="apuesta-info-box">
+                                        <span>Diferencia de puntos:</span>
+                                        <span class="apuesta-valor"><%= apuesta.diferencia_puntos %></span>
+                                    </div>
+                                <% } %>
+                                <% if (apuesta.puntos_equipoA) { %>
+                                    <div class="apuesta-info-box">
+                                        <span>Puntos <%= apuesta.nombre_equipoA %>:</span>
+                                        <span class="apuesta-valor"><%= apuesta.puntos_equipoA %></span>
+                                    </div>
+                                <% } %>
+                                <% if (apuesta.puntos_equipoB) { %>
+                                    <div class="apuesta-info-box">
+                                        <span>Puntos <%= apuesta.nombre_equipoB %>:</span>
+                                        <span class="apuesta-valor"><%= apuesta.puntos_equipoB %></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="apuesta-info-col apuesta-info-col-right">
+                                <div class="apuesta-info-box">
+                                    <span>Dinero apostado:</span>
+                                    <span class="apuesta-valor"><%= apuesta.cantidad_apuesta %> €</span>
+                                </div>
+                                <div class="apuesta-info-box">
+                                    <span>Multiplicador:</span>
+                                    <span class="apuesta-valor"><%= apuesta.multiplicador %></span>
+                                </div>
+                                <div class="apuesta-info-box">
+                                    <span>Combinada:</span>
+                                    <span class="apuesta-valor"><%= apuesta.combinada ? 'Sí' : 'No' %></span>
+                                </div>
+                            </div>
                         </div>
                     </li>
                 <% }) %>
