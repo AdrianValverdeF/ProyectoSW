@@ -942,7 +942,12 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
             multiplicador: 1,
             cantidad_apuesta,
             id_eventos: id,
-            combinada: 0
+            combinada: 0,
+            ganador: req.body.ganador,
+            resultado_exacto: req.body.resultadoExacto,
+            diferencia_puntos: req.body.diferenciaPuntos,
+            puntos_equipoA: req.body.puntosEquipoA,
+            puntos_equipoB: req.body.puntosEquipoB
         });
         res.redirect('/contenido/mis-apuestas');
     } catch (e) {
