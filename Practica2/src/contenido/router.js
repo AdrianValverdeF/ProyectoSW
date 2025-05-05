@@ -15,7 +15,7 @@ const contenidoRouter = express.Router();
 function auth(req, res, next) {
     if (!req.session.login) {
         return res.render('pagina', {
-            contenido: 'paginas/noPermisos',
+            contenido: 'paginas/login',
             session: req.session
         });
     }
@@ -24,7 +24,7 @@ function auth(req, res, next) {
 
 
 //hecho
-contenidoRouter.get('/foroComun', auth, (req, res) => {
+contenidoRouter.get('/foroComun', (req, res) => {
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
 
@@ -248,6 +248,7 @@ contenidoRouter.get('/gestion-eventos', auth, (req, res) => {
 //-------------------------------------------------------------------------------//
 // es una sugerencia pero me da palo
 contenidoRouter.get('/perfil', auth, (req, res) => {
+
     const id_usuario = Usuario.getIdByUsername(req.session.username);
     req.session.fondos = Usuario.getFondosById(id_usuario);
 

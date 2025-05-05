@@ -41,7 +41,7 @@
             <div class="datos-personales">
                 <h2>Datos Personales</h2>
 
-                <% if (1) { %>
+                <% if (!mostrarFormulario) { %>
                     <!-- Mostrar solo los datos personales -->
                     <div id="datos-mostrados">
                         <p><strong>Nombre:</strong> <%= session.nombre %></p>

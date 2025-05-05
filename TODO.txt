@@ -19,7 +19,7 @@ General:
 
 Lista de usuarios perfil: //Adrián
     - comprobar campos posiblemente erroneos
-    - Darle una vuelta al css
+    - ✅Darle una vuelta al css
 
 Apuestas:
     - Cesta de apuestas 
@@ -37,9 +37,9 @@ Apuestas:
     - ✅poder filtar Eventos
     - ✅añadir distintivo para genero del deporte
 
-Perfil: //Adrián
-    - actualizar ultimas apuestas
-    - Cambiar foto usuario
+⚠️Perfil: //Adrián
+    - ⚠️actualizar ultimas apuestas
+    - ⚠️Cambiar foto usuario
 
 Mis Apuestas: //Marta
     - que aparezca informacion de la apuesta (modificar bbdd para ello)

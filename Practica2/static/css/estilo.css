@@ -302,6 +302,11 @@ label {
     width: 30px;
 }
 
+.search-form{
+    display: flex; 
+    gap: 10px; 
+    align-items: flex-start;
+} 
 /* ------------------------------ PERFIL ---------------------------- */
 /* .perfil-container {
     margin: 0 auto;
