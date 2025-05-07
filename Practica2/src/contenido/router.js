@@ -460,6 +460,7 @@ contenidoRouter.get('/chat', (req, res) => {
         res.render('paginaSinSidebar', {
             contenido: 'paginas/chat',
             session: req.session,
+            id_usuario,
             amigo,
             mensajes,
             amigos // Pasar la lista de amigos a la vista

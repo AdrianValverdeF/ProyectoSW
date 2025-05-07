@@ -21,11 +21,6 @@
         </div>
 
         <div class="amigos-chat-container">
-            <div class="volver-container">
-                <a href="/contenido/amigos">
-                    <button class="volver-boton">Atrás</button>
-                </a>
-            </div>
 
             <div class="amigos-chat-header">
                 <div class="amigos-chat-info">
@@ -39,13 +34,10 @@
                     <div class="mensajes">
                         <% if (mensajes && mensajes.length > 0) { %>
                             <% mensajes.forEach(mensaje => { %>
-                                <div class="mensaje <%= mensaje.id_usuario === session.id ? 'propio' : 'ajeno' %>">
+                                <div class="mensaje <%= mensaje.id_usuario === id_usuario ? 'propio' : 'ajeno' %>">
                                     <p><%= mensaje.mensaje %></p>
                                     <span>
                                         <%= new Date(mensaje.created_at).toLocaleString('es-ES', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
                                             hour: '2-digit',
                                             minute: '2-digit'
                                         }) %>
@@ -58,10 +50,12 @@
                     </div>
                     <form class="amigos-chat-input" action="/contenido/enviarMensajePriv" method="POST">
                         <input type="hidden" name="amigo" value="<%= amigo %>">
-                        <div class="chat-input-enter-msg">
+                            <div class="forum-btn">
+                                <button type="submit" id="send">
+                                    <img src="/img/send_message.png">
+                                </button>
+                            </div>
                             <textarea name="mensaje" placeholder="Escribe tu mensaje..."></textarea>
-                            <button type="submit">Enviar</button>
-                        </div>
                     </form>
                 </div>
             </div>

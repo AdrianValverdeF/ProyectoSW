@@ -7,7 +7,7 @@ export class Chat {
     static initStatements(db) {
         if (this.#getByAmigoStmt !== null) return;
 
-        this.#getByAmigoStmt = db.prepare('SELECT * FROM Chat WHERE id_usuario = @id_usuario AND id_amigo = @id_amigo ORDER BY created_at ASC');
+        this.#getByAmigoStmt = db.prepare('SELECT * FROM Chat WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario) ORDER BY created_at ASC');
         this.#insertStmt = db.prepare('INSERT INTO Chat(mensaje, id_usuario, id_amigo, created_at) VALUES (@mensaje, @id_usuario, @id_amigo, @created_at)');
     }
 

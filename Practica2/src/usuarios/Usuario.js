@@ -187,7 +187,7 @@ export class Usuario {
 
             result = this.#insertStmt.run(datos);
 
-            usuario.#id = result.lastInsertRowid;
+            usuario.id = result.lastInsertRowid;
         } catch (e) {
             if (e.code === 'SQLITE_CONSTRAINT') {
                 throw new UsuarioYaExiste(usuario.username);
@@ -198,7 +198,7 @@ export class Usuario {
     }
 
     static #update(usuario) {
-        const id = usuario.#id; 
+        const id = usuario.id; 
         const username = usuario.username; 
         const password = usuario.#password; 
         const nombre = usuario.nombre; 
@@ -348,7 +348,7 @@ export class Usuario {
         }
     }
 
-    #id;
+    id;
     username;
     #password;
     rol;
@@ -364,12 +364,12 @@ export class Usuario {
         this.apellido = apellido;
         this.edad = edad;
         this.rol = rol;
-        this.#id = id;
+        this.id = id;
         this.fondos = fondos;
     }
 
     get id_user() {
-        return this.#id;
+        return this.id;
     }
 
     set password(nuevoPassword) {
@@ -381,7 +381,7 @@ export class Usuario {
     }
 
     persist() {
-        if (this.#id === null) return Usuario.#insertUsuario(this);
+        if (this.id === null) return Usuario.#insertUsuario(this);
         return Usuario.#update(this);
     }
 }
