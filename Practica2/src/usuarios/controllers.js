@@ -69,7 +69,7 @@ export async function doRegister(req, res) {
             // Procesar la imagen si existe
             let imagePath = null;
             if (req.file) {
-                imagePath = `/img/${req.file.filename}`;
+                imagePath = `/img/uploads/${req.file.filename}`;
             }
             const usuario = Usuario.register(username, password, name, surname, parseInt(age));
             Usuario.insertImagen(usuario.id, imagePath);

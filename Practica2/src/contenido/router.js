@@ -7,6 +7,7 @@ import { MisApuestas } from './misApuestas.js';
 import { Chat } from './chat.js';
 import { Apuestas } from './apuestas.js';
 import { body, validationResult, matchedData, query, param } from 'express-validator';
+import { error } from "../utils/helpers.js";
 
 const contenidoRouter = express.Router();
 
@@ -230,7 +231,8 @@ contenidoRouter.get('/modificarUsuario', auth, (req, res) => {
     res.render('paginaSinSidebar', {
         contenido: 'paginas/modificarUsuario',
         user: usuarioParaModificar,
-        session: req.session
+        session: req.session,
+        helpers: {error}
     });
 });
 
