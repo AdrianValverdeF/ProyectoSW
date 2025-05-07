@@ -1,4 +1,30 @@
 -> Poner con que tarea estais por wass
+-> AVISAD POR WASS DE CUALQUIER DUDA
+
+⚠️HAY QUE HACER LA MEMORIA⚠️
+
+Correciones:
+    - ⚠️Revisar ej3, implementar validación de formularios, etc⚠️
+    - ⚠️Peticiones que modifiquen el servidor (metodos POST) IMPORTANTE!!!!⚠️
+    - Poder hacer busquedas con datos parciales en Perfil->Usuarios
+    - Manejar cantidades negativas en la cartera
+    - Cambiar barra de deportes por enlaces a eventos por url, a su vez,
+        hacer lo mismo con el foro y mostrarlo en lado derecho con css y un nuevo contenedor
+    - Para imagenes subidas (no estaticas) crear una carpeta uploads dentro de imagenes
+    - Revisar la clase Upload por seguridad
+    - Quitar limite de apuesta
+
+CSS:
+    - Editar eventos
+    - Usuarios de perfil
+    - Registro // Alejandro
+    - Chat Dani
+
+Sugerencia:
+    - Aplicar paginas a listados largos (Eventos, apuestas, usuarios, etc), es decir,
+        solo mostrar x eventos y si hay mas, generar botones para pasar a la siguiente seccion
+        con x eventos.
+
 
 Ficheros correccion:
  -src/contenido:
@@ -39,13 +65,13 @@ Apuestas:
 
 ⚠️Perfil: //Adrián
     - ⚠️actualizar ultimas apuestas
-    - ⚠️Cambiar foto usuario
+    - ⚠️Cambiar foto usuario -> eliminar la anterior
 
 ✅Mis Apuestas: //Marta
     -✅ que aparezca informacion de la apuesta (modificar bbdd para ello)
 
-✅BBDD: //Marta
-    - ✅Terminar de añadir datos en equipos
+BBDD: //Marta
+    - Terminar de añadir datos en equipos
 
 Chat: //Dani 
     - css de mensaje respuesta ("respondiendo a:") y cancelar respuesta
@@ -55,4 +81,6 @@ Chat: //Dani
 Competiciones:
     - Competiciones
 
-    
+Apuestas:
+    - Poder eliminar apuestas hasta 1 dia antes del partido
+        -> Que devuelva el importe de la apuesta
