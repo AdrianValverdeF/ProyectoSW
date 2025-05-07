@@ -4,15 +4,16 @@
 ⚠️HAY QUE HACER LA MEMORIA⚠️
 
 Correciones:
-    - ⚠️Revisar ej3, implementar validación de formularios, etc⚠️
-    - ⚠️Peticiones que modifiquen el servidor (metodos POST) IMPORTANTE!!!!⚠️
-    - Poder hacer busquedas con datos parciales en Perfil->Usuarios
-    - Manejar cantidades negativas en la cartera
-    - Cambiar barra de deportes por enlaces a eventos por url, a su vez,
+    - ⚠️Revisar ej3, implementar validación de formularios, etc⚠️                           //Adrián
+    - ⚠️Peticiones que modifiquen el servidor (metodos POST) IMPORTANTE!!!!⚠️               //Alejandro
+    - Poder hacer busquedas con datos parciales en Perfil->Usuarios                          //Adrián
+    - Manejar cantidades negativas en la cartera                                             //Alejandro
+    - Cambiar barra de deportes por enlaces a eventos por url, a su vez,                     //Marta
         hacer lo mismo con el foro y mostrarlo en lado derecho con css y un nuevo contenedor
-    - Para imagenes subidas (no estaticas) crear una carpeta uploads dentro de imagenes
-    - Revisar la clase Upload por seguridad
-    - Quitar limite de apuesta
+    - ✅Para imagenes subidas (no estaticas) crear una carpeta uploads dentro de imagenes
+    - Revisar la clase Upload por seguridad                                                  //Adrian
+    - Quitar limite de apuesta                                                               //Alejandro
+    - BUG: si envias un mensaje vacio en el foro desaparecen los mensajes.                   //Dani
 
 CSS:
     - Editar eventos
