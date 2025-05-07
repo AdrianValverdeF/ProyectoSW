@@ -13,7 +13,7 @@ function mostrarMensajes(mensajes) {
         if (mensajes[i].mensajeRespuesta != null) {
             result += `
                 <div class="chat-reply">
-                    <em>${mensajes[i].mensajeRespuesta.username}: ${mensajes[i].mensajeRespuesta}</em>
+                    <em>respondiendo a ${mensajes[i].respUsername}: ${mensajes[i].mensajeRespuesta}</em>
                 </div>`;
         }
 
@@ -39,9 +39,9 @@ function mostrarMensajes(mensajes) {
     </div>
     
         <form action="/contenido/enviarmensaje" method="POST">
-
+         <div class="chat-input-foroG">
         <% function mostrarRespuesta(resp,mensajeRespuesta) { if (!resp) { return "" ; } return `
-        <div class="chat-input-foroG">
+        
         <div
             class="chat-input-reply">
             <img src="/img/reply.webp">

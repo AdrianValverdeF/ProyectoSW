@@ -26,11 +26,11 @@ contenidoRouter.get('/foroComun', (req, res) => {
             username: usuario ? usuario.username : 'Usuario desconocido'
         };
     });
-    mensajesConUsuarios.forEach(mEnsaje => {
-        
-        if(mEnsaje.id_mensaje_respuesta != null){
-            let mensajeResp = Mensajes.getMensajeById(mEnsaje.id_mensaje_respuesta);
-            mEnsaje.mensajeRespuesta = mensajeResp.mensaje;
+    mensajesConUsuarios.forEach(msj => {
+        if(msj.id_mensaje_respuesta != null){
+            let mensajeResp = Mensajes.getMensajeById(msj.id_mensaje_respuesta);
+            msj.mensajeRespuesta = mensajeResp.mensaje;
+            msj.respUsername = Usuario.getUsuarioById(mensajeResp.id_usuario).username;
         }
     });
     let resp = false;
@@ -69,6 +69,8 @@ contenidoRouter.get('/mensajes', (req,res) => {
         mRespuesta.username = usuario ? usuario.username : 'Usuario desconocido';
         resp = true;
         
+        console.log(mRespuesta.username);
+
         res.render('pagina', {
             contenido,
             session: req.session,
