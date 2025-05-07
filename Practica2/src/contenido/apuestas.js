@@ -4,8 +4,14 @@ export class Apuestas {
     static initStatements(db) {
         if (this.#insertStmt !== null) return;
         this.#insertStmt = db.prepare(`
-            INSERT INTO Apuestas (id_usuario, multiplicador, cantidad_apuesta, id_eventos, combinada)
-            VALUES (@id_usuario, @multiplicador, @cantidad_apuesta, @id_eventos, @combinada)
+            INSERT INTO Apuestas (
+                id_usuario, multiplicador, cantidad_apuesta, id_eventos, combinada,
+                ganador, resultado_exacto, diferencia_puntos, puntos_equipoA, puntos_equipoB
+            )
+            VALUES (
+                @id_usuario, @multiplicador, @cantidad_apuesta, @id_eventos, @combinada,
+                @ganador, @resultado_exacto, @diferencia_puntos, @puntos_equipoA, @puntos_equipoB
+            )
         `);
     }
 

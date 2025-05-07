@@ -14,8 +14,9 @@
             const equipoA = evento.equipoA ? evento.equipoA.toString().toLowerCase() : 'default';
             const equipoB = evento.equipoB ? evento.equipoB.toString().toLowerCase() : 'default';
             const fecha = evento.fecha ? evento.fecha.toString() : 'Fecha por confirmar';
+            const genero = evento.genero ? evento.genero.toString() : 'XXX';
         %>
-        <div class="contenedor-evento" data-evento-id="<%= evento.id %>">
+        <div class="contenedor-evento" data-evento-id="<%= evento.id %>" data-deporte="<%= deporte %>">
             <a href="/contenido/apuestas/<%= evento.id %>" class="banner-evento" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
           --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg'), url('/img/<%= deporte %>-defaultB.jpg')">
                 <div class="contenedor-fondos-equipos">
@@ -25,6 +26,10 @@
 
                 <div class="logo-deporte">
                     <img src="/img/<%= deporte %>.png" alt="<%= evento.deporte || 'Deporte' %> logo">
+                </div>
+
+                <div class="genero-evento">
+                    <%= genero %>
                 </div>
 
                 <div class="contenedor-equipos">

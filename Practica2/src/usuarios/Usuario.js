@@ -25,6 +25,7 @@ export class Usuario {
     static #getListaUsuariosStmt = null;
 
     static #getFondosByIdStmt = null;
+    static #updateFondosStmt = null;
 
     static initStatements(db) {
         if (this.#getByUsernameStmt !== null) return;
@@ -58,6 +59,12 @@ export class Usuario {
                 (:rol IS NULL OR rol = :rol) AND
                 (:edad IS NULL OR edad = :edad) AND
                 id != @id;
+        `);
+
+        this.#updateFondosStmt = db.prepare(`
+            UPDATE Usuarios
+            SET fondos = @fondos
+            WHERE id = @id
         `);
 
         this.#insertImgStmt = db.prepare(`INSERT INTO Imagenes (id_usuario, rutaImg) VALUES (@id_usuario, @rutaImg)`);
@@ -307,17 +314,21 @@ export class Usuario {
         }
     }
 
-    static agregarFondos(id_usuario, cantidad) {
-        try {  
-            const datos = this.getUsuarioById(id_usuario);
-            // Creamos la instancia aquí
-            const usuario = new Usuario(
-                datos.username, datos.password, datos.nombre, datos.apellido, datos.edad, datos.rol, datos.id, datos.fondos
-            );
-            usuario.fondos += cantidad;
-            return this.#update(usuario);   
+    static updateFondos(id_usuario, nuevosFondos) {
+        try {
+            const result = this.#updateFondosStmt.run({ id: id_usuario, fondos: nuevosFondos });
+            if (result.changes === 0) throw new UsuarioNoEncontrado(`ID: ${id_usuario}`);
+        } catch (e) {
+            throw new Error('Error al actualizar los fondos', { cause: e });
         }
-        catch (e) {
+    }
+
+    static agregarFondos(id_usuario, cantidad) {
+        try {
+            const fondosActuales = this.getFondosById(id_usuario);
+            const nuevosFondos = Number(fondosActuales) + Number(cantidad);;
+            return this.updateFondos(id_usuario, nuevosFondos);
+        } catch (e) {
             throw new Error('Error al agregar fondos', { cause: e });
         }
     }
@@ -335,20 +346,23 @@ export class Usuario {
 
     static restarFondos(id_usuario, cantidad) {
         try {
-            const datos = this.getUsuarioById(id_usuario);
-            // Creamos la instancia aquí
-            const usuario = new Usuario(
-                datos.username, datos.password, datos.nombre, datos.apellido, datos.edad, datos.rol, datos.id, datos.fondos
-            );
-            if (usuario.fondos < cantidad) throw new Error('Fondos insuficientes');
-            usuario.fondos -= cantidad;
-            return this.#update(usuario);
+            const fondosActuales = this.getFondosById(id_usuario);
+            if (fondosActuales < cantidad) throw new Error('Fondos insuficientes');
+            const nuevosFondos = fondosActuales - cantidad;
+            return this.updateFondos(id_usuario, nuevosFondos);
         } catch (e) {
             throw new Error('Error al restar fondos', { cause: e });
         }
     }
 
-    id;
+    static getUsuariosByIds(ids) {
+        if (!ids || ids.length === 0) return [];
+        const placeholders = ids.map(() => '?').join(',');
+        const stmt = this.db.prepare(`SELECT id, username FROM Usuarios WHERE id IN (${placeholders})`);
+        return stmt.all(...ids);
+    }
+
+    #id;
     username;
     #password;
     rol;

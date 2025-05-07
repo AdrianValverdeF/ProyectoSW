@@ -26,6 +26,17 @@ export class Mensajes {
     
         return result.map(row => new Mensajes(row.mensaje, row.id_usuario, row.created_at, row.id_mensaje_respuesta, row.id_foro, row.id));
     }
+
+    static getMensajesByIds(ids) {
+        if (!ids || ids.length === 0) return [];
+        const placeholders = ids.map(() => '?').join(',');
+        const stmt = this.#getByNearestDateStmt.database.prepare(
+            `SELECT * FROM Mensajes WHERE id IN (${placeholders})`
+        );
+        const rows = stmt.all(...ids);
+        return rows.map(row => new Mensajes(row.mensaje, row.id_usuario, row.created_at, row.id_mensaje_respuesta, row.id_foro, row.id));
+    }
+
     static getMensajeById(id) {
         let result = null;  
         try {
