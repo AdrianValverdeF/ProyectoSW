@@ -302,27 +302,28 @@ contenidoRouter.post('/modificarPerfilUsuario', auth, [
 
 //ESTA FUNCION SIN TOCARSE NO VA
 contenidoRouter.post('/modificarPerfil', (req, res) => {
-    const { nombre, apellido, edad, username } = req.body;
+    const { nombre, apellido, edad }= req.body;
+    
 
     try {
         const usuario = Usuario.getUsuarioByUsername(req.session.username);
         usuario.nombre = nombre;
         usuario.apellido = apellido;
         usuario.edad = parseInt(edad);
-        usuario.username = username; 
+        usuario.username = req.session.username; 
 
         usuario.persist(); 
 
         req.session.nombre = nombre;
         req.session.apellido = apellido;
         req.session.edad = parseInt(edad);
-        req.session.username = username; 
+        req.session.username = usuario.username; 
 
         res.redirect('/contenido/perfil');
     } catch (e) {
         console.error('Error al actualizar el perfil:', e);
 
-        render(req, res, 'paginas/perfil', {
+        renderSin(req, res, 'paginas/perfil', {
             session: req.session,
             mostrarFormulario: true, // formulario calentito
         });
