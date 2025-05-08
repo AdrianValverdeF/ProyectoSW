@@ -7,7 +7,7 @@ import { MisApuestas } from './misApuestas.js';
 import { Chat } from './chat.js';
 import { Apuestas } from './apuestas.js';
 import { body, validationResult, matchedData, query, param } from 'express-validator';
-import { error } from "../utils/helpers.js";
+import { render, renderSin } from '../utils/render.js';
 
 const contenidoRouter = express.Router();
 
@@ -24,7 +24,7 @@ function auth(req, res, next) {
 }
 
 
-//hecho
+//hecho -
 contenidoRouter.get('/foroComun', (req, res) => {
     let contenido = 'paginas/foroComun';
     let mensajes = Mensajes.getMensajes();
@@ -53,13 +53,13 @@ contenidoRouter.get('/foroComun', (req, res) => {
         return {
             ...mensaje,
             username: mapaUsuarios[mensaje.id_usuario] || 'Usuario desconocido',
-            mensajeRespuesta: mensaje.id_mensaje_respuesta ? mapaMensajesRespuesta[mensaje.id_mensaje_respuesta] : undefined
+            mensajeRespuesta: mensaje.id_mensaje_respuesta ? mapaMensajesRespuesta[mensaje.id_mensaje_respuesta] : undefined,
+            respUsername: mensaje.id_mensaje_respuesta ? mapaUsuarios[Mensajes.getMensajeById(mensaje.id_mensaje_respuesta).id_usuario] : undefined
         };
     });
 
     let resp = false;
-    res.render('pagina', {
-        contenido,
+    render(req, res, contenido, {
         session: req.session,
         mensajes: mensajesConUsuarios,
         respuesta: resp
@@ -67,7 +67,7 @@ contenidoRouter.get('/foroComun', (req, res) => {
 });
 
 
-//hecho
+//hecho -
 contenidoRouter.get('/mensajes', auth, [query('id').optional().isInt().toInt()], (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -109,15 +109,14 @@ contenidoRouter.get('/mensajes', auth, [query('id').optional().isInt().toInt()],
 
     let resp = false;
     if (req.session.login) {;
-        let id_mensaje_respuesta = url.searchParams.get('id');
+        let id_mensaje_respuesta = parseInt(req.query.id);
         let mRespuesta = Mensajes.getMensajeById(id_mensaje_respuesta);
         let usuario = Usuario.getUsuarioById(mRespuesta.id_usuario);
         mRespuesta.username = usuario ? usuario.username : 'Usuario desconocido';
         resp = true;
         
-        console.log(mRespuesta.username);
 
-        res.render('pagina', {
+        render(req, res, contenido, {
             contenido,
             session: req.session,
             mensajes: mensajesConUsuarios,
@@ -165,57 +164,51 @@ contenidoRouter.post('/enviarmensaje', auth, [
     }
 });
 
-//hecho
+//hecho -
 contenidoRouter.get('/normal', auth, (req, res) => {
-    res.render('pagina', {
-        contenido: 'paginas/normal',
+    render (req, res, 'paginas/normal', {
         session: req.session
     });
 });
 
-//hecho
+//hecho -
 contenidoRouter.get('/admin', auth, (req, res) => {
     let contenido = 'paginas/noPermisos';
     if (req.session.esAdmin) {
         contenido = 'paginas/admin';
     }
-    res.render('pagina', {
-        contenido,
+    render(req, res, contenido, {
         session: req.session
     });
 });
 
-//hecho
+//hecho -
 contenidoRouter.get('/amigosPag', auth, (req, res) => {
-    res.render('paginaSinSidebar', {
-        contenido: 'paginas/amigos',
+    render (req, res, 'paginas/amigos', {
         session: req.session
     });
 });
 
-//hecho
+//hecho -
 contenidoRouter.get('/gestion-apuestas', auth, (req, res) => {
-    res.render('pagina', {
-        contenido: 'paginas/gestion-apuestas',
+    render (req, res, 'paginas/gestion-apuestas', {
         session: req.session
     });
 });
 
-//hecho
+//hecho -
 contenidoRouter.get('/gestion-eventos', auth, (req, res) => {
-    res.render('pagina', {
-        contenido: 'paginas/gestion-eventos',
+    render (req, res, 'paginas/gestion-eventos', {
         session: req.session
     });
 });
 
-//hecho
+//hecho -
 contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const apuestas = MisApuestas.getByUserId(id_usuario);
-        res.render('pagina', {
-            contenido: 'paginas/mis-apuestas',
+        render(req, res, 'paginas/mis-apuestas', {
             session: req.session,
             apuestas
         });
@@ -226,23 +219,20 @@ contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
 });
 
 
-//hecho
+//hecho -
 contenidoRouter.get('/modificarUsuario', auth, (req, res) => {
     const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
     usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
-    res.render('paginaSinSidebar', {
-        contenido: 'paginas/modificarUsuario',
-        user: usuarioParaModificar,
+    render(req, res, 'paginas/modificarUsuario', {
         session: req.session,
-        helpers: {error}
+        user: usuarioParaModificar
     });
 });
 
 
-//hecho
+//hecho -
 contenidoRouter.get('/gestion-eventos', auth, (req, res) => {
-    res.render('pagina', {
-        contenido: 'paginas/gestion-eventos',
+    render (req, res, 'paginas/gestion-eventos', {
         session: req.session
     });
 });
@@ -259,14 +249,13 @@ contenidoRouter.get('/perfil', auth, (req, res) => {
     req.session.imagePath = Usuario.getImagen(id_usuario);
     const mostrarFormulario = req.query.modificar === 'true';
 
-    res.render('paginaSinSidebar', {
-        contenido: 'paginas/perfil',
+    renderSin(req, res, 'paginas/perfil', {
         session: req.session,
-        mostrarFormulario 
+        mostrarFormulario
     });
 });
 
-//hecho
+//hecho -
 contenidoRouter.post('/modificarPerfilUsuario', auth, [
     body('nombre').isString().notEmpty(),
     body('apellido').isString().notEmpty(),
@@ -303,11 +292,9 @@ contenidoRouter.post('/modificarPerfilUsuario', auth, [
         console.error('Error al actualizar el perfil:', e);
         const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
         usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
-        res.render('paginaSinSidebar', {
-            contenido: 'paginas/modificarUsuario',
+        render(req, res, 'paginas/modificarUsuario', {
             session: req.session,
             user: usuarioParaModificar,
-            error: 'Error al actualizar el perfil. Inténtalo de nuevo.'
         });
     }
 });
@@ -335,11 +322,9 @@ contenidoRouter.post('/modificarPerfil', (req, res) => {
     } catch (e) {
         console.error('Error al actualizar el perfil:', e);
 
-        res.render('paginaSinSidebar', {
-            contenido: 'paginas/perfil',
+        render(req, res, 'paginas/perfil', {
             session: req.session,
             mostrarFormulario: true, // formulario calentito
-            error: 'Error al actualizar el perfil. Inténtalo de nuevo.'
         });
     }
 });
@@ -384,7 +369,7 @@ contenidoRouter.get('/baloncesto', auth, (req, res) => {
     });
 });
 
-//hecho
+//hecho -
 contenidoRouter.get('/buscarUsuarios', auth, (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
@@ -395,8 +380,8 @@ contenidoRouter.get('/buscarUsuarios', auth, (req, res) => {
         const rol = req.query.rol || '';
         const Users = Usuario.getListaUsuarios(username, nombre, apellido, edad, rol, id_usuario);
 
-        res.render('paginaSinSidebar', {
-            contenido: 'paginas/listaUsuarios',
+        renderSin(req, res, 'paginas/listaUsuarios', 
+            {
             session: req.session,
             usuarios: Users
         });
@@ -406,13 +391,13 @@ contenidoRouter.get('/buscarUsuarios', auth, (req, res) => {
     }
 });
 
-//hecho
+//hecho -
 contenidoRouter.get('/listaUsuarios', auth, (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const Users = Usuario.getAll(id_usuario);
-        res.render('paginaSinSidebar', {
-            contenido: 'paginas/listaUsuarios',
+
+        renderSin(req, res, 'paginas/listaUsuarios', {
             session: req.session,
             usuarios: Users
         });
@@ -425,14 +410,7 @@ contenidoRouter.get('/listaUsuarios', auth, (req, res) => {
 
 //-------------------------------------------------------------------------------
 
-contenidoRouter.get('/amigos', (req, res) => {
-    if (!req.session.login) {
-        return res.render('pagina', {
-            contenido: 'paginas/login',
-            session: req.session
-        });
-    }
-
+contenidoRouter.get('/amigos', auth, (req, res) => {
     try {
         const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
         console.log('ID del usuario logueado:', id_usuario); 
@@ -445,11 +423,11 @@ contenidoRouter.get('/amigos', (req, res) => {
             }
         });
 
-        res.render('paginaSinSidebar', {
-            contenido: 'paginas/amigos',
+        renderSin(req, res, 'paginas/amigos', {
             session: req.session,
             amigos: amigos
         });
+        
     } catch (e) {
         console.error('Error al cargar la lista de amigos:', e);
         res.status(500).render('paginaSinSidebar', {
@@ -462,8 +440,7 @@ contenidoRouter.get('/amigos', (req, res) => {
 });
 
 
-//hecho
-
+//hecho -
 contenidoRouter.get('/solicitudes', auth, (req, res) => {
     try {
         const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
@@ -479,8 +456,7 @@ contenidoRouter.get('/solicitudes', auth, (req, res) => {
 
         console.log(solicitudes);
 
-        res.render('paginaSinSidebar', {
-            contenido: 'paginas/solicitudes',
+        renderSin(req, res, 'paginas/solicitudes', {
             session: req.session,
             solicitudes: solicitudes
         });
@@ -495,7 +471,7 @@ contenidoRouter.get('/solicitudes', auth, (req, res) => {
     }
 });
 
-//hecho
+//hecho -
 contenidoRouter.get('/chat', auth, [
     query('amigo').isString().notEmpty().withMessage('Debes especificar un amigo')
 ], (req, res) => {
@@ -517,9 +493,7 @@ contenidoRouter.get('/chat', auth, [
         const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
 
         const amigos = Usuario.getAmigosById(id_usuario);
-
-        res.render('paginaSinSidebar', {
-            contenido: 'paginas/chat',
+        renderSin(req, res, 'paginas/chat', {
             session: req.session,
             id_usuario,
             amigo,
@@ -538,7 +512,7 @@ contenidoRouter.get('/chat', auth, [
     }
 });
 
-//hecho
+//hecho -
 contenidoRouter.post('/enviarMensajePriv', auth, (req, res) => {
     const { mensaje, amigo } = req.body;
     try {
@@ -561,7 +535,7 @@ contenidoRouter.post('/enviarMensajePriv', auth, (req, res) => {
     }
 });
 
-//hecho
+//hecho -
 contenidoRouter.post('/nuevaSolicitud', auth, [
     body('amigo').isString().notEmpty().withMessage('Debes especificar un amigo')
 ], (req, res) => {
@@ -678,12 +652,11 @@ contenidoRouter.get('/eventos', auth, (req, res) => {
             evento.genero = 'Femenino';
         }
     });
-
-    res.render('pagina', {
-        contenido: 'paginas/eventos',
+    render(req, res, 'paginas/eventos', {
         session: req.session,
         eventos: eventos
     });
+    
 });
 //hecho
 contenidoRouter.delete('/eventos/:id', auth, [
@@ -726,18 +699,17 @@ contenidoRouter.get('/eventos/crear', auth, (req, res) => {
 
     try {
         const equipos = Equipos.getAll();
-        res.render('pagina', {
-            contenido: 'paginas/crearEvento',
+        render(req, res, 'paginas/crearEvento', {
             session: req.session,
             equipos: equipos,
             equipoA: null,
             equipoB: null,
             fecha: null,
         });
+        
     }
     catch (e) {
-        res.render('pagina', {
-            contenido: 'paginas/crearEvento',
+        render(req, res, 'paginas/crearEvento', {
             session: req.session,
             equipos: [],
             error: e.message
@@ -781,8 +753,7 @@ contenidoRouter.post('/eventos/crear', auth, [
         res.redirect('/contenido/eventos');
     } catch (e) {
         const equipos = Equipos.getAll();
-        res.render('pagina', {
-            contenido: 'paginas/crearEvento',
+        render(req, res, 'paginas/crearEvento', {
             equipos,
             equipoA,
             equipoB,
@@ -833,15 +804,14 @@ contenidoRouter.get('/eventos/:id/editar', auth, [
     const { id } = matchedData(req);
     try {
         const evento = Eventos.getEventoById(id);
-        res.render('pagina', {
-            contenido: 'paginas/editarEvento',
+        render(req, res, 'paginas/editarEvento', {
             session: req.session,
             evento,
             error: null
         });
     } catch (e) {
-        res.render('pagina', {
-            contenido: 'paginas/editarEvento',
+        render(req, res, 'paginas/editarEvento', {
+            session: req.session,
             evento: null,
             error: e.message
         });
@@ -922,8 +892,7 @@ contenidoRouter.get('/apuestas/:id', auth, [
         if (!evento) {
             return res.status(404).send('Evento no encontrado');
         }
-        res.render('pagina', {
-            contenido: 'paginas/apuestas',
+        render(req, res, 'paginas/apuestas', {
             session: req.session,
             evento
         });
