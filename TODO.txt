@@ -32,7 +32,6 @@ Ficheros correccion:
     - ✅Equipo.js //Alejandro
     - Router.js //Marta
  -src/usuarios:
-    - Amigos.js //Dani
     - router.js //Dani
     - ✅Usuario.js //Adrián --> HECHO falta por revisar el amigos.js para mover todo lo de usuario.js a amigos.js
  -✅data:
@@ -76,8 +75,8 @@ BBDD: //Marta
 
 Chat: //Dani 
     - css de mensaje respuesta ("respondiendo a:") y cancelar respuesta
-    - arreglar horas del foro
-    - mensajes
+    - ✅arreglar horas del foro
+    - ✅mensajes
 
 Competiciones:
     - Competiciones
