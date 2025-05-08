@@ -3,17 +3,22 @@ import { Usuario } from './Usuario.js';
 import { Amigos } from './Amigos.js';
 import { uploadProfileImage } from '../upload.js'; 
 import path from 'node:path';
+import { render, renderSin } from '../utils/render.js';
 
 export function viewLogin(req, res) {
-    res.render('pagina', { 
-        contenido: 'paginas/login', 
+    if(req.session.login) {
+        return res.redirect('/contenido/foroComun'); 
+    }
+    render(req, res, 'paginas/login', {
         session: req.session 
     });
 }
 
 export function viewRegister(req, res) {
-    res.render('pagina', { 
-        contenido: 'paginas/register', 
+    if(req.session.login) {
+        return res.redirect('/contenido/foroComun'); 
+    }
+    render(req, res, 'paginas/register', {
         session: req.session 
     });
 }
@@ -33,16 +38,12 @@ export function doLogin(req, res) {
         req.session.edad = usuario.edad;
         req.session.esAdmin = usuario.rol === "A";
         req.session.fondos = usuario.fondos;
-        return res.render('pagina', {
-            contenido: 'paginas/foroComun',
-            session: req.session
-        });
-
+       
+       return res.redirect('/contenido/foroComun'); 
     } catch (e) {
-        res.render('pagina', {
-            contenido: 'paginas/login',
+        render(req, res, 'paginas/login', {
             error: 'El usuario o contraseña no son válidos'
-        })
+        });
     }
 
 
