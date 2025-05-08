@@ -1,7 +1,7 @@
 <div class="chat-container">
     <div class="chat-messages">
-        <%
-function mostrarMensajes(mensajes) {
+        
+<%function mostrarMensajes(mensajes) {
     let result = "";
     if (!mensajes) {
         return "<div>No hay mensajes disponibles.</div>";
@@ -9,6 +9,18 @@ function mostrarMensajes(mensajes) {
 
     for (let i = 0; i < mensajes.length; i++) {
         result += `<div class="message">`;
+
+        if (i !== 0 && (new Date(mensajes[i].created_at).getFullYear() !== new Date(mensajes[i-1].created_at).getFullYear() ||
+                        new Date(mensajes[i].created_at).getMonth() !== new Date(mensajes[i-1].created_at).getMonth() || 
+                        new Date(mensajes[i].created_at).getDate() !== new Date(mensajes[i-1].created_at).getDate())) {
+                            result += `<div class="forum-new-date">
+                                ${ new Date(mensajes[i].created_at).toLocaleString('es-ES', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                }) }
+                            </div>`;
+        }
 
         if (mensajes[i].mensajeRespuesta != null) {
             result += `
@@ -26,7 +38,12 @@ function mostrarMensajes(mensajes) {
                 </span>
                 <span class="username">${mensajes[i].username}:</span>
                 <span class="content">${mensajes[i].mensaje}</span>
-                <span class="time">${mensajes[i].created_at}</span>
+                <span class="time">
+                    ${ new Date(mensajes[i].created_at).toLocaleString('es-ES', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) }
+                </span>
             </div>
         </div>`;
     }

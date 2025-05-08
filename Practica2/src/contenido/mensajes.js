@@ -51,7 +51,7 @@ export class Mensajes {
         let result = null;
         try {
             const { mensaje: contenido, id_usuario, created_at, id_mensaje_respuesta, id_foro } = mensaje;
-            const datos = { mensaje: contenido, id_usuario, created_at, id_mensaje_respuesta, id_foro };
+            const datos = { mensaje: contenido, id_usuario, created_at: new Date().toISOString(), id_mensaje_respuesta, id_foro };
 
             result = this.#insertStmt.run(datos);
 
@@ -87,7 +87,7 @@ export class Mensajes {
         return Mensajes.#delete(id);
     }
 
-    constructor(mensaje, id_usuario, created_at = new Date(), id_mensaje_respuesta = null, id_foro = null, id = null) {
+    constructor(mensaje, id_usuario, created_at, id_mensaje_respuesta = null, id_foro = null, id = null) {
         this.mensaje = mensaje;
         this.id_usuario = id_usuario;
         this.created_at = created_at;

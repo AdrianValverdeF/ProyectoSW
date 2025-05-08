@@ -310,6 +310,17 @@ label {
     border: none;
 }
 
+.forum-new-date {
+    background-color: var(--accent-color);
+    color: var(--primary-bg);
+    font-size: 0.8rem;
+    justify-content: center;
+    text-align: center;
+    display: flex;
+    padding: 2px 6px;       
+    border-radius: 4px;   
+}
+
 .search-form{
     display: flex; 
     gap: 10px; 
@@ -446,6 +457,25 @@ label {
     text-decoration: none;
 }
 
+.perfil-content button {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    padding: 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 0;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    margin-top: 80px;
+}
+
+.perfil-content button:hover {
+    background-color: #e55b5b;
+    text-decoration: none;
+} */
+
 .amigos-list {
     display: none;
     position: absolute;
@@ -565,25 +595,6 @@ label {
     color: var(--text-color);
     margin-right: 5px;
 }
-
-.perfil-content button {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    padding: 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 0;
-    text-decoration: none;
-    display: block;
-    width: 100%;
-    margin-top: 80px;
-}
-
-.perfil-content button:hover {
-    background-color: #e55b5b;
-    text-decoration: none;
-} */
 
 .perfil-header {
     display: flex;
