@@ -444,7 +444,6 @@ contenidoRouter.get('/amigos', auth, (req, res) => {
 contenidoRouter.get('/solicitudes', auth, (req, res) => {
     try {
         const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
-        console.log('ID del usuario logueado:', id_usuario); 
         const solicitudes = Usuario.getSolicitudesById(id_usuario);
         solicitudes.forEach(solicitud => {
             if (solicitud.id_usuario == id_usuario)
@@ -453,9 +452,6 @@ contenidoRouter.get('/solicitudes', auth, (req, res) => {
                 solicitud.username = Usuario.getUsuarioById(solicitud.id_usuario).username;
             }
         });
-
-        console.log(solicitudes);
-
         renderSin(req, res, 'paginas/solicitudes', {
             session: req.session,
             solicitudes: solicitudes

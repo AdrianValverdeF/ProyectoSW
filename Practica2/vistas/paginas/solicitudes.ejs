@@ -9,7 +9,12 @@
 <body>
     <div class="amigos-container">
         <div class="perfil-header">
-            <img src="/img/gallo.jpg" alt="Avatar" class="avatar">
+
+            <% if (session.imagePath.rutaImg) { %>
+                <img src="<%= session.imagePath.rutaImg %>" alt="Avatar" class="avatar">
+            <% } else { %>
+                <img src="/img/gallo.jpg" alt="Avatar" class="avatar">
+            <% } %>
             <div class="perfil-header-content">
                 <h1><%= session.nombre %></h1>
                 <p class="tipo-usuario"><%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'Cliente VIP' : 'Cliente Normal') %></p>
