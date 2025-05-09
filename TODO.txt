@@ -13,7 +13,7 @@ Correciones:
     - ✅Para imagenes subidas (no estaticas) crear una carpeta uploads dentro de imagenes
     - Revisar la clase Upload por seguridad                                                  //Adrian
     - Quitar limite de apuesta                                                               //Alejandro
-    - BUG: si envias un mensaje vacio en el foro desaparecen los mensajes.                   //Dani
+    - ✅BUG: si envias un mensaje vacio en el foro desaparecen los mensajes.                   //Dani
 
 CSS:
     - Editar eventos
@@ -32,7 +32,6 @@ Ficheros correccion:
     - ✅Equipo.js //Alejandro
     - Router.js //Marta
  -src/usuarios:
-    - Amigos.js //Dani
     - router.js //Dani
     - ✅Usuario.js //Adrián --> HECHO falta por revisar el amigos.js para mover todo lo de usuario.js a amigos.js
  -✅data:
@@ -75,9 +74,9 @@ BBDD: //Marta
     - Terminar de añadir datos en equipos
 
 Chat: //Dani 
-    - css de mensaje respuesta ("respondiendo a:") y cancelar respuesta
-    - arreglar horas del foro
-    - mensajes
+    - ✅css de mensaje respuesta ("respondiendo a:") y cancelar respuesta
+    - ✅arreglar horas del foro
+    - ✅mensajes
 
 Competiciones:
     - Competiciones
