@@ -13,7 +13,7 @@ Correciones:
     - ✅Para imagenes subidas (no estaticas) crear una carpeta uploads dentro de imagenes
     - Revisar la clase Upload por seguridad                                                  //Adrian
     - Quitar limite de apuesta                                                               //Alejandro
-    - BUG: si envias un mensaje vacio en el foro desaparecen los mensajes.                   //Dani
+    - ✅BUG: si envias un mensaje vacio en el foro desaparecen los mensajes.                   //Dani
 
 CSS:
     - Editar eventos
@@ -74,7 +74,7 @@ BBDD: //Marta
     - Terminar de añadir datos en equipos
 
 Chat: //Dani 
-    - css de mensaje respuesta ("respondiendo a:") y cancelar respuesta
+    - ✅css de mensaje respuesta ("respondiendo a:") y cancelar respuesta
     - ✅arreglar horas del foro
     - ✅mensajes
 
