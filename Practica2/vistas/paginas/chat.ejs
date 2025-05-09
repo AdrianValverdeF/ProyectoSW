@@ -48,14 +48,14 @@
                             <p>No hay mensajes aún.</p>
                         <% } %>
                     </div>
-                    <form class="amigos-chat-input" action="/contenido/enviarMensajePriv" method="POST">
+                    <form id="enviar" class="amigos-chat-input" action="/contenido/enviarMensajePriv" method="POST" autocomplete="off">
                         <input type="hidden" name="amigo" value="<%= amigo %>">
                             <div class="forum-btn">
                                 <button type="submit" id="send">
                                     <img src="/img/send_message.png">
                                 </button>
                             </div>
-                            <input type="text" name="mensaje" placeholder="Escribe un mensaje...">
+                            <input type="text" id="mensaje" name="mensaje" placeholder="Escribe un mensaje...">
                     </form>
                 </div>
             </div>
@@ -63,3 +63,13 @@
     </main>
 </body>
 </html>
+
+<script>
+    document.getElementById('enviar').addEventListener('submit', function (e) {
+        const input = document.getElementById('mensaje');
+        if (!input.value.trim()) {
+            e.preventDefault(); // Simplemente no envía el formulario
+            // No muestra ningún mensaje ni hace nada más
+        }
+    });
+</script>

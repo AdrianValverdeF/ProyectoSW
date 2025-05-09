@@ -1,6 +1,5 @@
 import { body } from 'express-validator';
 import { Usuario } from './Usuario.js';
-import { Amigos } from './Amigos.js';
 import { uploadProfileImage } from '../upload.js'; 
 import path from 'node:path';
 import { render, renderSin } from '../utils/render.js';

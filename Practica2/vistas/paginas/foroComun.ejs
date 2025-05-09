@@ -13,13 +13,13 @@
         if (i !== 0 && (new Date(mensajes[i].created_at).getFullYear() !== new Date(mensajes[i-1].created_at).getFullYear() ||
                         new Date(mensajes[i].created_at).getMonth() !== new Date(mensajes[i-1].created_at).getMonth() || 
                         new Date(mensajes[i].created_at).getDate() !== new Date(mensajes[i-1].created_at).getDate())) {
-                            result += `<div class="forum-new-date">
+                            result += `<div class="forum-new-date"><strong>
                                 ${ new Date(mensajes[i].created_at).toLocaleString('es-ES', {
                                     day: '2-digit',
                                     month: '2-digit',
                                     year: 'numeric'
                                 }) }
-                            </div>`;
+                            </strong></div>`;
         }
 
         if (mensajes[i].mensajeRespuesta != null) {
@@ -55,12 +55,14 @@
 <%- mostrarMensajes(locals.mensajes) %>
     </div>
     
-        <form action="/contenido/enviarmensaje" method="POST">
+        <form id="enviar" action="/contenido/enviarmensaje" method="POST" autocomplete="off">
          <div class="chat-input-foroG">
         <% function mostrarRespuesta(resp,mensajeRespuesta) { if (!resp) { return "" ; } return `
         
-        <div
-            class="chat-input-reply">
+        <div class="chat-input-reply">
+            <a href="/contenido/foroComun" id="reply">
+                <img src="/img/x.png">
+            </a>
             <img src="/img/reply.webp">
             <span class="reply-input-username">respondiendo a ${mensajeRespuesta.username}:
                 ${mensajeRespuesta.mensaje}</span>
@@ -79,9 +81,18 @@
             <% if (!session.nombre) { %>
                 <input type="text" placeholder="No está permitido escribir sin iniciar sesión" disabled>
                 <% } else { %>
-                    <input type="text" name="mensaje" placeholder="Escribe un mensaje...">
+                    <input type="text" id="mensaje" name="mensaje" placeholder="Escribe un mensaje...">
             <% } %>
         </div>
         </form>
     </div>
 </div>
+
+<script>
+    document.getElementById('enviar').addEventListener('submit', function (e) {
+        const input = document.getElementById('mensaje');
+        if (!input.value.trim()) {
+            e.preventDefault();
+        }
+    });
+</script>

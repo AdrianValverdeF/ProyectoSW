@@ -274,8 +274,8 @@ label {
 
 .chat-input-reply img {
     width: 20px;
-    margin-left: 35px;
-    margin-right: 5px;
+    margin-left: 5px;
+    margin-right: 10px;
 }
 
 .chat-input-foroG input {
@@ -311,14 +311,15 @@ label {
 }
 
 .forum-new-date {
-    background-color: var(--accent-color);
-    color: var(--primary-bg);
-    font-size: 0.8rem;
+    background-color: var(--secondary-bg);
+    color: var(--accent-color);
+    font-size: 1rem;
     justify-content: center;
     text-align: center;
     display: flex;
     padding: 2px 6px;       
-    border-radius: 4px;   
+    border-radius: 4px; 
+    margin-bottom: 8px;
 }
 
 .search-form{
@@ -582,12 +583,17 @@ label {
 }
 
 .amigos-añadir {
-    justify-content: center;
     display: flex;
-    flex-direction: row;
+    justify-content: center;
 }
 
-.amigos-añadir input {
+.añadir-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.añadir-form input {
     padding: 0.5rem;
     border: 1px solid var(--border-color);
     border-radius: 4px;

@@ -13,10 +13,10 @@
             <% if (session.imagePath.rutaImg) { %>
                 <img src="<%= session.imagePath.rutaImg %>" alt="Avatar" class="avatar">
             <% } else { %>
-                <img src="/img/gallo.jpg" alt="Avatar" class="avatar">
+                <img src="/img/default.jpeg" alt="Avatar" class="avatar">
             <% } %>
             <div class="perfil-header-content">
-                <h1><%= session.nombre %></h1>
+                <h1><%= session.username %></h1>
                 <p class="tipo-usuario"><%= session.esAdmin ? 'Administrador' : (session.esVIP ? 'Cliente VIP' : 'Cliente Normal') %></p>
             </div>
         </div>
@@ -35,7 +35,7 @@
                                     <input type="hidden" name="amigo" value="<%= solicitud.username %>">
                                     <button type="submit">Aceptar</button>
                                 </form>
-                                <form action="/contenido/eliminar" method="POST">
+                                <form action="/contenido/eliminarAmigo" method="POST">
                                     <input type="hidden" name="amigo" value="<%= solicitud.username %>">
                                     <button type="submit">Rechazar</button>
                                 </form>

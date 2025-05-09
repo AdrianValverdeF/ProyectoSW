@@ -12,7 +12,7 @@
             <% if (session.imagePath.rutaImg) { %>
                 <img src="<%= session.imagePath.rutaImg %>" alt="Avatar" class="avatar">
             <% } else { %>
-                <img src="/img/gallo.jpg" alt="Avatar" class="avatar">
+                <img src="/img/default.jpeg" alt="Avatar" class="avatar">
             <% } %>
             <div class="perfil-header-content">
                 <h1><%= session.username %></h1>
@@ -24,7 +24,7 @@
         </div>
         <div class="amigos-content">
             <div class="amigos-añadir">
-                <form action="/contenido/nuevaSolicitud" method="POST">
+                <form action="/contenido/nuevaSolicitud" method="POST" class="añadir-form">
                     <input type="text" name="amigo" placeholder="Añade un amigo...">
                     <button type="submit">Añadir</button>
                 </form>
@@ -33,7 +33,7 @@
                 <% if (amigos) { %>
                     <% amigos.forEach(amigo => { %>
                         <li>
-                            <img src="/img/descarga.jpeg" alt="Avatar">
+                            <img src="/img/default.jpeg" alt="Avatar">
                             <span class="nombre"><%= amigo.username %></span>
                             <div class="acciones">
                                 <a href="/contenido/chat?amigo=<%= amigo.username %>">

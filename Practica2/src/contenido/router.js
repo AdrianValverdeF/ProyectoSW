@@ -103,7 +103,8 @@ contenidoRouter.get('/mensajes', auth, [query('id').optional().isInt().toInt()],
         return {
             ...mensaje,
             username: mapaUsuarios[mensaje.id_usuario] || 'Usuario desconocido',
-            mensajeRespuesta: mensaje.id_mensaje_respuesta ? mapaMensajesRespuesta[mensaje.id_mensaje_respuesta] : undefined
+            mensajeRespuesta: mensaje.id_mensaje_respuesta ? mapaMensajesRespuesta[mensaje.id_mensaje_respuesta] : undefined,
+            respUsername: mensaje.id_mensaje_respuesta ? mapaUsuarios[Mensajes.getMensajeById(mensaje.id_mensaje_respuesta).id_usuario] : undefined
         };
     });
 
