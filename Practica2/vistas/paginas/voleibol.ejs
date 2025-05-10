@@ -1,4 +1,20 @@
 <p>Soy Voleibol</p>
-<aside>
-    <%- include('./foroVoleibol.ejs') %>
-</aside>
+<div style="display: flex;">
+    <div style="flex:2; margin-right:2rem;">
+        <h2>Eventos de Voleibol</h2>
+        <% if (eventos && eventos.length > 0) { %>
+            <ul>
+                <% eventos.forEach(evento => { %>
+                    <li>
+                        <%= evento.equipoA %> vs <%= evento.equipoB %> - <%= evento.fecha %>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No hay eventos de Voleibol.</p>
+        <% } %>
+    </div>
+    <aside style="flex:1;">
+        <%- include('./foroVoleibol.ejs') %>
+    </aside>
+</div>

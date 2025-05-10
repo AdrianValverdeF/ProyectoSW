@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     // Lógica de los deslizadores de puntos
 
@@ -37,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Lógica para el filtro de eventos por deporte
   document.querySelectorAll('.sport-item').forEach(item => {
     item.addEventListener('click', e => {
-        e.preventDefault();
 
         const deporteSeleccionado = item.dataset.deporte;
         

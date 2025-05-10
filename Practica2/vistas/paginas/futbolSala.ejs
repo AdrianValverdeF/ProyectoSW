@@ -1,4 +1,20 @@
 <p>Soy Furbo Sala</p>
-<aside>
-    <%- include('./foroFutbolSala.ejs') %>
-</aside>
+<div style="display: flex;">
+    <div style="flex:2; margin-right:2rem;">
+        <h2>Eventos de Fútbol Sala</h2>
+        <% if (eventos && eventos.length > 0) { %>
+            <ul>
+                <% eventos.forEach(evento => { %>
+                    <li>
+                        <%= evento.equipoA %> vs <%= evento.equipoB %> - <%= evento.fecha %>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No hay eventos de Fútbol Sala.</p>
+        <% } %>
+    </div>
+    <aside style="flex:1;">
+        <%- include('./foroFutbolSala.ejs') %>
+    </aside>
+</div>

@@ -1,41 +1,60 @@
-<div class="foro-futbol">
-    <h2>Foro de Fútbol11</h2>
-    <p>Bienvenido al foro de fútbol. Aquí puedes discutir todo lo relacionado con el fútbol.</p>
+<div class="foro-futbol11">
+    <h2>Foro de Fútbol 11</h2>
+    <p>Bienvenido al foro de Fútbol 11. Aquí puedes discutir todo lo relacionado con este deporte.</p>
 </div>
 
 <div class="chat-container">
     <div class="chat-messages">
-        <div class="message">
-            <span class="reply-btn">
-                <button id="reply">
-                    <img src="/img/reply.webp">
-                </button>
-            </span>
-            <span class="time">18:24</span>
-            <span class="username">futbolista123:</span>
-            <span class="content">¿Qué opinan del último partido de Fútbol 11?</span>
-        </div>
-        <div class="message">
-            <span class="reply-btn">
-                <button id="reply">
-                    <img src="/img/reply.webp">
-                </button>
-            </span>
-            <span class="time">18:26</span>
-            <span class="username">golazo:</span>
-            <span class="content">¡El gol de la semana fue increíble!</span>
-        </div>
+        <% function mostrarMensajes(mensajes) {
+            let result = "";
+            if (!mensajes) return "<div>No hay mensajes disponibles.</div>";
+            for (let i = 0; i < mensajes.length; i++) {
+                result += `<div class="message">`;
+                if (mensajes[i].mensajeRespuesta != null) {
+                    result += `
+                        <div class="chat-reply">
+                            <em>respondiendo a ${mensajes[i].respUsername}: ${mensajes[i].mensajeRespuesta}</em>
+                        </div>`;
+                }
+                result += `
+                    <div class="chat-info">
+                        <span class="reply-btn">
+                            <a href="/contenido/futbol11?id=${mensajes[i].id}" id="reply">
+                                <img src="/img/reply.webp">
+                            </a>
+                        </span>
+                        <span class="username">${mensajes[i].username}:</span>
+                        <span class="content">${mensajes[i].mensaje}</span>
+                        <span class="time">${new Date(mensajes[i].created_at).toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                </div>`;
+            }
+            return result;
+        } %>
+        <%- mostrarMensajes(locals.mensajes) %>
     </div>
-    <div class="chat-input">
-        <div class="forum-btn">
-            <button id="send">
-                <img src="/img/send_message.png">
-            </button>
+    <form id="enviar" action="/contenido/enviarMensajeFutbol11" method="POST" autocomplete="off">
+        <div class="chat-input-enter-msg">
+            <% if (respuesta) { %>
+                <div class="chat-input-reply">
+                    <a href="/contenido/futbol11" id="reply">
+                        <img src="/img/x.png">
+                    </a>
+                    <img src="/img/reply.webp">
+                    <span class="reply-input-username">respondiendo a <%= mensajeRespuesta.username %>: <%= mensajeRespuesta.mensaje %></span>
+                    <input type="hidden" name="id_respuesta" value="<%= mensajeRespuesta.id %>">
+                </div>
+            <% } %>
+            <div class="forum-btn">
+                <button type="submit" id="send">
+                    <img src="/img/send_message.png">
+                </button>
+            </div>
+            <% if (!session.nombre) { %>
+                <input type="text" placeholder="No está permitido escribir sin iniciar sesión" disabled>
+            <% } else { %>
+                <input type="text" id="mensaje" name="mensaje" placeholder="Escribe un mensaje...">
+            <% } %>
         </div>
-        <% if (!session.nombre) { %>
-            <input type="text" placeholder="No está permitido escribir sin iniciar sesión" disabled>
-        <% } else { %>
-            <input type="text" placeholder="Escribe un mensaje...">
-        <% } %>
-    </div>
+    </form>
 </div>

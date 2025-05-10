@@ -1,4 +1,20 @@
 <p>Soy Baloncesto</p>
-<aside>
-    <%- include('./foroBaloncesto.ejs') %>
-</aside>
+<div style="display: flex;">
+    <div style="flex:2; margin-right:2rem;">
+        <h2>Eventos de Baloncesto</h2>
+        <% if (eventos && eventos.length > 0) { %>
+            <ul>
+                <% eventos.forEach(evento => { %>
+                    <li>
+                        <%= evento.equipoA %> vs <%= evento.equipoB %> - <%= evento.fecha %>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No hay eventos de Baloncesto.</p>
+        <% } %>
+    </div>
+    <aside style="flex:1;">
+        <%- include('./foroBaloncesto.ejs',{ mensajes: mensajes, session: session }) %>) %>
+    </aside>
+</div>

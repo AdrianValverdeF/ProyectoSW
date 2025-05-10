@@ -10,6 +10,7 @@ Correciones:
     - Manejar cantidades negativas en la cartera                                             //Alejandro
     - Cambiar barra de deportes por enlaces a eventos por url, a su vez,                     //Marta
         hacer lo mismo con el foro y mostrarlo en lado derecho con css y un nuevo contenedor
+        (esto es para mi pero me he quedado en qeu el foro de futbol funciona menos responder y la vista de baloncesto va guay)
     - ✅Para imagenes subidas (no estaticas) crear una carpeta uploads dentro de imagenes
     - Revisar la clase Upload por seguridad                                                  //Adrian
     - Quitar limite de apuesta                                                               //Alejandro
@@ -70,8 +71,8 @@ Apuestas:
 ✅Mis Apuestas: //Marta
     -✅ que aparezca informacion de la apuesta (modificar bbdd para ello)
 
-BBDD: //Marta
-    - Terminar de añadir datos en equipos
+-✅BBDD: //Marta
+    - -✅Terminar de añadir datos en equipos
 
 Chat: //Dani 
     - ✅css de mensaje respuesta ("respondiendo a:") y cancelar respuesta

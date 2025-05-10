@@ -1,4 +1,25 @@
 <p>Soy Furbo 11</p>
-<aside>
-    <%- include('./foroFutbol11.ejs') %>
-</aside>
+<div style="display: flex;">
+    <div style="flex:2; margin-right:2rem;">
+        <h2>Eventos de Fútbol 11</h2>
+        <% if (eventos && eventos.length > 0) { %>
+            <ul>
+                <% eventos.forEach(evento => { %>
+                    <li>
+                        <%= evento.equipoA %> vs <%= evento.equipoB %> - <%= evento.fecha %>
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No hay eventos de Fútbol 11.</p>
+        <% } %>
+    </div>
+    <aside style="flex:1;">
+        <%- include('foroFutbol11.ejs', { 
+    mensajes: mensajes, 
+    session: session, 
+    respuesta: typeof respuesta !== 'undefined' ? respuesta : false, 
+    mensajeRespuesta: typeof mensajeRespuesta !== 'undefined' ? mensajeRespuesta : null 
+}) %>
+    </aside>
+</div>

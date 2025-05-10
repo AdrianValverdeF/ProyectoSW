@@ -333,41 +333,66 @@ contenidoRouter.post('/modificarPerfil', (req, res) => {
 
 //hecho
 contenidoRouter.get('/futbol11', auth, (req, res) => {
+    const eventos = Eventos.getEventos().filter(e =>
+        e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'futbol11'
+    );
+    const mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 2);
     res.render('pagina', {
         contenido: 'paginas/futbol11',
-        session: req.session
+        session: req.session,
+        eventos,
+        mensajes 
     });
 });
 
 //hecho
 contenidoRouter.get('/futbolSala', auth, (req, res) => {
+    const eventos = Eventos.getEventos().filter(e =>
+        e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'futbolsala'
+    );
     res.render('pagina', {
         contenido: 'paginas/futbolSala',
-        session: req.session
+        session: req.session,
+        eventos
     });
 });
 
 //hecho
 contenidoRouter.get('/voleibol', auth, (req, res) => {
+    const eventos = Eventos.getEventos().filter(e =>
+        e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'voleibol'
+    );
     res.render('pagina', {
         contenido: 'paginas/voleibol',
-        session: req.session
+        session: req.session,
+        eventos
     });
 });
 
 //hecho
 contenidoRouter.get('/rugby', auth, (req, res) => {
+    const eventos = Eventos.getEventos().filter(e =>
+        e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'rugby'
+    );
     res.render('pagina', {
         contenido: 'paginas/rugby',
-        session: req.session
+        session: req.session,
+        eventos
     });
 });
 
 //hecho
 contenidoRouter.get('/baloncesto', auth, (req, res) => {
+    const eventos = Eventos.getEventos().filter(e =>
+        e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'baloncesto'
+    );
+    const mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 3); // Usa el id correcto para baloncesto
     res.render('pagina', {
-        contenido: 'paginas/baloncesto',
-        session: req.session
+        contenido: 'paginas/eventos',
+        session: req.session,
+        eventos,
+        foro: 'foroBaloncesto.ejs',
+        mensajes
     });
 });
 
@@ -441,8 +466,7 @@ contenidoRouter.get('/amigos', auth, (req, res) => {
     }
 });
 
-
-//hecho -
+//hecho 
 contenidoRouter.get('/solicitudes', auth, (req, res) => {
     try {
         const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
@@ -932,6 +956,91 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
     }
 });
 
+contenidoRouter.get('/foroFutbol11', auth, (req, res) => {
+    const eventos = Eventos.getEventos().filter(e =>
+        e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'futbol11'
+    );
+    let mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 2);
+
+    // Obtener usuarios y mensajes de respuesta
+    const idsUsuarios = [...new Set(mensajes.map(m => m.id_usuario))];
+    const usuarios = Usuario.getUsuariosByIds(idsUsuarios);
+    const mapaUsuarios = {};
+    usuarios.forEach(u => { mapaUsuarios[u.id] = u.username; });
+
+    const idsMensajesRespuesta = [
+        ...new Set(
+            mensajes
+                .filter(m => m.id_mensaje_respuesta != null)
+                .map(m => m.id_mensaje_respuesta)
+        )
+    ];
+    const mensajesRespuesta = Mensajes.getMensajesByIds
+        ? Mensajes.getMensajesByIds(idsMensajesRespuesta)
+        : idsMensajesRespuesta.map(id => Mensajes.getMensajeById(id));
+    const mapaMensajesRespuesta = {};
+    mensajesRespuesta.forEach(mr => {
+        if (mr) mapaMensajesRespuesta[mr.id] = mr;
+    });
+
+    mensajes = mensajes.map(m => ({
+        ...m,
+        username: mapaUsuarios[m.id_usuario] || 'Usuario desconocido',
+        mensajeRespuesta: m.id_mensaje_respuesta ? (mapaMensajesRespuesta[m.id_mensaje_respuesta]?.mensaje || '') : null,
+        respUsername: m.id_mensaje_respuesta ? (mapaUsuarios[mapaMensajesRespuesta[m.id_mensaje_respuesta]?.id_usuario] || 'Usuario desconocido') : null
+    }));
+
+    let respuesta = false;
+    let mensajeRespuesta = null;
+    if (req.query.id) {
+        respuesta = true;
+        mensajeRespuesta = Mensajes.getMensajeById(req.query.id);
+        if (mensajeRespuesta) {
+            mensajeRespuesta.username = mapaUsuarios[mensajeRespuesta.id_usuario] || 'Usuario desconocido';
+        }
+    }
+    res.render('pagina', {
+        contenido: 'paginas/futbol11',
+        session: req.session,
+        eventos,
+        mensajes,
+        respuesta,
+        mensajeRespuesta
+    });
+});
+
+//hecho
+contenidoRouter.post('/enviarMensajeFutbol11', auth, [
+    body('mensaje').isString().notEmpty().withMessage('El mensaje no puede estar vacío')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('pagina', {
+            contenido: 'paginas/foroFutbol11',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 2),
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
+    const { mensaje } = matchedData(req);
+    const id_usuario = Usuario.getIdByUsername(req.session.username);
+    const created_at = new Date().toISOString();
+    const id_foro = 2; // Fútbol 11
+    const id_mensaje_respuesta = req.body.id_respuesta || null;
+
+    try {
+        const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+        Mensajes.persist(nuevoMensaje);
+        res.redirect('/contenido/foroFutbol11');
+    } catch (e) {
+        res.status(500).render('pagina', {
+            contenido: 'paginas/foroFutbol11',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 2),
+            error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
+        });
+    }
+});
 
 export default contenidoRouter;
 
