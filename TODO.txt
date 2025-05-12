@@ -31,7 +31,7 @@ Sugerencia:
 Ficheros correccion:
  -src/contenido:
     - ✅Equipo.js //Alejandro
-    - Router.js //Marta
+    - ✅Router.js //Marta
  -src/usuarios:
     - ✅router.js //Dani
     - ✅Usuario.js //Adrián --> HECHO falta por revisar el amigos.js para mover todo lo de usuario.js a amigos.js

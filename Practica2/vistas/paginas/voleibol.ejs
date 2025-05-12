@@ -1,4 +1,3 @@
-<p>Soy Voleibol</p>
 <div style="display: flex;">
     <div style="flex:2; margin-right:2rem;">
         <h2>Eventos de Voleibol</h2>
@@ -15,6 +14,6 @@
         <% } %>
     </div>
     <aside style="flex:1;">
-        <%- include('./foroVoleibol.ejs') %>
+        <%- include('./foroVoleibol.ejs', { mensajes: mensajes, session: session }) %>
     </aside>
 </div>

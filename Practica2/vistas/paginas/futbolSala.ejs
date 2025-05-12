@@ -1,4 +1,3 @@
-<p>Soy Furbo Sala</p>
 <div style="display: flex;">
     <div style="flex:2; margin-right:2rem;">
         <h2>Eventos de Fútbol Sala</h2>
@@ -15,6 +14,6 @@
         <% } %>
     </div>
     <aside style="flex:1;">
-        <%- include('./foroFutbolSala.ejs') %>
+        <%- include('./foroFutbolSala.ejs',{ mensajes: mensajes, session: session }) %>) %>
     </aside>
 </div>

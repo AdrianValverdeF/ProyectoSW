@@ -60,7 +60,12 @@
             </div>
             <% if (typeof foro !== 'undefined') { %>
                 <aside style="flex:1;">
-                    <%- include(foro, { mensajes: mensajes, session: session }) %>
+                    <%- include(foro, { 
+    mensajes: mensajes, 
+    session: session, 
+    respuesta: typeof respuesta !== 'undefined' ? respuesta : false, 
+    mensajeRespuesta: typeof mensajeRespuesta !== 'undefined' ? mensajeRespuesta : null 
+}) %>
                 </aside>
             <% } %>
         </div>

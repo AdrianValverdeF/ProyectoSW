@@ -27,8 +27,7 @@ function auth(req, res, next) {
 //hecho -
 contenidoRouter.get('/foroComun', (req, res) => {
     let contenido = 'paginas/foroComun';
-    let mensajes = Mensajes.getMensajes();
-
+    let mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 1);
     const idsUsuarios = [...new Set(mensajes.map(m => m.id_usuario))];
     const usuarios = Usuario.getUsuariosByIds(idsUsuarios);
     const mapaUsuarios = {};
@@ -77,7 +76,7 @@ contenidoRouter.get('/mensajes', auth, [query('id').optional().isInt().toInt()],
     const data = matchedData(req);
     let contenido = 'paginas/foroComun';
 
-    let mensajes = Mensajes.getMensajes();
+let mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 1);
 
     const idsUsuarios = [...new Set(mensajes.map(m => m.id_usuario))];
     const usuarios = Usuario.getUsuariosByIds(idsUsuarios);
@@ -336,12 +335,53 @@ contenidoRouter.get('/futbol11', auth, (req, res) => {
     const eventos = Eventos.getEventos().filter(e =>
         e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'futbol11'
     );
-    const mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 2);
+    let mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 2);
+
+    const idsUsuarios = [...new Set(mensajes.map(m => m.id_usuario))];
+    const usuarios = Usuario.getUsuariosByIds(idsUsuarios);
+    const mapaUsuarios = {};
+    usuarios.forEach(u => { mapaUsuarios[u.id] = u.username; });
+
+    const idsMensajesRespuesta = [
+        ...new Set(
+            mensajes
+                .filter(m => m.id_mensaje_respuesta != null)
+                .map(m => m.id_mensaje_respuesta)
+        )
+    ];
+    const mensajesRespuesta = Mensajes.getMensajesByIds
+        ? Mensajes.getMensajesByIds(idsMensajesRespuesta)
+        : idsMensajesRespuesta.map(id => Mensajes.getMensajeById(id));
+    const mapaMensajesRespuesta = {};
+    mensajesRespuesta.forEach(mr => {
+        if (mr) mapaMensajesRespuesta[mr.id] = mr;
+    });
+
+    mensajes = mensajes.map(m => ({
+        ...m,
+        username: mapaUsuarios[m.id_usuario] || 'Usuario desconocido',
+        mensajeRespuesta: m.id_mensaje_respuesta ? (mapaMensajesRespuesta[m.id_mensaje_respuesta]?.mensaje || '') : null,
+        respUsername: m.id_mensaje_respuesta ? (mapaUsuarios[mapaMensajesRespuesta[m.id_mensaje_respuesta]?.id_usuario] || 'Usuario desconocido') : null
+    }));
+
+    let respuesta = false;
+    let mensajeRespuesta = null;
+    if (req.query.id) {
+        respuesta = true;
+        mensajeRespuesta = Mensajes.getMensajeById(req.query.id);
+        if (mensajeRespuesta) {
+            mensajeRespuesta.username = mapaUsuarios[mensajeRespuesta.id_usuario] || 'Usuario desconocido';
+        }
+    }
+
     res.render('pagina', {
-        contenido: 'paginas/futbol11',
+        contenido: 'paginas/eventos',
         session: req.session,
         eventos,
-        mensajes 
+        foro: 'foroFutbol11.ejs',
+        mensajes,
+        respuesta,
+        mensajeRespuesta
     });
 });
 
@@ -350,10 +390,52 @@ contenidoRouter.get('/futbolSala', auth, (req, res) => {
     const eventos = Eventos.getEventos().filter(e =>
         e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'futbolsala'
     );
+    let mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 6);
+
+    const idsUsuarios = [...new Set(mensajes.map(m => m.id_usuario))];
+    const usuarios = Usuario.getUsuariosByIds(idsUsuarios);
+    const mapaUsuarios = {};
+    usuarios.forEach(u => { mapaUsuarios[u.id] = u.username; });
+
+    const idsMensajesRespuesta = [
+        ...new Set(
+            mensajes
+                .filter(m => m.id_mensaje_respuesta != null)
+                .map(m => m.id_mensaje_respuesta)
+        )
+    ];
+    const mensajesRespuesta = Mensajes.getMensajesByIds
+        ? Mensajes.getMensajesByIds(idsMensajesRespuesta)
+        : idsMensajesRespuesta.map(id => Mensajes.getMensajeById(id));
+    const mapaMensajesRespuesta = {};
+    mensajesRespuesta.forEach(mr => {
+        if (mr) mapaMensajesRespuesta[mr.id] = mr;
+    });
+
+    mensajes = mensajes.map(m => ({
+        ...m,
+        username: mapaUsuarios[m.id_usuario] || 'Usuario desconocido',
+        mensajeRespuesta: m.id_mensaje_respuesta ? (mapaMensajesRespuesta[m.id_mensaje_respuesta]?.mensaje || '') : null,
+        respUsername: m.id_mensaje_respuesta ? (mapaUsuarios[mapaMensajesRespuesta[m.id_mensaje_respuesta]?.id_usuario] || 'Usuario desconocido') : null
+    }));
+
+    let respuesta = false;
+    let mensajeRespuesta = null;
+    if (req.query.id) {
+        respuesta = true;
+        mensajeRespuesta = Mensajes.getMensajeById(req.query.id);
+        if (mensajeRespuesta) {
+            mensajeRespuesta.username = mapaUsuarios[mensajeRespuesta.id_usuario] || 'Usuario desconocido';
+        }
+    }
+
     res.render('pagina', {
         contenido: 'paginas/futbolSala',
         session: req.session,
-        eventos
+        eventos,
+        mensajes,
+        respuesta,
+        mensajeRespuesta
     });
 });
 
@@ -362,10 +444,53 @@ contenidoRouter.get('/voleibol', auth, (req, res) => {
     const eventos = Eventos.getEventos().filter(e =>
         e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'voleibol'
     );
+    let mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 4);
+
+    const idsUsuarios = [...new Set(mensajes.map(m => m.id_usuario))];
+    const usuarios = Usuario.getUsuariosByIds(idsUsuarios);
+    const mapaUsuarios = {};
+    usuarios.forEach(u => { mapaUsuarios[u.id] = u.username; });
+
+    const idsMensajesRespuesta = [
+        ...new Set(
+            mensajes
+                .filter(m => m.id_mensaje_respuesta != null)
+                .map(m => m.id_mensaje_respuesta)
+        )
+    ];
+    const mensajesRespuesta = Mensajes.getMensajesByIds
+        ? Mensajes.getMensajesByIds(idsMensajesRespuesta)
+        : idsMensajesRespuesta.map(id => Mensajes.getMensajeById(id));
+    const mapaMensajesRespuesta = {};
+    mensajesRespuesta.forEach(mr => {
+        if (mr) mapaMensajesRespuesta[mr.id] = mr;
+    });
+
+    mensajes = mensajes.map(m => ({
+        ...m,
+        username: mapaUsuarios[m.id_usuario] || 'Usuario desconocido',
+        mensajeRespuesta: m.id_mensaje_respuesta ? (mapaMensajesRespuesta[m.id_mensaje_respuesta]?.mensaje || '') : null,
+        respUsername: m.id_mensaje_respuesta ? (mapaUsuarios[mapaMensajesRespuesta[m.id_mensaje_respuesta]?.id_usuario] || 'Usuario desconocido') : null
+    }));
+
+    let respuesta = false;
+    let mensajeRespuesta = null;
+    if (req.query.id) {
+        respuesta = true;
+        mensajeRespuesta = Mensajes.getMensajeById(req.query.id);
+        if (mensajeRespuesta) {
+            mensajeRespuesta.username = mapaUsuarios[mensajeRespuesta.id_usuario] || 'Usuario desconocido';
+        }
+    }
+
     res.render('pagina', {
-        contenido: 'paginas/voleibol',
+        contenido: 'paginas/eventos', 
         session: req.session,
-        eventos
+        eventos,
+        foro: 'foroVoleibol.ejs',   
+        mensajes,
+        respuesta,
+        mensajeRespuesta
     });
 });
 
@@ -374,10 +499,52 @@ contenidoRouter.get('/rugby', auth, (req, res) => {
     const eventos = Eventos.getEventos().filter(e =>
         e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'rugby'
     );
+    let mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 5); 
+    const idsUsuarios = [...new Set(mensajes.map(m => m.id_usuario))];
+    const usuarios = Usuario.getUsuariosByIds(idsUsuarios);
+    const mapaUsuarios = {};
+    usuarios.forEach(u => { mapaUsuarios[u.id] = u.username; });
+
+    const idsMensajesRespuesta = [
+        ...new Set(
+            mensajes
+                .filter(m => m.id_mensaje_respuesta != null)
+                .map(m => m.id_mensaje_respuesta)
+        )
+    ];
+    const mensajesRespuesta = Mensajes.getMensajesByIds
+        ? Mensajes.getMensajesByIds(idsMensajesRespuesta)
+        : idsMensajesRespuesta.map(id => Mensajes.getMensajeById(id));
+    const mapaMensajesRespuesta = {};
+    mensajesRespuesta.forEach(mr => {
+        if (mr) mapaMensajesRespuesta[mr.id] = mr;
+    });
+
+    mensajes = mensajes.map(m => ({
+        ...m,
+        username: mapaUsuarios[m.id_usuario] || 'Usuario desconocido',
+        mensajeRespuesta: m.id_mensaje_respuesta ? (mapaMensajesRespuesta[m.id_mensaje_respuesta]?.mensaje || '') : null,
+        respUsername: m.id_mensaje_respuesta ? (mapaUsuarios[mapaMensajesRespuesta[m.id_mensaje_respuesta]?.id_usuario] || 'Usuario desconocido') : null
+    }));
+
+    let respuesta = false;
+    let mensajeRespuesta = null;
+    if (req.query.id) {
+        respuesta = true;
+        mensajeRespuesta = Mensajes.getMensajeById(req.query.id);
+        if (mensajeRespuesta) {
+            mensajeRespuesta.username = mapaUsuarios[mensajeRespuesta.id_usuario] || 'Usuario desconocido';
+        }
+    }
+
     res.render('pagina', {
-        contenido: 'paginas/rugby',
+        contenido: 'paginas/eventos',
         session: req.session,
-        eventos
+        eventos,
+        foro: 'foroRugby.ejs',
+        mensajes,
+        respuesta,
+        mensajeRespuesta
     });
 });
 
@@ -386,13 +553,53 @@ contenidoRouter.get('/baloncesto', auth, (req, res) => {
     const eventos = Eventos.getEventos().filter(e =>
         e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'baloncesto'
     );
-    const mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 3); // Usa el id correcto para baloncesto
+    let mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 3); 
+
+    const idsUsuarios = [...new Set(mensajes.map(m => m.id_usuario))];
+    const usuarios = Usuario.getUsuariosByIds(idsUsuarios);
+    const mapaUsuarios = {};
+    usuarios.forEach(u => { mapaUsuarios[u.id] = u.username; });
+
+    const idsMensajesRespuesta = [
+        ...new Set(
+            mensajes
+                .filter(m => m.id_mensaje_respuesta != null)
+                .map(m => m.id_mensaje_respuesta)
+        )
+    ];
+    const mensajesRespuesta = Mensajes.getMensajesByIds
+        ? Mensajes.getMensajesByIds(idsMensajesRespuesta)
+        : idsMensajesRespuesta.map(id => Mensajes.getMensajeById(id));
+    const mapaMensajesRespuesta = {};
+    mensajesRespuesta.forEach(mr => {
+        if (mr) mapaMensajesRespuesta[mr.id] = mr;
+    });
+
+    mensajes = mensajes.map(m => ({
+        ...m,
+        username: mapaUsuarios[m.id_usuario] || 'Usuario desconocido',
+        mensajeRespuesta: m.id_mensaje_respuesta ? (mapaMensajesRespuesta[m.id_mensaje_respuesta]?.mensaje || '') : null,
+        respUsername: m.id_mensaje_respuesta ? (mapaUsuarios[mapaMensajesRespuesta[m.id_mensaje_respuesta]?.id_usuario] || 'Usuario desconocido') : null
+    }));
+
+    let respuesta = false;
+    let mensajeRespuesta = null;
+    if (req.query.id) {
+        respuesta = true;
+        mensajeRespuesta = Mensajes.getMensajeById(req.query.id);
+        if (mensajeRespuesta) {
+            mensajeRespuesta.username = mapaUsuarios[mensajeRespuesta.id_usuario] || 'Usuario desconocido';
+        }
+    }
+
     res.render('pagina', {
         contenido: 'paginas/eventos',
         session: req.session,
         eventos,
         foro: 'foroBaloncesto.ejs',
-        mensajes
+        mensajes,
+        respuesta,
+        mensajeRespuesta
     });
 });
 
@@ -985,9 +1192,7 @@ contenidoRouter.get('/foroFutbol11', auth, (req, res) => {
 
     mensajes = mensajes.map(m => ({
         ...m,
-        username: mapaUsuarios[m.id_usuario] || 'Usuario desconocido',
-        mensajeRespuesta: m.id_mensaje_respuesta ? (mapaMensajesRespuesta[m.id_mensaje_respuesta]?.mensaje || '') : null,
-        respUsername: m.id_mensaje_respuesta ? (mapaUsuarios[mapaMensajesRespuesta[m.id_mensaje_respuesta]?.id_usuario] || 'Usuario desconocido') : null
+        username: mapaUsuarios[m.id_usuario] || 'Usuario desconocido'
     }));
 
     let respuesta = false;
@@ -1031,7 +1236,7 @@ contenidoRouter.post('/enviarMensajeFutbol11', auth, [
     try {
         const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
         Mensajes.persist(nuevoMensaje);
-        res.redirect('/contenido/foroFutbol11');
+res.redirect('/contenido/futbol11');
     } catch (e) {
         res.status(500).render('pagina', {
             contenido: 'paginas/foroFutbol11',
@@ -1040,6 +1245,188 @@ contenidoRouter.post('/enviarMensajeFutbol11', auth, [
             error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
         });
     }
+});
+
+//hecho
+contenidoRouter.post('/enviarMensajeBaloncesto', auth, [
+    body('mensaje').isString().notEmpty().withMessage('El mensaje no puede estar vacío')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('pagina', {
+            contenido: 'paginas/foroBaloncesto',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 3),
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
+    const { mensaje } = matchedData(req);
+    const id_usuario = Usuario.getIdByUsername(req.session.username);
+    const created_at = new Date().toISOString();
+    const id_foro = 3; // Baloncesto
+    const id_mensaje_respuesta = req.body.id_respuesta || null;
+
+    try {
+        const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+        Mensajes.persist(nuevoMensaje);
+        res.redirect('/contenido/baloncesto');
+    } catch (e) {
+        res.status(500).render('pagina', {
+            contenido: 'paginas/foroBaloncesto',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 3),
+            error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
+        });
+    }
+});
+
+//hecho
+contenidoRouter.post('/enviarMensajeRugby', auth, [
+    body('mensaje').isString().notEmpty().withMessage('El mensaje no puede estar vacío')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('pagina', {
+            contenido: 'paginas/foroRugby',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 5),
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
+    const { mensaje } = matchedData(req);
+    const id_usuario = Usuario.getIdByUsername(req.session.username);
+    const created_at = new Date().toISOString();
+    const id_foro = 5;
+    const id_mensaje_respuesta = req.body.id_respuesta || null;
+
+    try {
+        const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+        Mensajes.persist(nuevoMensaje);
+        res.redirect('/contenido/rugby');
+    } catch (e) {
+        res.status(500).render('pagina', {
+            contenido: 'paginas/foroRugby',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 5),
+            error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
+        });
+    }
+});
+
+//hecho
+contenidoRouter.post('/enviarMensajeFutbolSala', auth, [
+    body('mensaje').isString().notEmpty().withMessage('El mensaje no puede estar vacío')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('pagina', {
+            contenido: 'paginas/foroFutbolSala',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 6),
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
+    const { mensaje } = matchedData(req);
+    const id_usuario = Usuario.getIdByUsername(req.session.username);
+    const created_at = new Date().toISOString();
+    const id_foro = 6;
+    const id_mensaje_respuesta = req.body.id_respuesta || null;
+
+    try {
+        const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+        Mensajes.persist(nuevoMensaje);
+        res.redirect('/contenido/futbolSala');
+    } catch (e) {
+        res.status(500).render('pagina', {
+            contenido: 'paginas/foroFutbolSala',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 4),
+            error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
+        });
+    }
+});
+
+//hecho
+contenidoRouter.post('/enviarMensajeVoleibol', auth, [
+    body('mensaje').isString().notEmpty().withMessage('El mensaje no puede estar vacío')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('pagina', {
+            contenido: 'paginas/foroVoleibol',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 4),
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
+    const { mensaje } = matchedData(req);
+    const id_usuario = Usuario.getIdByUsername(req.session.username);
+    const created_at = new Date().toISOString();
+    const id_foro = 4; // Voleibol
+    const id_mensaje_respuesta = req.body.id_respuesta || null;
+
+    try {
+        const nuevoMensaje = new Mensajes(mensaje, id_usuario, created_at, id_mensaje_respuesta, id_foro);
+        Mensajes.persist(nuevoMensaje);
+        res.redirect('/contenido/voleibol');
+    } catch (e) {
+        res.status(500).render('pagina', {
+            contenido: 'paginas/foroVoleibol',
+            session: req.session,
+            mensajes: Mensajes.getMensajes().filter(m => m.id_foro === 4),
+            error: 'Error al enviar el mensaje. Inténtalo de nuevo.'
+        });
+    }
+});
+
+contenidoRouter.get('/foroVoleibol', auth, (req, res) => {
+    const eventos = Eventos.getEventos().filter(e =>
+        e.deporte && e.deporte.toLowerCase().replace(/\s/g, '') === 'voleibol'
+    );
+    let mensajes = Mensajes.getMensajes().filter(m => m.id_foro === 4); 
+
+    const idsUsuarios = [...new Set(mensajes.map(m => m.id_usuario))];
+    const usuarios = Usuario.getUsuariosByIds(idsUsuarios);
+    const mapaUsuarios = {};
+    usuarios.forEach(u => { mapaUsuarios[u.id] = u.username; });
+
+    const idsMensajesRespuesta = [
+        ...new Set(
+            mensajes
+                .filter(m => m.id_mensaje_respuesta != null)
+                .map(m => m.id_mensaje_respuesta)
+        )
+    ];
+    const mensajesRespuesta = Mensajes.getMensajesByIds
+        ? Mensajes.getMensajesByIds(idsMensajesRespuesta)
+        : idsMensajesRespuesta.map(id => Mensajes.getMensajeById(id));
+    const mapaMensajesRespuesta = {};
+    mensajesRespuesta.forEach(mr => {
+        if (mr) mapaMensajesRespuesta[mr.id] = mr;
+    });
+
+    mensajes = mensajes.map(m => ({
+        ...m,
+        username: mapaUsuarios[m.id_usuario] || 'Usuario desconocido'
+    }));
+
+    let respuesta = false;
+    let mensajeRespuesta = null;
+    if (req.query.id) {
+        respuesta = true;
+        mensajeRespuesta = Mensajes.getMensajeById(req.query.id);
+        if (mensajeRespuesta) {
+            mensajeRespuesta.username = mapaUsuarios[mensajeRespuesta.id_usuario] || 'Usuario desconocido';
+        }
+    }
+    res.render('pagina', {
+        contenido: 'paginas/futbol11',
+        session: req.session,
+        eventos,
+        mensajes,
+        respuesta,
+        mensajeRespuesta
+    });
 });
 
 export default contenidoRouter;
