@@ -1132,36 +1132,53 @@ contenidoRouter.get('/apuestas/:id', auth, [
 
 //hecho
 contenidoRouter.post('/apuestas/:id/apostar', auth, [
-    param('id').isInt().withMessage('ID de evento inválido')
+  param('id').isInt().withMessage('ID de evento inválido')
 ], (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).send('Evento no válido');
-    }
-    const { id } = matchedData(req);
-    const id_usuario = Usuario.getIdByUsername(req.session.username);
-    const cantidad_apuesta = parseInt(req.body.cantidad_apuesta, 10);
-    try {
-        Usuario.restarFondos(id_usuario, cantidad_apuesta);
-        req.session.fondos = Usuario.getFondosById(id_usuario);
-        Apuestas.insertarApuesta({
-            id_usuario: id_usuario,
-            multiplicador: 1,
-            cantidad_apuesta,
-            id_eventos: id,
-            combinada: 0,
-            ganador: req.body.ganador,
-            resultado_exacto: req.body.resultadoExacto,
-            diferencia_puntos: req.body.diferenciaPuntos,
-            puntos_equipoA: req.body.puntosEquipoA,
-            puntos_equipoB: req.body.puntosEquipoB
-        });
-        res.redirect('/contenido/mis-apuestas');
-    } catch (e) {
-        console.error('Error al insertar apuesta:', e);
-        res.status(400).send(e.message || 'Error al insertar apuesta');
-    }
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).send('Evento no válido');
+
+  const { id } = matchedData(req);
+  const id_usuario = Usuario.getIdByUsername(req.session.username);
+  const {
+    cantidad_apuesta,
+    apuesta_ganador,
+    apuesta_puntosA,
+    apuesta_puntosB,
+    apuesta_resultadoExacto,
+    apuesta_diferenciaPuntos,
+    ganador,
+    puntosEquipoA,
+    puntosEquipoB,
+    resultadoExacto,
+    diferenciaPuntos,
+    multiplicador
+  } = req.body;
+
+  try {
+    Usuario.restarFondos(id_usuario, cantidad_apuesta);
+    req.session.fondos = Usuario.getFondosById(id_usuario);
+
+    const apuesta = {
+      id_usuario,
+      multiplicador: parseFloat(multiplicador) || 1,
+      cantidad_apuesta: parseInt(cantidad_apuesta, 10),
+      id_eventos: id,
+      combinada: 0,
+      ganador: apuesta_ganador ? ganador : null,
+      puntos_equipoA: apuesta_puntosA ? puntosEquipoA : null,
+      puntos_equipoB: apuesta_puntosB ? puntosEquipoB : null,
+      resultado_exacto: apuesta_resultadoExacto ? resultadoExacto : null,
+      diferencia_puntos: apuesta_diferenciaPuntos ? diferenciaPuntos : null
+    };
+
+    Apuestas.insertarApuesta(apuesta);
+    res.redirect('/contenido/mis-apuestas');
+  } catch (e) {
+    console.error('Error al insertar apuesta:', e);
+    res.status(400).send(e.message || 'Error al insertar apuesta');
+  }
 });
+
 
 contenidoRouter.get('/foroFutbol11', auth, (req, res) => {
     const eventos = Eventos.getEventos().filter(e =>
