@@ -17,7 +17,7 @@
 <body>
     <div class="perfil-container">
         <div class="perfil-header">
-            <% if (session.imagePath.rutaImg) { %>
+            <% if (session.imagePath && session.imagePath.rutaImg) { %>
                 <img src="<%= session.imagePath.rutaImg %>" alt="Avatar" class="avatar">
             <% } else { %>
                 <img src="/img/default.jpeg" alt="Avatar" class="avatar">

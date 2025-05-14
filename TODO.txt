@@ -5,15 +5,15 @@
 
 Correciones:
     - ⚠️Revisar ej3, implementar validación de formularios, etc⚠️                           //Adrián
-    - ⚠️Peticiones que modifiquen el servidor (metodos POST) IMPORTANTE!!!!⚠️               //Alejandro
+    - ✅⚠️Peticiones que modifiquen el servidor (metodos POST) IMPORTANTE!!!!⚠️      //Alejandro (Lo he revisado un par de veces, todo parece correto)
     - Poder hacer busquedas con datos parciales en Perfil->Usuarios                          //Adrián
-    - Manejar cantidades negativas en la cartera                                             //Alejandro
+    - ✅Manejar cantidades negativas en la cartera                                             //Alejandro
     - Cambiar barra de deportes por enlaces a eventos por url, a su vez,                     //Marta
         hacer lo mismo con el foro y mostrarlo en lado derecho con css y un nuevo contenedor
         (esto es para mi pero me he quedado en qeu el foro de futbol funciona menos responder y la vista de baloncesto va guay)
     - ✅Para imagenes subidas (no estaticas) crear una carpeta uploads dentro de imagenes
     - Revisar la clase Upload por seguridad                                                  //Adrian
-    - Quitar limite de apuesta                                                               //Alejandro
+    - ✅Quitar limite de apuesta                                               //Alejandro (cambiado a 100k)
     - ✅BUG: si envias un mensaje vacio en el foro desaparecen los mensajes.                   //Dani
 
 CSS:
