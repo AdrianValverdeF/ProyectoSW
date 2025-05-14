@@ -14,9 +14,15 @@
       <input type="checkbox" id="apuestaGanador" name="apuesta_ganador">
       <label for="apuestaGanador"><strong>Apostar al Ganador del Evento</strong></label>
       <div class="opciones-ganador" id="seccionGanador" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= evento.equipoA.toLowerCase() %>.jpg'); --imagen-equipo-b: url('/img/<%= deporte %>-<%= evento.equipoB.toLowerCase() %>.jpg'); --imagen-empate: url('/img/<%= deporte %>.png');">
-        <input type="radio" name="ganador" value="equipoA"> <label class="boton-radio equipoA"><%= evento.equipoA %></label>
-        <input type="radio" name="ganador" value="empate"> <label class="boton-radio empate">EMPATE</label>
-        <input type="radio" name="ganador" value="equipoB"> <label class="boton-radio equipoB"><%= evento.equipoB %></label>
+        
+        <input type="radio" name="ganador" id="ganador-equipoA" value="equipoA" class="hidden-radio"> 
+        <label for="ganador-equipoA" class="boton-radio equipoA"><%= evento.equipoA %></label>
+
+        <input type="radio" name="ganador" id="ganador-empate" value="empate" class="hidden-radio"> 
+        <label for="ganador-empate" class="boton-radio empate">EMPATE</label>
+
+        <input type="radio" name="ganador" id="ganador-equipoB" value="equipoB" class="hidden-radio"> 
+        <label for="ganador-equipoB" class="boton-radio equipoB"><%= evento.equipoB %></label>
       </div>
     </div>
 

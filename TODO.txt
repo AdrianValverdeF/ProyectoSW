@@ -17,9 +17,9 @@ Correciones:
     - ✅BUG: si envias un mensaje vacio en el foro desaparecen los mensajes.                   //Dani
 
 CSS:
+    - Checkbox seleccion de apuestas
     - Editar eventos
     - Usuarios de perfil
-    - Registro // Alejandro
     - ✅Chat // Dani
 
 Sugerencia:
@@ -51,8 +51,9 @@ General:
 Apuestas:
     - Cesta de apuestas 
     - ✅añadir campo de dinero //Marta
-    - logica de apuestas (calcular dinamicamente el multiplicador)
-    - poder seleccionar campos unicos de apuesta
+    - ✅logica de apuestas (calcular dinamicamente el multiplicador) //Alejandro
+    - ✅poder seleccionar campos unicos de apuesta //Alejandro
+    - Error al apostar mas dinero del disponible en la cartera
 
 ✅Monedero:   //Alejandro
     - ✅arreglar añadir fondos

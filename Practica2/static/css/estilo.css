@@ -861,6 +861,13 @@ label {
     display: none;
 }
 
+.hidden-radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
 .boton-radio {
     display: inline-flex;
     align-items: center;
@@ -894,8 +901,10 @@ label {
     opacity: 0.8;
 }
 
-.opciones-ganador input[type="radio"]:checked + .boton-radio {
-    border-color: var(--accent-color);
+.hidden-radio:checked + .boton-radio {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);
+  background-color: #e3f2fd;
 }
 
 .opciones-ganador label {
