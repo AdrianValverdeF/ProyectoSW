@@ -1584,13 +1584,14 @@ input::placeholder {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    color: #2d3748;
+    color: white;
     font-size: 0.95rem;
 }
 
 .form-editar-evento input[type="text"],
 .form-editar-evento input[type="date"],
 .form-editar-evento select {
+    color: black;
     width: 100%;
     padding: 0.75rem;
     border: 1px solid #e2e8f0;
