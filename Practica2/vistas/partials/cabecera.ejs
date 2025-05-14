@@ -4,20 +4,28 @@
             <img src="/img/logoUCMBets.png" alt="UCMBets Logo" class="logo">
             <span>UCMBets</span>
         </div>
-        <div class="nav-links">
-            <a href="/contenido/foroComun">Inicio</a>
-            <a href="/contenido/eventos">Eventos</a>
-            <a href="/contenido/mis-apuestas">Mis Apuestas</a>
-            <a href="/contenido/gestion-eventos">Competición</a>
-            <a href="/contenido/perfil">Perfil</a>
-        </div>
-        <div class="user-menu">
-            <% function mostrarSaludo(session){ 
-                if (session == null || !session.login) { 
-                    return `<a class='login-btn' href='/usuarios/login'>Iniciar sesión</a>`;
-                }
 
-                return `
+         <button class="cabecera-movil" aria-label="Menu">
+            <span class="cabecera-movil-line"></span>
+            <span class="cabecera-movil-line"></span>
+            <span class="cabecera-movil-line"></span>
+        </button>
+
+        <div class="nav-container">
+        
+            <div class="nav-links">
+                <a href="/contenido/foroComun">Inicio</a>
+                <a href="/contenido/eventos">Eventos</a>
+                <a href="/contenido/mis-apuestas">Mis Apuestas</a>
+                <a href="/contenido/gestion-eventos">Competición</a>
+                <a href="/contenido/perfil">Perfil</a>
+            </div>
+            <div class="user-menu">
+                <% function mostrarSaludo(session){ if (session==null || !session.login) { return `<a class='login-btn'
+                    href='/usuarios/login'>Iniciar sesión</a>`;
+                    }
+        
+                    return `
                     <div class="user-actions">
                         <div class="contenedor-cartera">
                             <i class="fa-solid fa-wallet"></i>
@@ -25,10 +33,13 @@
                         </div>
                         <a class='login-btn' href='/usuarios/logout'>Cerrar sesión</a>
                     </div>
-                `;
-            } %>
-            <%- mostrarSaludo(session) %>
+                    `;
+                    } %>
+                    <%- mostrarSaludo(session) %>
+            </div>
+
         </div>
+        
     </nav>
     <script src="/js/navbar.js"></script>
 </header>

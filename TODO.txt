@@ -18,7 +18,7 @@ Correciones:
 
 CSS:
     - Checkbox seleccion de apuestas
-    - Editar eventos
+    - ✅Editar eventos //Alejandro
     - Usuarios de perfil
     - ✅Chat // Dani
 
