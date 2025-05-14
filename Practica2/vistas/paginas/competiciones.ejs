@@ -1,0 +1,87 @@
+<section class="seccion-competiciones">
+    <h2>Competiciones Disponibles</h2>
+
+    <% if (!competiciones || competiciones.length === 0) { %>
+        <div class="sin-eventos">
+            <p>No hay competiciones disponibles.</p>
+        </div>
+    <% } else { %>
+
+        <% if (session?.esAdmin) { %>
+            <button onclick="crearCompeticion(event)" class="admin-btn">Crear Competición</button>
+        <% } %>
+
+        <div style="display: flex;">
+            <div style="flex: 2;">
+                <% competiciones.forEach(function(competicion) { 
+                    const evento = competicion.evento || {};
+                    const deporte = competicion.deporte?.toString().toLowerCase() || 'default';
+                    const equipoA = competicion.equipoA?.toString().toLowerCase() || 'default';
+                    const equipoB = competicion.equipoB?.toString().toLowerCase() || 'default';
+                    const fecha = competicion.fecha || 'Fecha por confirmar';
+                    const genero = competicion.genero || 'X';
+                %>
+                <div class="contenedor-evento" data-competicion-id="<%= competicion.id %>" data-evento-id="<%= competicion.id_evento %>">
+                    <a href="/contenido/apuestas/competicion/<%= competicion.id %>" class="banner-evento" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
+                        --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg'), url('/img/<%= deporte %>-defaultB.jpg')">
+                        
+                        <div class="contenedor-fondos-equipos">
+                            <div class="fondo-equipo fondo-equipo-a"></div>
+                            <div class="fondo-equipo fondo-equipo-b"></div>
+                        </div>
+
+                        <div class="logo-deporte">
+                            <img src="/img/<%= deporte %>.png" alt="<%= deporte %> logo">
+                        </div>
+
+                        <div class="genero-evento">
+                            <%= genero %>
+                        </div>
+
+                        <div class="contenedor-equipos">
+                            <div class="equipo"><span><%= competicion.equipoA %></span></div>
+                            <div class="copaCompeticion">
+                                <img src="/img/copa.png" alt="Copa Competición">
+                                <span class="precio-competicion"><%= competicion.precio %>€</span></span>
+                            </div>
+                            <div class="equipo"><span><%= competicion.equipoB %></span></div>
+                        </div>
+
+                        <div class="fecha-evento"><%= fecha %></div>
+                        <div class="precio-competicion">Precio: <strong><%= competicion.precio %>€</strong></div>
+                    </a>
+
+                    <% if (session?.esAdmin) { %>
+                        <div class="acciones-evento">
+                            <button onclick="editarCompeticion('<%= competicion.id %>', event)" class="admin-btn">Editar</button>
+                            <button onclick="eliminarCompeticion('<%= competicion.id %>', event)" class="admin-btn danger">Eliminar</button>
+                        </div>
+                    <% } %>
+                </div>
+                <% }); %>
+            </div>
+
+            <% if (typeof foro !== 'undefined') { %>
+                <aside style="flex:1;">
+                    <%- include(foro, { 
+                        mensajes: mensajes, 
+                        session: session, 
+                        respuesta: typeof respuesta !== 'undefined' ? respuesta : false, 
+                        mensajeRespuesta: typeof mensajeRespuesta !== 'undefined' ? mensajeRespuesta : null 
+                    }) %>
+                </aside>
+            <% } %>
+        </div>
+    <% } %>
+</section>
+
+<div id="modalConfirmacionEliminar" class="modal-confirmacion">
+    <div class="contenido-modal">
+        <h3>Confirmar Eliminación</h3>
+        <p>¿Estás seguro de que deseas eliminar esta competición?</p>
+        <div class="botones-modal">
+            <button id="botonConfirmarEliminar" class="admin-btn danger">Eliminar</button>
+            <button id="botonCancelarEliminar" class="admin-btn">Cancelar</button>
+        </div>
+    </div>
+</div>

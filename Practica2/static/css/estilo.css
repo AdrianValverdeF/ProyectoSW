@@ -1479,7 +1479,6 @@ input::placeholder {
         background-position: center;
         position: relative;
         /* overflow: hidden; */
-        transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     
     .fondo-equipo-a {
@@ -2383,4 +2382,29 @@ input::placeholder {
     color: #ff6b6b;
     font-weight: 700;
     margin-left: 0.5rem;
+}
+
+/* ------------------------------------------ COMPETICIONES ---------------------------------------------- */
+
+.copaCompeticion {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copaCompeticion img {
+    height: 100%;
+}
+
+.precio-competicion {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -60%);
+    font-weight: bold;
+    font-size: 4rem;
+    color: white;
+    text-shadow: 1px 1px 3px black;
+    pointer-events: none;
 }

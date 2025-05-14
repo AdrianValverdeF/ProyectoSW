@@ -3,6 +3,7 @@ import { Mensajes } from './mensajes.js';
 import { Usuario } from '../usuarios/Usuario.js';
 import { Eventos } from './eventos.js';
 import { Equipos } from './equipos.js';
+import { Competiciones } from './competiciones.js';
 import { MisApuestas } from './misApuestas.js';
 import { Chat } from './chat.js';
 import { Apuestas } from './apuestas.js';
@@ -887,6 +888,7 @@ contenidoRouter.get('/eventos', auth, (req, res) => {
     });
     
 });
+
 //hecho
 contenidoRouter.delete('/eventos/:id', auth, [
     param('id').isInt().withMessage('ID de evento inválido')
@@ -1444,6 +1446,28 @@ contenidoRouter.get('/foroVoleibol', auth, (req, res) => {
         respuesta,
         mensajeRespuesta
     });
+});
+
+
+//COMPETICIONES
+
+contenidoRouter.get('/competiciones', auth, (req, res) => {
+
+    const competiciones = Competiciones.getCompeticiones();
+
+    competiciones.forEach(competiciones => {
+        if (competiciones.genero === 'M') {
+            competiciones.genero = 'Masculino';
+        } else if (competicionesento.genero === 'F') {
+            competiciones.genero = 'Femenino';
+        }
+        console.log('Competiciones:', competiciones);
+    });
+    render(req, res, 'paginas/competiciones', {
+        session: req.session,
+        competiciones: competiciones
+    });
+    
 });
 
 export default contenidoRouter;

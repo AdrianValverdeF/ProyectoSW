@@ -10,13 +10,13 @@
         <% } %>
 
         <div style="display: flex;">
-            <div style="flex:2; margin-right:2rem;">
+            <div style="flex:2;">
                 <% eventos.forEach(function(evento) { 
                     const deporte = evento.deporte ? evento.deporte.toString().toLowerCase() : 'default';
                     const equipoA = evento.equipoA ? evento.equipoA.toString().toLowerCase() : 'default';
                     const equipoB = evento.equipoB ? evento.equipoB.toString().toLowerCase() : 'default';
                     const fecha = evento.fecha ? evento.fecha.toString() : 'Fecha por confirmar';
-                    const genero = evento.genero ? evento.genero.toString() : 'XXX';
+                    const genero = evento.genero ? evento.genero.toString() : 'X';
                 %>
                 <div class="contenedor-evento" data-evento-id="<%= evento.id %>" data-deporte="<%= deporte %>">
                     <a href="/contenido/apuestas/<%= evento.id %>" class="banner-evento" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
@@ -61,11 +61,11 @@
             <% if (typeof foro !== 'undefined') { %>
                 <aside style="flex:1;">
                     <%- include(foro, { 
-    mensajes: mensajes, 
-    session: session, 
-    respuesta: typeof respuesta !== 'undefined' ? respuesta : false, 
-    mensajeRespuesta: typeof mensajeRespuesta !== 'undefined' ? mensajeRespuesta : null 
-}) %>
+                        mensajes: mensajes, 
+                        session: session, 
+                        respuesta: typeof respuesta !== 'undefined' ? respuesta : false, 
+                        mensajeRespuesta: typeof mensajeRespuesta !== 'undefined' ? mensajeRespuesta : null 
+                    }) %>
                 </aside>
             <% } %>
         </div>
