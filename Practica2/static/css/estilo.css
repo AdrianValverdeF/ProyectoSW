@@ -2426,3 +2426,131 @@ input::placeholder {
     text-shadow: 1px 1px 3px black;
     pointer-events: none;
 }
+
+
+.datos-competicion-container {
+  background: var(--secondary-bg);
+  color: var(--text-color);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+}
+
+/* Los Más Atrevidos */
+.atrevidos {
+  margin-bottom: 2rem;
+}
+
+.atrevidos h3 {
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+}
+
+.lista-atrevidos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lista-atrevidos li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: var(--primary-bg);
+}
+
+.lista-atrevidos li .usuario {
+  font-weight: 500;
+}
+
+.lista-atrevidos li .multiplicador {
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+/* Estadísticas generales */
+.estadisticas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.estadisticas > div {
+  flex: 1 1 45%;
+  text-align: center;
+}
+
+.estadisticas h3 {
+  margin-bottom: 0.5rem;
+  color: var(--accent-color);
+}
+
+/* Premios */
+.premios {
+  background: var(--primary-bg);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.premios h3 {
+  margin-bottom: 1rem;
+  color: var(--accent-color);
+}
+
+.premios ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.premios li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.premios li:last-child {
+  border-bottom: none;
+}
+
+/* Botón de acción */
+.accion-apuesta {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.admin-btn {
+  background: var(--accent-color);
+  color: var(--text-color);
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.admin-btn:hover {
+  background: #ff4c4c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .competicion-header {
+    flex-direction: column;
+  }
+  .estadisticas {
+    flex-direction: column;
+  }
+  .competicion-header .equipo-img,
+  .competicion-header .copa {
+    flex: 1 1 100%;
+  }
+  .estadisticas > div {
+    flex: 1 1 100%;
+  }
+}

@@ -1618,7 +1618,43 @@ contenidoRouter.get('/competiciones/:id/editar', auth, [
     }
 });
 
+contenidoRouter.get('/competiciones/:id/datos', auth, [
+    param('id').isInt().withMessage('ID de competición inválido')
+], (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).render('paginas/noPermisos');
+    }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginas/error', { error: errors.array().map(e => e.msg).join(', ') });
+    }
+    const { id } = matchedData(req);
 
+    try {
+        const competicion = Competiciones.getCompeticionById(id);
+        const apuestas = Apuestas.getApuestasByCompeticion(id);
+        const evento = Eventos.getEventoById(competicion.id_evento);
+
+        const totalApuestas = apuestas.length;
+
+        render(req, res, 'paginas/datosCompeticion', {
+            session: req.session,
+            competicion,
+            apuestas,
+            evento,
+            totalApuestas,
+            error: null
+        });
+    } catch (e) {
+        render(req, res, 'paginas/datosCompeticion', {
+            session: req.session,
+            competicion: null,
+            apuestas: [],
+            evento: null,
+            error: e.message
+        });
+    }
+});
 
 export default contenidoRouter;
 

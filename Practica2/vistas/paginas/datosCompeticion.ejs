@@ -1,0 +1,112 @@
+<section class="datos-competicion-container">
+  <% if (error) { %>
+    <div class="error-message">
+      <%= error %>
+    </div>
+  <% } else { %>
+
+    <!-- Encabezado con imágenes y copa -->
+    <%  
+        const deporte=evento.deporte?.toString().toLowerCase() || 'default' ; 
+        const equipoA=evento.equipoA?.toString().toLowerCase() || 'default' ; 
+        const equipoB=evento.equipoB?.toString().toLowerCase() || 'default' ; 
+        const fecha=evento.fecha || 'Fecha por confirmar' ; 
+        const genero=evento.genero || 'X' ; 
+    %>
+    <div class="contenedor-evento" data-competicion-id="<%= competicion.id %>"
+        data-evento-id="<%= competicion.id_evento %>">
+        <div class="banner-evento"
+            style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
+                            --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg'), url('/img/<%= deporte %>-defaultB.jpg')">
+    
+            <div class="contenedor-fondos-equipos">
+                <div class="fondo-equipo fondo-equipo-a"></div>
+                <div class="fondo-equipo fondo-equipo-b"></div>
+            </div>
+    
+            <div class="logo-deporte">
+                <img src="/img/<%= deporte %>.png" alt="<%= deporte %> logo">
+            </div>
+    
+            <div class="genero-evento">
+                <%= genero %>
+            </div>
+    
+            <div class="contenedor-equipos">
+                <div class="equipo"><span>
+                        <%= evento.equipoA %>
+                    </span></div>
+                <div class="copaCompeticion">
+                    <img src="/img/copa.png" alt="Copa Competición">
+                    <span class="precio-competicion">
+                        <%= competicion.precio %>€
+                    </span></span>
+                </div>
+                <div class="equipo"><span>
+                        <%= evento.equipoB %>
+                    </span></div>
+            </div>
+    
+            <div class="fecha-evento">
+                <%= fecha %>
+            </div>
+            <div class="precio-competicion">Precio: <strong>
+                    <%= competicion.precio %>€
+                </strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="atrevidos">
+      <h3>Los Usuarios Más Atrevidos</h3>
+      <ul class="lista-atrevidos">
+        <% apuestas
+             .slice()
+             .sort((a, b) => b.multiplicador - a.multiplicador)
+             .slice(0, 5)
+             .forEach(a => { %>
+          <li>
+            <span class="usuario">Usuario: <%= a.id_usuario %></span>
+            <span class="multiplicador"><%= a.multiplicador.toFixed(2) %>×</span>
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <!-- Estadísticas generales -->
+    <div class="estadisticas">
+      <div>
+        <h3>Participantes</h3>
+        <p><%= totalApuestas %></p>
+      </div>
+      <div>
+        <h3>Recaudación</h3>
+        <% const recaudado = totalApuestas * competicion.precio; %>
+        <p><%= recaudado.toFixed(2) %>€</p>
+      </div>
+    </div>
+
+    <!-- Premios -->
+    <div class="premios">
+      <h3>Premios</h3>
+      <ul>
+        <% [0.4, 0.3, 0.2, 0.07, 0.03].forEach((pct, i) => { %>
+          <li><strong><%= i + 1 %>º:</strong>
+            <%= (recaudado * pct).toFixed(2) %>€ (<%= (pct * 100).toFixed(0) %>%)
+          </li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <!-- Botón de participar / modificar -->
+    <div class="accion-apuesta">
+      <% const miApuesta = apuestas.find(a => a.id_usuario === session.id_usuario); %>
+      <% if (miApuesta) { %>
+        <a href="/contenido/competiciones/<%= competicion.id %>/apostar/editar" class="admin-btn">Modificar Mi Apuesta</a>
+      <% } else { %>
+        <a href="/contenido/competiciones/<%= competicion.id %>/apostar" class="admin-btn">Participar</a>
+      <% } %>
+    </div>
+
+  <% } %>
+</section>

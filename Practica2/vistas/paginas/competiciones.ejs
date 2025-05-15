@@ -22,7 +22,7 @@
                     const genero = competicion.genero || 'X';
                 %>
                 <div class="contenedor-evento" data-competicion-id="<%= competicion.id %>" data-evento-id="<%= competicion.id_evento %>">
-                    <a href="/contenido/apuestas/competicion/<%= competicion.id %>" class="banner-evento" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
+                    <a href="/contenido/competiciones/<%= competicion.id %>/datos" class="banner-evento" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
                         --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg'), url('/img/<%= deporte %>-defaultB.jpg')">
                         
                         <div class="contenedor-fondos-equipos">
