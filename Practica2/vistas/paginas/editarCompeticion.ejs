@@ -1,0 +1,34 @@
+<div class="editor-competicion-container">
+    <% if (error) { %>
+        <div class="error-message">
+            <%= error %>
+        </div>
+    <% } %>
+
+    <form action="/contenido/competiciones/<%= competicion.id %>/actualizar" method="POST">
+
+        <h3>Editar Competición</h3>
+
+        <div class="form-editar-competicion">
+            <label for="evento">Evento:</label>
+            <select id="evento" name="evento" required>
+                <% eventos.forEach(evento => { %>
+                    <option value="<%= evento.id %>" 
+                        <%= evento.id === competicion.eventoId ? 'selected' : '' %>>
+                        <%= evento.equipoA %> vs <%= evento.equipoB %> - <%= evento.deporte.toUpperCase() %> (<%= evento.genero %>)
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+
+        <div class="form-editar-competicion">
+            <label for="precio">Precio de la Competición:</label>
+            <input type="number" id="precio" name="precio" value="<%= competicion.precio %>" required>
+        </div>
+
+        <div class="form-confirmar-competicion">
+            <a href="/contenido/competiciones" class="admin-btn danger">Cancelar</a>
+            <button type="submit" class="admin-btn">Guardar Cambios</button>
+        </div>
+    </form>
+</div>

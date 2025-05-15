@@ -1458,10 +1458,9 @@ contenidoRouter.get('/competiciones', auth, (req, res) => {
     competiciones.forEach(competiciones => {
         if (competiciones.genero === 'M') {
             competiciones.genero = 'Masculino';
-        } else if (competicionesento.genero === 'F') {
+        } else if (competiciones.genero === 'F') {
             competiciones.genero = 'Femenino';
         }
-        console.log('Competiciones:', competiciones);
     });
     render(req, res, 'paginas/competiciones', {
         session: req.session,
@@ -1469,6 +1468,157 @@ contenidoRouter.get('/competiciones', auth, (req, res) => {
     });
     
 });
+
+contenidoRouter.get('/competiciones/crear', auth, (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).render('paginas/noPermisos');
+    }
+
+    try {
+        const eventos = Eventos.getEventos();
+        render(req, res, 'paginas/crearCompeticion', {
+            session: req.session,
+            eventos: eventos,
+        });
+    }
+    catch (e) {
+        render(req, res, 'paginas/crearCompeticion', {
+            session: req.session,
+            eventos: [],
+            error: e.message
+        });
+    }
+});
+
+contenidoRouter.post('/competiciones/crear', auth, [
+    body('id_evento').isInt({ min: 1 }).withMessage('Debes seleccionar un evento válido'),
+    body('precio').isFloat({ min: 0 }).withMessage('El precio debe ser un número mayor o igual a 0')
+    ], (req, res) => {
+
+    if (!req.session.esAdmin) {
+        return res.status(403).render('paginas/noPermisos');
+    }
+
+    const errors = validationResult(req);
+    const eventos = Eventos.getEventos();
+
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginas/crearCompeticion', {
+            eventos,
+            id_evento: req.body.id_evento,
+            precio: req.body.precio,
+            error: errors.array().map(e => e.msg).join(', '),
+            session: req.session
+        });
+    }
+
+    const { id_evento, precio } = matchedData(req);
+
+    try {
+        const nuevaCompeticion = new Competiciones(id_evento, precio);
+        Competiciones.persist(nuevaCompeticion);
+        res.redirect('/contenido/competiciones');
+    } catch (e) {
+        return res.status(500).render('paginas/crearCompeticion', {
+            eventos,
+            id_evento,
+            precio,
+            error: e.message,
+            session: req.session
+        });
+    }
+});
+
+contenidoRouter.delete('/competiciones/:id', auth, [
+    param('id').isInt().withMessage('ID de competición inválido')
+], (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).json({
+            success: false,
+            error: 'Requiere privilegios de administrador'
+        });
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
+
+    const { id } = matchedData(req);
+    try {
+        Competiciones.remove(id);
+        res.json({ success: true });
+    }
+    catch (e) {
+        const status = e instanceof CompeticionNoEncontrada ? 404 : 500;
+        res.status(status).json({
+            success: false,
+            error: e.message
+        });
+    }
+});
+
+contenidoRouter.post('/competiciones/:id/actualizar', auth, [
+    param('id').isInt().withMessage('ID de competición inválido'),
+    body('evento').isInt().withMessage('Debes seleccionar un evento válido'),
+    body('precio').isInt().notEmpty().withMessage('El precio de la competición es obligatorio')
+], (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).send('Acceso no autorizado');
+    }
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginas/error', {
+            error: errors.array().map(e => e.msg).join(', ')
+        });
+    }
+
+    const { id, evento, nombre } = matchedData(req);
+    try {
+        const competicionActualizada = new Competiciones(evento, nombre, id);
+        Competiciones.persist(competicionActualizada);
+        res.redirect('/contenido/competiciones');
+    } catch (e) {
+        res.status(500).render('paginas/error', { error: e.message });
+    }
+});
+
+
+contenidoRouter.get('/competiciones/:id/editar', auth, [
+    param('id').isInt().withMessage('ID de competición inválido')
+], (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).render('paginas/noPermisos');
+    }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).render('paginas/error', { error: errors.array().map(e => e.msg).join(', ') });
+    }
+    const { id } = matchedData(req);
+    try {
+        const competicion = Competiciones.getCompeticionById(id);
+        const eventos = Eventos.getEventos();
+        render(req, res, 'paginas/editarCompeticion', {
+            session: req.session,
+            competicion,
+            eventos,
+            error: null
+        });
+    } catch (e) {
+        render(req, res, 'paginas/editarCompeticion', {
+            session: req.session,
+            competicion: null,
+            eventos: [],
+            error: e.message
+        });
+    }
+});
+
+
 
 export default contenidoRouter;
 

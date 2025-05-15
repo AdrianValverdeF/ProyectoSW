@@ -1671,7 +1671,8 @@ input::placeholder {
 
 
 /* ---------------------------- EDITAR EVENTOS ---------------------------- */
-.editor-eventos-container {
+.editor-eventos-container,
+.editor-competicion-container {
     max-width: 600px;
     margin: 2rem auto;
     padding: 2rem;
@@ -1781,7 +1782,8 @@ input::placeholder {
 }
 
 @media (max-width: 640px) {
-    .editor-eventos-container {
+    .editor-eventos-container,
+    .editor-competicion-container {
         margin: 1rem;
         padding: 1.5rem;
     }
@@ -1795,8 +1797,9 @@ input::placeholder {
     }
 }
 
-/* CREAR EVENTO*/
-.editor-eventos-container {
+/* -------------------------------------- CREAR EVENTO ----------------------------------*/
+.editor-eventos-container,
+.editor-competicion-container {
     max-width: 430px;
     margin: 3rem auto;
     background: var(--secondary-bg);
@@ -1807,7 +1810,8 @@ input::placeholder {
     align-content: center;
 }
 
-.editor-eventos-container h2 {
+.editor-eventos-container h2,
+.editor-competicion-container h2 {
     text-align: center;
     color: var(--accent-color);
     margin-bottom: 2rem;
@@ -1815,20 +1819,33 @@ input::placeholder {
     letter-spacing: 1px;
 }
 
-#eventoForm .form-group {
+#eventoForm h3,
+#competicionForm h3 {
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+
+#eventoForm .form-group,
+#competicionForm .form-group {
     margin-bottom: 1.5rem;
     display: flex;
     flex-direction: column;
 }
 
-#eventoForm label {
+#eventoForm label,
+#competicionForm label {
     margin-bottom: 0.5rem;
     font-weight: 600;
     letter-spacing: 0.5px;
 }
 
 #eventoForm select,
-#eventoForm input[type="date"] {
+#eventoForm input[type="date"],
+#competicionForm select,
+#competicionForm input[type="text"] {
     padding: 0.7rem 1rem;
     border-radius: 8px;
     border: 1px solid var(--border-color);
@@ -1884,7 +1901,8 @@ input::placeholder {
 }
 
 @media (max-width: 600px) {
-    .editor-eventos-container {
+    .editor-eventos-container,
+    .editor-competicion-container {
         padding: 1rem;
         max-width: 98vw;
     }
