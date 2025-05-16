@@ -17,7 +17,7 @@ Correciones:
     - ✅BUG: si envias un mensaje vacio en el foro desaparecen los mensajes.                   //Dani
 
 CSS:
-    - Checkbox seleccion de apuestas
+    - Checkbox seleccion de campos de apuestas
     - ✅Editar eventos //Alejandro
     - Usuarios de perfil
     - ✅Chat // Dani
@@ -39,6 +39,11 @@ Sugerencia:
     - Aplicar paginas a listados largos (Eventos, apuestas, usuarios, etc), es decir,
         solo mostrar x eventos y si hay mas, generar botones para pasar a la siguiente seccion
         con x eventos.
+
+Apuestas:
+    - Poder eliminar apuestas hasta 1 dia antes del partido
+        -> Que devuelva el importe de la apuesta
+    - Repoblar campos de apuesta en caso de error? <--Validacion de formularios?⚠️
 
 
 Ficheros correccion:
@@ -95,6 +100,3 @@ Chat: //Dani
 
 
 
-Apuestas:
-    - Poder eliminar apuestas hasta 1 dia antes del partido
-        -> Que devuelva el importe de la apuesta
