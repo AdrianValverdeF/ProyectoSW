@@ -75,6 +75,12 @@
                                         <span class="apuesta-valor"><%= apuesta.puntos_equipoB %></span>
                                     </div>
                                 <% } %>
+                                <% if (apuesta.id_competicion) { %>
+                                    <div class="apuesta-info-box">
+                                        <span>Competición:</span>
+                                        <span class="apuesta-valor">SI</span>
+                                    </div>
+                                <% } %>
                             </div>
                             <div class="apuesta-info-col apuesta-info-col-right">
                                 <div class="apuesta-info-box">

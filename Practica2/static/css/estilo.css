@@ -2435,7 +2435,6 @@ input::placeholder {
   border-radius: 0.5rem;
 }
 
-/* Los Más Atrevidos */
 .atrevidos {
   margin-bottom: 2rem;
 }
@@ -2470,7 +2469,6 @@ input::placeholder {
   color: var(--accent-color);
 }
 
-/* Estadísticas generales */
 .estadisticas {
   display: flex;
   flex-wrap: wrap;
@@ -2489,7 +2487,6 @@ input::placeholder {
   color: var(--accent-color);
 }
 
-/* Premios */
 .premios {
   background: var(--primary-bg);
   padding: 1rem;
@@ -2517,28 +2514,47 @@ input::placeholder {
   border-bottom: none;
 }
 
-/* Botón de acción */
 .accion-apuesta {
   text-align: center;
   margin-top: 1.5rem;
 }
 
-.admin-btn {
-  background: var(--accent-color);
-  color: var(--text-color);
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  text-decoration: none;
-  font-weight: 600;
-  transition: background 0.2s;
+.accion-apuesta .admin-btn{
+    text-decoration: none;
 }
 
-.admin-btn:hover {
-  background: #ff4c4c;
+.datos-competicion-header {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    position: relative;
+    max-width: 700px;
+    margin: 2rem auto 1rem auto;
 }
 
-/* Responsive */
+.btn-volver-comp {
+    background: none;
+    color: #ff6b6b;
+    border: 2px solid #ff6b6b;
+    border-radius: 8px;
+    padding: 0.4rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    position: absolute;
+    transform: translateY(-50%);
+}
+
+.btn-volver-comp:hover {
+    background: #ff6b6b;
+    color: #fff;
+}
+
+.copaCompeticion-apuesta{
+    height: 8rem;
+}
+
 @media (max-width: 768px) {
   .competicion-header {
     flex-direction: column;

@@ -1165,6 +1165,7 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
       multiplicador: parseFloat(multiplicador) || 1,
       cantidad_apuesta: parseInt(cantidad_apuesta, 10),
       id_eventos: id,
+      id_competicion: null,
       combinada: 0,
       ganador: apuesta_ganador ? ganador : null,
       puntos_equipoA: apuesta_puntosA ? puntosEquipoA : null,
@@ -1621,9 +1622,7 @@ contenidoRouter.get('/competiciones/:id/editar', auth, [
 contenidoRouter.get('/competiciones/:id/datos', auth, [
     param('id').isInt().withMessage('ID de competición inválido')
 ], (req, res) => {
-    if (!req.session.esAdmin) {
-        return res.status(403).render('paginas/noPermisos');
-    }
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).render('paginas/error', { error: errors.array().map(e => e.msg).join(', ') });
@@ -1633,6 +1632,7 @@ contenidoRouter.get('/competiciones/:id/datos', auth, [
     try {
         const competicion = Competiciones.getCompeticionById(id);
         const apuestas = Apuestas.getApuestasByCompeticion(id);
+        const usuarios = Usuario.getUsuariosByIds(apuestas.map(u => u.id_usuario));
         const evento = Eventos.getEventoById(competicion.id_evento);
 
         const totalApuestas = apuestas.length;
@@ -1642,6 +1642,7 @@ contenidoRouter.get('/competiciones/:id/datos', auth, [
             competicion,
             apuestas,
             evento,
+            usuarios,
             totalApuestas,
             error: null
         });
@@ -1654,6 +1655,88 @@ contenidoRouter.get('/competiciones/:id/datos', auth, [
             error: e.message
         });
     }
+});
+
+contenidoRouter.get('/competiciones/:id/apostar', auth, [
+    param('id').isInt().withMessage('ID de evento inválido')
+], (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).send('Evento no válido');
+    }
+    const { id } = matchedData(req);
+    try {
+        const competicion = Competiciones.getCompeticionById(id);
+        if (!competicion) {
+            return res.status(404).send('Competicion no encontrada');
+        }
+        render(req, res, 'paginas/apuestaCompeticion', {
+            session: req.session,
+            competicion,
+        });
+    } catch (e) {
+        return res.status(500).send('Error al obtener la competicion para participar');
+    }
+});
+
+contenidoRouter.post('/competiciones/:id/apostar', auth, [
+  param('id').isInt().withMessage('ID de competición inválido')
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).send('Competición no válida');
+
+  const { id } = matchedData(req);
+  const id_usuario = Usuario.getIdByUsername(req.session.username);
+  const {
+    apuesta_ganador,
+    apuesta_puntosA,
+    apuesta_puntosB,
+    apuesta_resultadoExacto,
+    apuesta_diferenciaPuntos,
+    ganador,
+    puntosEquipoA,
+    puntosEquipoB,
+    resultadoExacto,
+    diferenciaPuntos,
+    multiplicador
+  } = req.body;
+
+  const competicion = Competiciones.getCompeticionById(id);
+
+  try {
+    Usuario.restarFondos(id_usuario, competicion.precio);
+    req.session.fondos = Usuario.getFondosById(id_usuario);
+
+    const apuesta = {
+      id_usuario,
+      multiplicador: parseFloat(multiplicador) || 1,
+      cantidad_apuesta: parseInt(competicion.precio, 10),
+      id_competicion: id,
+      id_eventos: competicion.id_evento,
+      ganador: apuesta_ganador ? ganador : null,
+      puntos_equipoA: apuesta_puntosA ? puntosEquipoA : null,
+      puntos_equipoB: apuesta_puntosB ? puntosEquipoB : null,
+      resultado_exacto: apuesta_resultadoExacto ? resultadoExacto : null,
+      diferencia_puntos: apuesta_diferenciaPuntos ? diferenciaPuntos : null
+    };
+
+      const criterios = [
+          apuesta_ganador,
+          apuesta_puntosA,
+          apuesta_puntosB,
+          apuesta_resultadoExacto,
+          apuesta_diferenciaPuntos
+      ].filter(Boolean).length;
+
+      apuesta.combinada = criterios > 1 ? 1 : 0;
+
+    Apuestas.insertarApuesta(apuesta);
+    res.redirect('/contenido/competiciones/' + id + '/datos');
+
+  } catch (e) {
+    console.error('Error al insertar apuesta:', e);
+    res.status(400).send(e.message || 'Error al insertar apuesta');
+  }
 });
 
 export default contenidoRouter;

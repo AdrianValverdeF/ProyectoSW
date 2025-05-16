@@ -26,12 +26,12 @@ Competiciones:
     (Alejandro)//COMO LO HE PLANTEADO:⚠️
         -El admin puede crear/eliminar competiciones de precio x en base a eventos existentes✅
                 (falta acabar y comprobar editar ^)
-        -El usuario se puede unir a la competicion haciendo una única apuesta 
+        -El usuario se puede unir a la competicion haciendo una única apuesta ✅
             (a traves de la seccion de competicion) de importe precio competicion.
         -El usuario podrá modificar su apuesta en cualquier momento (hasta 1 dia antes del partido)
         -Los 5 primeros ganadores (se puede cambiar) ganan un porcentaje del bote total
         -Ganan los que mas dinero consigan en base a la apuesta (MAYOR MULTIPLICADOR QUE SE CUMPLA)
-        -En la seccion "Los mas atrevidos" apareceran los x usuarios con mayor multiplicador de apuesta (✅creo)
+        -En la seccion "Los mas atrevidos" apareceran los x usuarios con mayor multiplicador de apuesta ✅
             en la competicion.
     - Competiciones
 

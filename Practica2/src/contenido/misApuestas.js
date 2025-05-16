@@ -15,6 +15,7 @@ export class MisApuestas {
                 Apuestas.diferencia_puntos,
                 Apuestas.puntos_equipoA,
                 Apuestas.puntos_equipoB,
+                Apuestas.id_competicion,
                 Eventos.fecha,
                 Eventos.deporte,
                 equipoA.nombre AS nombre_equipoA,
