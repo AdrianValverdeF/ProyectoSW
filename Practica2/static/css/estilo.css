@@ -1781,6 +1781,10 @@ input::placeholder {
     font-size: 0.95rem;
 }
 
+.error-apuesta{
+    margin-top: 1rem;
+}
+
 @media (max-width: 640px) {
     .editor-eventos-container,
     .editor-competicion-container {

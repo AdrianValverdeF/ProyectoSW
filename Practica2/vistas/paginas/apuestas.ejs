@@ -86,5 +86,12 @@
     </div>
 
     <button type="submit" class="boton-enviar">Realizar Apuesta</button>
+
+    <% if (session.apuestaError) { %>
+      <div class="error-message error-apuesta">
+        <%= session.apuestaError %>
+      </div>
+      <% session.apuestaError=null; %>
+        <% } %>
   </form>
 </div>

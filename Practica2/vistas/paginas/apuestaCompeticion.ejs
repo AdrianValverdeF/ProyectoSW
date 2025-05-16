@@ -96,5 +96,11 @@
 
     <button type="submit" class="boton-enviar">Participa (<%= competicion.precio %>€)</button>
 
+    <% if (session.apuestaError) { %>
+      <div class="error-message error-apuesta">
+        <%= session.apuestaError %>
+      </div>
+      <% session.apuestaError=null; %>
+        <% } %>
   </form>
 </div>

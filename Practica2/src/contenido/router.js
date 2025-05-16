@@ -1137,6 +1137,7 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
   param('id').isInt().withMessage('ID de evento inválido')
 ], (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) return res.status(400).send('Evento no válido');
 
   const { id } = matchedData(req);
@@ -1157,8 +1158,17 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
   } = req.body;
 
   try {
+
+    const cantidadApuesta = parseInt(cantidad_apuesta, 10);
+    const fondosUsuario = Usuario.getFondosById(id_usuario);
+
+    if (cantidadApuesta > fondosUsuario) {
+        req.session.apuestaError = 'Fondos insuficientes para realizar la apuesta (' + cantidadApuesta + '€). Dispones de ' + fondosUsuario + '€';
+        return res.redirect(req.get('referer'));
+    }
+
     Usuario.restarFondos(id_usuario, cantidad_apuesta);
-    req.session.fondos = Usuario.getFondosById(id_usuario);
+    req.session.fondos = fondosUsuario - cantidadApuesta;
 
     const apuesta = {
       id_usuario,
@@ -1713,6 +1723,14 @@ contenidoRouter.post('/competiciones/:id/apostar', auth, [
   const competicion = Competiciones.getCompeticionById(id);
 
   try {
+
+    const fondosUsuario = Usuario.getFondosById(id_usuario);
+
+    if (competicion.precio > fondosUsuario) {
+        req.session.apuestaError = 'Fondos insuficientes para unirte a la competición (' + competicion.precio + '€). Dispones de ' + fondosUsuario + '€';
+        return res.redirect(req.get('referer'));
+    }
+
     Usuario.restarFondos(id_usuario, competicion.precio);
     req.session.fondos = Usuario.getFondosById(id_usuario);
 
