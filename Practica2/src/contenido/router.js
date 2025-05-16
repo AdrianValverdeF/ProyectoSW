@@ -1166,7 +1166,6 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
       cantidad_apuesta: parseInt(cantidad_apuesta, 10),
       id_eventos: id,
       id_competicion: null,
-      combinada: 0,
       ganador: apuesta_ganador ? ganador : null,
       puntos_equipoA: apuesta_puntosA ? puntosEquipoA : null,
       puntos_equipoB: apuesta_puntosB ? puntosEquipoB : null,
@@ -1174,8 +1173,18 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
       diferencia_puntos: apuesta_diferenciaPuntos ? diferenciaPuntos : null
     };
 
-    Apuestas.insertarApuesta(apuesta);
-    res.redirect('/contenido/mis-apuestas');
+      const criterios = [
+          apuesta_ganador,
+          apuesta_puntosA,
+          apuesta_puntosB,
+          apuesta_resultadoExacto,
+          apuesta_diferenciaPuntos
+      ].filter(Boolean).length;
+
+      apuesta.combinada = criterios > 1 ? 1 : 0;
+
+      Apuestas.insertarApuesta(apuesta);
+      res.redirect('/contenido/mis-apuestas');
   } catch (e) {
     console.error('Error al insertar apuesta:', e);
     res.status(400).send(e.message || 'Error al insertar apuesta');
