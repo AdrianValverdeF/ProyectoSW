@@ -1,6 +1,7 @@
 export class Apuestas {
     static #insertStmt = null;
     static #selectByCompeticionStmt = null;
+    static #deleteByIdStmt = null;
     static #db = null;
 
     static initStatements(db) {
@@ -23,6 +24,10 @@ export class Apuestas {
         this.#selectByCompeticionStmt = db.prepare(`
             SELECT * FROM Apuestas WHERE id_competicion = ? ORDER BY multiplicador DESC
         `);
+
+        this.#deleteByIdStmt = db.prepare(`
+            DELETE FROM Apuestas WHERE id = ?
+        `);
     }
 
     static insertarApuesta(apuesta) {
@@ -37,6 +42,10 @@ export class Apuestas {
     static actualizarEstadoPorEvento(id_eventos, nuevoEstado) {
         const stmt = this.#db.prepare('UPDATE Apuestas SET estado = ? WHERE id_eventos = ?');
         stmt.run(nuevoEstado, id_eventos);
+    }
+
+    static eliminarApuestaPorId(id) {
+        this.#deleteByIdStmt.run(id);
     }
 
     static actualizarEstadosGlobal() {

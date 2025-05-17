@@ -6,10 +6,10 @@
 ⚠️HAY QUE HACER LA MEMORIA⚠️ //Marta
 chat general -> futbol11    (S)  //Adrian
 Logica de apuestas ganadas/perdidas  (M)  //Dani
-Editar competiciones  (S)  //Alejandro
+✅Editar competiciones  (L)  //Alejandro
 Premiar competiciones  (M) //Alejandro
 Editar/Eliminar(>1 Dia y que te reintegre los fondos) Apuestas y apuestas competicion  (M) //Dani
-Tamaño movil  (M) // Alejandro
+Tamaño movil  (M) // Alejandro ✅⚠️(solo quedan los chats de evento)⚠️✅
 error al subir imagen sin imagen previa  (S) //Adrian
 arreglar mensajes vacios en foros pequeños  (S)  //Dani
 modificar Usuario  (M)  //Adrian

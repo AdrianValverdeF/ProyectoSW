@@ -1634,18 +1634,30 @@ contenidoRouter.post('/competiciones/:id/actualizar', auth, [
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).render('paginas/error', {
-            error: errors.array().map(e => e.msg).join(', ')
-        });
+        return res.status(400).send('Error: ' + errors.array().map(e => e.msg).join(', '));
     }
 
-    const { id, evento, nombre } = matchedData(req);
+    const { id, evento, precio } = matchedData(req);
     try {
-        const competicionActualizada = new Competiciones(evento, nombre, id);
+        const nuevoEvento = Eventos.getEventoById(evento);
+        const apuestasDeCompeticion = Apuestas.getApuestasByCompeticion(id);
+
+        for (const apuesta of apuestasDeCompeticion) {
+
+            Usuario.agregarFondos(apuesta.id_usuario, apuesta.cantidad_apuesta);
+            Apuestas.eliminarApuestaPorId(apuesta.id);
+
+            if(apuesta.id_usuario === req.session.id_usuario) {
+                req.session.fondos = Usuario.getFondosById(apuesta.id_usuario);
+            }
+        }
+
+        const competicionActualizada = new Competiciones(evento, precio, id, nuevoEvento.equipoA, nuevoEvento.equipoB, nuevoEvento.deporte, nuevoEvento.fecha, nuevoEvento.genero);
         Competiciones.persist(competicionActualizada);
+
         res.redirect('/contenido/competiciones');
     } catch (e) {
-        res.status(500).render('paginas/error', { error: e.message });
+        return res.status(500).send('Error: ' + e.message);
     }
 });
 
