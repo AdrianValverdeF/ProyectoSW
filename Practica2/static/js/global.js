@@ -75,3 +75,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const toggleBtn = document.getElementById("toggle-sidebar");
+    const sidebar = document.getElementById("sidebar");
+
+    let visible = false;
+
+    toggleBtn.addEventListener("click", () => {
+        visible = !visible;
+        sidebar.classList.toggle("visible", visible);
+
+        toggleBtn.innerHTML = visible ? "&#x25C0;" : "&#x25B6;"; // < / >
+    });
+});
+
