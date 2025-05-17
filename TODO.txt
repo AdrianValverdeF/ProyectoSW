@@ -83,9 +83,9 @@ Apuestas:
     - ✅poder filtar Eventos
     - ✅añadir distintivo para genero del deporte
 
-⚠️Perfil: //Adrián
+⚠️Perfil: //Adriánw
     - ⚠️actualizar ultimas apuestas
-    - ⚠️Cambiar foto usuario -> eliminar la anterior
+    - ✅Cambiar foto usuario -> ✅eliminar la anterior
 
 ✅Mis Apuestas: //Marta
     -✅ que aparezca informacion de la apuesta (modificar bbdd para ello)

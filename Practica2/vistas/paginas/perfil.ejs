@@ -54,11 +54,14 @@
                         </form>
                     </div>
                 <% } else { %>
-                    <form id="formulario-modificar" action="/contenido/modificarPerfil" method="POST">
+                    <form id="formulario-modificar" action="/contenido/modificarPerfil" method="POST" enctype="multipart/form-data">
                         <p><strong>Nombre:</strong> <input type="text" name="nombre" value="<%= session.nombre %>" required></p>
                         <p><strong>Apellidos:</strong> <input type="text" name="apellido" value="<%= session.apellido %>" required></p>
                         <p><strong>Edad:</strong> <input type="number" name="edad" value="<%= session.edad %>" required></p>
                         <p><strong>Correo electrónico:</strong> <input type="email" name="correo" value="<%= session.nombre %>@ucm.es" readonly></p>
+                        <p><strong>Foto de perfil:</strong> 
+                            <input type="file" name="profileImage" accept="image/*">
+                        </p>
                         <button class="guardar-btn" type="submit">Guardar Cambios</button>
                         <a href="/contenido/perfil" class="cancelar-btn">Cancelar</a>
                     </form>

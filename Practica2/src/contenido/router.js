@@ -9,6 +9,9 @@ import { Chat } from './chat.js';
 import { Apuestas } from './apuestas.js';
 import { body, validationResult, matchedData, query, param } from 'express-validator';
 import { render, renderSin } from '../utils/render.js';
+import { uploadProfileImage } from '../upload.js';
+import fs from 'fs';
+import path from 'path';
 
 const contenidoRouter = express.Router();
 
@@ -24,6 +27,14 @@ function auth(req, res, next) {
     next();
 }
 
+export function eliminarImagen(nombreArchivo) {
+    const ruta = path.join(process.cwd(), 'static', 'img', 'uploads', nombreArchivo);
+    if (fs.existsSync(ruta)) {
+        fs.unlinkSync(ruta);
+        return true;
+    }
+    return false;
+}
 
 //hecho -
 contenidoRouter.get('/foroComun', (req, res) => {
@@ -302,17 +313,28 @@ contenidoRouter.post('/modificarPerfilUsuario', auth, [
 
 
 //ESTA FUNCION SIN TOCARSE NO VA
-contenidoRouter.post('/modificarPerfil', (req, res) => {
-    const { nombre, apellido, edad }= req.body;
+contenidoRouter.post('/modificarPerfil', uploadProfileImage, (req, res) => {
+    const { nombre, apellido, edad } = req.body;
     
 
     try {
+        let imagePath = null;
+        if (req.file) {
+            imagePath = `/img/uploads/${req.file.filename}`;
+        }
         const usuario = Usuario.getUsuarioByUsername(req.session.username);
+        const rutaRelativa = Usuario.getImagen(Usuario.getIdByUsername(req.session.username)); 
+        Usuario.updateImagen(Usuario.getIdByUsername(req.session.username), imagePath);
+        if (rutaRelativa) {
+            console.log('Ruta relativa:', rutaRelativa);
+            const nombreArchivo = path.basename(rutaRelativa.rutaImg);
+            console.log('Nombre del archivo:', nombreArchivo);
+            eliminarImagen(nombreArchivo);
+        }
         usuario.nombre = nombre;
         usuario.apellido = apellido;
         usuario.edad = parseInt(edad);
         usuario.username = req.session.username; 
-
         usuario.persist(); 
 
         req.session.nombre = nombre;
