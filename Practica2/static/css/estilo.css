@@ -38,6 +38,11 @@ p{
     margin-left: 2rem;
 }
 
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .sidebar {
 
     width: 200px;
