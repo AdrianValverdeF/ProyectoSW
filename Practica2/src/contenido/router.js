@@ -221,13 +221,6 @@ contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         let apuestas = MisApuestas.getByUserId(id_usuario);
 
-        const ahora = new Date();
-        apuestas = apuestas.map(apuesta => {
-            const fechaEvento = new Date(apuesta.fecha);
-            apuesta.estado = ahora < fechaEvento ? 'pendiente' : 'finalizada';
-            return apuesta;
-        });
-
         render(req, res, 'paginas/mis-apuestas', {
             session: req.session,
             apuestas
@@ -1834,7 +1827,7 @@ contenidoRouter.post('/eventos/:id/resultado', auth, [
     const { id, resultado_final } = matchedData(req);
     try {
         Eventos.setResultadoFinal(id, resultado_final);
-        Apuestas.actualizarEstadoPorEvento(id, 'finalizado');
+        Apuestas.actualizarEstadosGlobal();
         res.redirect('/contenido/eventos');
     } catch (e) {
         res.status(500).send('Error al guardar el resultado');

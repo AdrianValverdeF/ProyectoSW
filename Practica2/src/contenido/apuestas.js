@@ -39,6 +39,43 @@ export class Apuestas {
         stmt.run(nuevoEstado, id_eventos);
     }
 
+    static actualizarEstadosGlobal() {
+        const stmt2 = this.#db.prepare(`
+            UPDATE Apuestas
+            SET estado = 'finalizado'
+            WHERE id_eventos IN (
+                SELECT e.id FROM Eventos e
+                WHERE datetime(e.fecha) < datetime('now')
+                AND (e.resultado_final IS NOT NULL AND TRIM(e.resultado_final) != '')
+            )
+            AND estado != 'finalizado'
+        `);
+        stmt2.run();
+
+        const stmt = this.#db.prepare(`
+            UPDATE Apuestas
+            SET estado = 'sin resultado'
+            WHERE id_eventos IN (
+                SELECT e.id FROM Eventos e
+                WHERE datetime(e.fecha) < datetime('now')
+                AND (e.resultado_final IS NULL OR TRIM(e.resultado_final) = '')
+            )
+            AND estado != 'sin resultado'
+        `);
+        stmt.run();
+
+        const stmt3 = this.#db.prepare(`
+            UPDATE Apuestas
+            SET estado = 'pendiente'
+            WHERE id_eventos IN (
+                SELECT e.id FROM Eventos e
+                WHERE datetime(e.fecha) > datetime('now')
+            )
+            AND estado != 'pendiente'
+        `);
+        stmt3.run();
+    }
+
     constructor({id, id_usuario, multiplicador, cantidad_apuesta, id_eventos,
         combinada, ganador, resultado_exacto, diferencia_puntos, puntos_equipoA, puntos_equipoB,
         id_competicion, estado = 'pendiente', ganancia = 0 }) {
