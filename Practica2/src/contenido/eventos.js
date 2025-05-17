@@ -4,14 +4,17 @@ export class Eventos {
     static #insertStmt = null;
     static #updateStmt = null;
     static #deleteStmt = null;
+    static #db = null;
 
     static initStatements(db) {
         if (this.#getAllStmt !== null) return;
+        this.#db = db;
 
         this.#getAllStmt = db.prepare(`
             SELECT e.id, e.fecha, e.deporte, 
                    eqA.nombre AS equipoA_nombre, eqB.nombre AS equipoB_nombre,
-                   eqA.genero AS genero
+                   eqA.genero AS genero,
+                   e.resultado_final
             FROM Eventos e 
             LEFT JOIN Equipos eqA ON e.equipoA = eqA.id 
             LEFT JOIN Equipos eqB ON e.equipoB = eqB.id
@@ -21,7 +24,8 @@ export class Eventos {
         this.#getByIdStmt = db.prepare(`
             SELECT e.id, e.fecha, e.deporte, 
                    eqA.nombre AS equipoA_nombre, eqB.nombre AS equipoB_nombre,
-                   eqA.genero AS genero
+                   eqA.genero AS genero,
+                   e.resultado_final
             FROM Eventos e 
             LEFT JOIN Equipos eqA ON e.equipoA = eqA.id 
             LEFT JOIN Equipos eqB ON e.equipoB = eqB.id
@@ -48,7 +52,7 @@ export class Eventos {
         try {
             const result = this.#getAllStmt.all();
             return result.map(row => new Eventos(
-                row.equipoA_nombre, row.equipoB_nombre, row.deporte, row.fecha, row.id, row.genero
+                row.equipoA_nombre, row.equipoB_nombre, row.deporte, row.fecha, row.id, row.genero, row.resultado_final
             ));
         } catch (e) {
             throw new ErrorDatos('No se han encontrado eventos', { cause: e });
@@ -61,7 +65,7 @@ export class Eventos {
             if (!row) throw new EventoNoEncontrado(id);
 
             return new Eventos(
-                row.equipoA_nombre, row.equipoB_nombre, row.deporte, row.fecha, row.id, row.genero
+                row.equipoA_nombre, row.equipoB_nombre, row.deporte, row.fecha, row.id, row.genero, row.resultado_final
             );
 
         } catch (e) {
@@ -130,13 +134,19 @@ export class Eventos {
         }
     }
 
-    constructor(equipoA, equipoB, deporte, fecha = new Date(), id = null, genero = null) {
+    static setResultadoFinal(id, resultado_final) {
+        const stmt = this.#db.prepare('UPDATE Eventos SET resultado_final = ? WHERE id = ?');
+        stmt.run(resultado_final, id);
+    }
+
+    constructor(equipoA, equipoB, deporte, fecha = new Date(), id = null, genero = null, resultado_final = null) {
         this.equipoA = equipoA;
         this.equipoB = equipoB;
         this.deporte = deporte;
         this.fecha = fecha;
         this.id = id;
         this.genero = genero;
+        this.resultado_final = resultado_final;
     }
 }
 

@@ -17,10 +17,25 @@
                     const equipoB = evento.equipoB ? evento.equipoB.toString().toLowerCase() : 'default';
                     const fecha = evento.fecha ? evento.fecha.toString() : 'Fecha por confirmar';
                     const genero = evento.genero ? evento.genero.toString() : 'X';
+                    const ahora = new Date();
+                    const fechaEvento = new Date(evento.fecha);
+                    let estado = '';
+                    if (ahora < fechaEvento) {
+                        estado = 'Pendiente';
+                    } else if (evento.resultado_final && evento.resultado_final.trim() !== '') {
+                        estado = 'Finalizado';
+                    } else {
+                        estado = 'Sin resultado';
+                    }
                 %>
                 <div class="contenedor-evento" data-evento-id="<%= evento.id %>" data-deporte="<%= deporte %>">
-                    <a href="/contenido/apuestas/<%= evento.id %>" class="banner-evento" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
-                  --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg'), url('/img/<%= deporte %>-defaultB.jpg')">
+                    <a 
+                        href="<%= estado === 'Pendiente' ? '/contenido/apuestas/' + evento.id : '#' %>" 
+                        class="banner-evento <%= estado === 'Finalizado' ? 'evento-finalizado' : '' %>"
+                        style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
+                               --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg'), url('/img/<%= deporte %>-defaultB.jpg')"
+                        <%= estado !== 'Pendiente' ? 'tabindex="-1" aria-disabled="true" onclick="return false;"' : '' %>
+                    >
                         <div class="contenedor-fondos-equipos">
                             <div class="fondo-equipo fondo-equipo-a"></div>
                             <div class="fondo-equipo fondo-equipo-b"></div>
@@ -38,7 +53,6 @@
                             <div class="equipo">
                                 <span><%= evento.equipoA %></span>
                             </div>
-                            <!-- <div class="vs">VS</div> -->
                             <div class="equipo">
                                 <span><%= evento.equipoB %></span>
                             </div>
@@ -47,12 +61,30 @@
                         <div class="fecha-evento">
                             <%= fecha %>
                         </div>
+
+                        <span class="pegatina-estado 
+                            <%= estado === 'Pendiente' ? 'pendiente' : (estado === 'Finalizado' ? 'finalizado' : 'sin-resultado') %>">
+                            <%= estado %>
+                        </span>
                     </a>
 
                     <% if (session?.esAdmin) { %>
                         <div class="acciones-evento">
                             <button onclick="editarEvento('<%= evento.id %>', event)" class="admin-btn">Editar</button>
                             <button onclick="eliminarEvento('<%= evento.id %>', event)" class="admin-btn danger">Eliminar</button>
+                            <% if (estado === 'Sin resultado') { %>
+                                <button onclick="mostrarFormularioResultado('<%= evento.id %>')" class="admin-btn resultado-btn">Añadir resultado</button>
+                                <form id="form-resultado-<%= evento.id %>" class="form-resultado" action="/contenido/eventos/<%= evento.id %>/resultado" method="POST" style="display:none; margin-top:10px;">
+                                    <input type="text" name="resultado_final" placeholder="Ej: 2-1" required>
+                                    <button type="submit" class="admin-btn">Guardar</button>
+                                </form>
+                            <% } %>
+                        </div>
+                    <% } %>
+
+                    <% if (evento.resultado_final) { %>
+                        <div class="resultado-final">
+                            Resultado final: <%= evento.resultado_final %>
                         </div>
                     <% } %>
                 </div>
@@ -82,3 +114,12 @@
         </div>
     </div>
 </div>
+
+<script>
+function mostrarFormularioResultado(id) {
+    var form = document.getElementById('form-resultado-' + id);
+    if (form) {
+        form.style.display = 'block';
+    }
+}
+</script>

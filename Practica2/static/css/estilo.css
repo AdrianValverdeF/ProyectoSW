@@ -1696,6 +1696,7 @@ input::placeholder {
 
 .form-editar-evento input[type="text"],
 .form-editar-evento input[type="date"],
+.form-editar-evento input[type="datetime-local"], 
 .form-editar-evento select {
     color: black;
     width: 100%;
@@ -1709,12 +1710,14 @@ input::placeholder {
 
 .form-editar-evento input[type="text"]:hover,
 .form-editar-evento input[type="date"]:hover,
+.form-editar-evento input[type="datetime-local"]:hover,
 .form-editar-evento select:hover {
     border-color: #cbd5e0;
 }
 
 .form-editar-evento input[type="text"]:focus,
 .form-editar-evento input[type="date"]:focus,
+.form-editar-evento input[type="datetime-local"]:focus, 
 .form-editar-evento select:focus {
     border-color: #4299e1;
     outline: none;
@@ -1848,6 +1851,7 @@ input::placeholder {
 
 #eventoForm select,
 #eventoForm input[type="date"],
+#eventoForm input[type="datetime-local"], /* añadido */
 #competicionForm select,
 #competicionForm input[type="text"] {
     padding: 0.7rem 1rem;
@@ -1860,7 +1864,8 @@ input::placeholder {
 }
 
 #eventoForm select:focus,
-#eventoForm input[type="date"]:focus {
+#eventoForm input[type="date"]:focus,
+#eventoForm input[type="datetime-local"]:focus {
     border: 1.5px solid var(--accent-color);
     outline: none;
 }
@@ -2573,4 +2578,41 @@ input::placeholder {
   .estadisticas > div {
     flex: 1 1 100%;
   }
+}
+
+.pegatina-estado {
+    display: inline-block;
+    padding: 0.2em 0.7em;
+    border-radius: 1em;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 0.5em;
+}
+.pegatina-estado.en-curso {
+    background: #4caf50;
+    color: #fff;
+}
+.pegatina-estado.finalizado {
+    background: #f44336;
+    color: #fff;
+}
+.evento-finalizado {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.resultado-final {
+    background: linear-gradient(90deg, #ff6b6b 0%, #ffb86b 100%);
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 0.4em 1.2em;
+    border-radius: 1em;
+    box-shadow: 0 2px 8px rgba(255,107,107,0.15);
+    margin: 0.7em 0 0.7em 1.5em;
+    display: inline-block;
+    letter-spacing: 1px;
+    border: 2px solid #fff2;
+    text-shadow: 1px 1px 4px #0008;
+    transition: background 0.2s;
 }

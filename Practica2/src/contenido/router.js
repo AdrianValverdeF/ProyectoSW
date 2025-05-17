@@ -219,7 +219,15 @@ contenidoRouter.get('/gestion-eventos', auth, (req, res) => {
 contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
     try {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
-        const apuestas = MisApuestas.getByUserId(id_usuario);
+        let apuestas = MisApuestas.getByUserId(id_usuario);
+
+        const ahora = new Date();
+        apuestas = apuestas.map(apuesta => {
+            const fechaEvento = new Date(apuesta.fecha);
+            apuesta.estado = ahora < fechaEvento ? 'pendiente' : 'finalizada';
+            return apuesta;
+        });
+
         render(req, res, 'paginas/mis-apuestas', {
             session: req.session,
             apuestas
@@ -897,13 +905,16 @@ contenidoRouter.post('/eliminarAmigo', auth, [
 contenidoRouter.get('/eventos', auth, (req, res) => {
     const eventos = Eventos.getEventos();
 
+    const ahora = new Date();
     eventos.forEach(evento => {
         if (evento.genero === 'M') {
             evento.genero = 'Masculino';
         } else if (evento.genero === 'F') {
             evento.genero = 'Femenino';
         }
+        evento.estado = ahora < new Date(evento.fecha) ? 'En curso' : 'Finalizado';
     });
+
     render(req, res, 'paginas/eventos', {
         session: req.session,
         eventos: eventos
@@ -958,14 +969,15 @@ contenidoRouter.get('/eventos/crear', auth, (req, res) => {
             equipoA: null,
             equipoB: null,
             fecha: null,
+            // fecha_fin: null, 
         });
-        
     }
     catch (e) {
         render(req, res, 'paginas/crearEvento', {
             session: req.session,
             equipos: [],
-            error: e.message
+            error: e.message,
+            // fecha_fin: null 
         });
     }
 });
@@ -996,12 +1008,12 @@ contenidoRouter.post('/eventos/crear', auth, [
             session: req.session
         });
     }
-    const { equipoA, equipoB, deporte, genero, fecha } = matchedData(req);
+    const { equipoA, equipoB, deporte, genero, fecha } = matchedData(req); 
     try {
         if (equipoA === equipoB) {
             throw new Error('Los equipos no pueden ser iguales');
         }
-        const nuevoEvento = new Eventos(equipoA, equipoB, deporte, fecha, null, genero);
+        const nuevoEvento = new Eventos(equipoA, equipoB, deporte, fecha, null, genero); 
         Eventos.persist(nuevoEvento);
         res.redirect('/contenido/eventos');
     } catch (e) {
@@ -1163,6 +1175,14 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
   if (!errors.isEmpty()) return res.status(400).send('Evento no válido');
 
   const { id } = matchedData(req);
+  const evento = Eventos.getEventoById(id);
+  if (!evento) return res.status(404).send('Evento no encontrado');
+
+  if (new Date(evento.fecha) <= new Date()) {
+    req.session.apuestaError = 'No puedes apostar en un evento finalizado.';
+    return res.redirect('/contenido/eventos');
+  }
+
   const id_usuario = Usuario.getIdByUsername(req.session.username);
   const {
     cantidad_apuesta,
@@ -1202,21 +1222,29 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
       puntos_equipoA: apuesta_puntosA ? puntosEquipoA : null,
       puntos_equipoB: apuesta_puntosB ? puntosEquipoB : null,
       resultado_exacto: apuesta_resultadoExacto ? resultadoExacto : null,
-      diferencia_puntos: apuesta_diferenciaPuntos ? diferenciaPuntos : null
+      diferencia_puntos: apuesta_diferenciaPuntos ? diferenciaPuntos : null,
+      combinada: criterios > 1 ? 1 : 0,
+      estado: 'pendiente',
+      ganancia: 0
     };
 
-      const criterios = [
-          apuesta_ganador,
-          apuesta_puntosA,
-          apuesta_puntosB,
-          apuesta_resultadoExacto,
-          apuesta_diferenciaPuntos
-      ].filter(Boolean).length;
+    const criterios = [
+        apuesta_ganador,
+        apuesta_puntosA,
+        apuesta_puntosB,
+        apuesta_resultadoExacto,
+        apuesta_diferenciaPuntos
+    ].filter(Boolean).length;
 
-      apuesta.combinada = criterios > 1 ? 1 : 0;
+    apuesta.combinada = criterios > 1 ? 1 : 0;
 
-      Apuestas.insertarApuesta(apuesta);
-      res.redirect('/contenido/mis-apuestas');
+    const evento = Eventos.getEventoById(apuesta.id_eventos);
+    apuesta.fecha_fin = evento?.fecha_fin || null;
+    apuesta.estado = 'pendiente';
+    apuesta.ganancia = 0;
+
+    Apuestas.insertarApuesta(apuesta);
+    res.redirect('/contenido/mis-apuestas');
   } catch (e) {
     console.error('Error al insertar apuesta:', e);
     res.status(400).send(e.message || 'Error al insertar apuesta');
@@ -1489,7 +1517,6 @@ contenidoRouter.get('/foroVoleibol', auth, (req, res) => {
         mensajeRespuesta
     });
 });
-
 
 //COMPETICIONES
 
@@ -1779,13 +1806,39 @@ contenidoRouter.post('/competiciones/:id/apostar', auth, [
 
       apuesta.combinada = criterios > 1 ? 1 : 0;
 
-    Apuestas.insertarApuesta(apuesta);
+      const evento = Eventos.getEventoById(apuesta.id_eventos);
+      apuesta.fecha_fin = evento?.fecha_fin || null;
+      apuesta.estado = 'pendiente';
+      apuesta.ganancia = 0;
+
+      Apuestas.insertarApuesta(apuesta);
     res.redirect('/contenido/competiciones/' + id + '/datos');
 
   } catch (e) {
     console.error('Error al insertar apuesta:', e);
     res.status(400).send(e.message || 'Error al insertar apuesta');
   }
+});
+
+contenidoRouter.post('/eventos/:id/resultado', auth, [
+    param('id').isInt().withMessage('ID de evento inválido'),
+    body('resultado_final').isString().notEmpty().withMessage('El resultado es obligatorio')
+], (req, res) => {
+    if (!req.session.esAdmin) {
+        return res.status(403).send('No autorizado');
+    }
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).send('Datos inválidos');
+    }
+    const { id, resultado_final } = matchedData(req);
+    try {
+        Eventos.setResultadoFinal(id, resultado_final);
+        Apuestas.actualizarEstadoPorEvento(id, 'finalizado');
+        res.redirect('/contenido/eventos');
+    } catch (e) {
+        res.status(500).send('Error al guardar el resultado');
+    }
 });
 
 export default contenidoRouter;

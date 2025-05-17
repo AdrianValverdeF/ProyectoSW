@@ -1,20 +1,22 @@
 export class Apuestas {
     static #insertStmt = null;
     static #selectByCompeticionStmt = null;
+    static #db = null;
 
     static initStatements(db) {
         if (this.#insertStmt !== null) return;
+        this.#db = db;
 
         this.#insertStmt = db.prepare(`
             INSERT INTO Apuestas (
                 id_usuario, multiplicador, cantidad_apuesta, id_eventos, combinada,
                 ganador, resultado_exacto, diferencia_puntos, puntos_equipoA, puntos_equipoB,
-                id_competicion
+                id_competicion, estado, ganancia
             )
             VALUES (
                 @id_usuario, @multiplicador, @cantidad_apuesta, @id_eventos, @combinada,
                 @ganador, @resultado_exacto, @diferencia_puntos, @puntos_equipoA, @puntos_equipoB,
-                @id_competicion
+                @id_competicion, @estado, @ganancia
             )
         `);
 
@@ -32,10 +34,14 @@ export class Apuestas {
         return apuestas.map(row => new Apuestas(row));
     }
 
+    static actualizarEstadoPorEvento(id_eventos, nuevoEstado) {
+        const stmt = this.#db.prepare('UPDATE Apuestas SET estado = ? WHERE id_eventos = ?');
+        stmt.run(nuevoEstado, id_eventos);
+    }
 
     constructor({id, id_usuario, multiplicador, cantidad_apuesta, id_eventos,
         combinada, ganador, resultado_exacto, diferencia_puntos, puntos_equipoA, puntos_equipoB,
-        id_competicion }) {
+        id_competicion, estado = 'pendiente', ganancia = 0 }) {
 
         this.id = id;
         this.id_usuario = id_usuario;
@@ -49,5 +55,7 @@ export class Apuestas {
         this.puntos_equipoA = puntos_equipoA;
         this.puntos_equipoB = puntos_equipoB;
         this.id_competicion = id_competicion;
+        this.estado = estado;
+        this.ganancia = ganancia;
     }
 }
