@@ -381,7 +381,6 @@ label {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 1rem;
     margin-bottom : 35px;
 }
 
@@ -1272,17 +1271,12 @@ input::placeholder {
 
 .amigos-chat-header {
     display: flex;
+    flex-direction: row;
     align-items: center;
     padding: 1rem;
     border-bottom: 2px solid var(--border-color);
     background-color: var(--primary-bg);
     border-radius: 10px 10px 0 0;
-}
-
-.amigos-chat-header h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: var(--text-color);
 }
 
 .amigos-chat-header span {
@@ -1292,10 +1286,11 @@ input::placeholder {
 
 .amigos-chat-header .amigos-chat-info {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 }
 
 .amigos-chat-header .amigos-chat-info h2 {
+    margin-top: 1.5rem;
     margin: 0;
     font-size: 1.5rem;
 }
@@ -1303,6 +1298,13 @@ input::placeholder {
 .amigos-chat-header .amigos-chat-info span {
     color: green;
     font-size: 0.9rem;
+}
+
+.amigos-chat-header .amigos-chat-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 20px;
 }
 
 .amigos-chat-messages {
@@ -1439,28 +1441,6 @@ input::placeholder {
     overflow: hidden;
 }
 
-.amigos-chat-header {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    border-bottom: 2px solid var(--border-color);
-}
-
-.amigos-chat-header .amigos-chat-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.amigos-chat-header .amigos-chat-info h2 {
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-.amigos-chat-header .amigos-chat-info span {
-    color: green;
-    font-size: 0.9rem;
-}
-
 .amigos-chat-messages {
     flex: 1;
     overflow-y: auto;
@@ -1509,6 +1489,18 @@ input::placeholder {
     height: 45px;
     margin-right: 10px;
     width: 100%;
+}
+
+.chat-new-date {
+    background-color: var(--primary-bg);
+    color: var(--accent-color);
+    font-size: 1rem;
+    justify-content: center;
+    text-align: center;
+    display: flex;
+    padding: 2px 6px;       
+    border-radius: 4px; 
+    margin-bottom: 8px;
 }
 
 /*.amigos-chat-input button {
@@ -2083,6 +2075,10 @@ input::placeholder {
     color: var(--text-color);
     margin-right: auto;
     text-align: left;
+}
+
+.mensaje.ajeno p {
+    margin-left: 0;
 }
 
 .mensaje span {

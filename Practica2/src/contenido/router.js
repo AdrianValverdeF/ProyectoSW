@@ -770,12 +770,14 @@ contenidoRouter.get('/chat', auth, [
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         const id_amigo = Usuario.getIdByUsername(amigo);
         const mensajes = Chat.getMensajesByAmigo(id_usuario, id_amigo);
+        const imgAmigo = Usuario.getImagen(id_amigo);
 
         const amigos = Usuario.getAmigosById(id_usuario);
         renderSin(req, res, 'paginas/chat', {
             session: req.session,
             id_usuario,
             amigo,
+            imgAmigo,
             mensajes,
             amigos
         });

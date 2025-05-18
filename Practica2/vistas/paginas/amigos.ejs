@@ -33,7 +33,7 @@
                 <% if (amigos) { %>
                     <% amigos.forEach(amigo => { %>
                         <li>
-                            <img src="/img/default.jpeg" alt="Avatar">
+                            <img src="<%= amigo.rutaImg ? amigo.rutaImg : '/img/default.jpeg'%>" alt="Avatar">
                             <span class="nombre"><%= amigo.username %></span>
                             <div class="acciones">
                                 <a href="/contenido/chat?amigo=<%= amigo.username %>">

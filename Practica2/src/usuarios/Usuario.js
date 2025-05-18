@@ -42,8 +42,10 @@ export class Usuario {
             SET username = @username, password = @password, rol = @rol, nombre = @nombre, apellido = @apellido, edad = @edad, fondos = @fondos
             WHERE id = @id
         `);
-        this.#getAmigosByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (((u.id = a.id_amigo AND a.id_usuario = @id) OR (u.id = a.id_usuario AND a.id_amigo = @id)) AND a.aceptado = 1)');
-        this.#getSolicitudesByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario FROM Usuarios u INNER JOIN Amigos a WHERE (u.id = a.id_usuario AND a.id_amigo = @id AND a.aceptado = 0)');
+        this.#getAmigosByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario, i.rutaImg FROM Usuarios u INNER JOIN Amigos a ON ((u.id = a.id_amigo AND a.id_usuario = @id) OR (u.id = a.id_usuario AND a.id_amigo = @id)) INNER JOIN Imagenes i ON u.id = i.id_usuario WHERE a.aceptado = 1;');
+
+        this.#getSolicitudesByIdStmt = db.prepare('SELECT u.username, a.id_amigo, a.id_usuario,i.rutaImg FROM Usuarios u INNER JOIN Amigos a ON u.id = a.id_usuario INNER JOIN Imagenes i ON u.id = i.id_usuario WHERE a.id_amigo = @id AND a.aceptado = 0;');
+        
         this.#solStmt = db.prepare('INSERT INTO Amigos(id_usuario, id_amigo, aceptado) SELECT @id_usuario, @id_amigo, @aceptado WHERE NOT EXISTS (SELECT 1 FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario))');
         this.#acceptStmt = db.prepare('UPDATE Amigos SET aceptado = 1 WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');
         this.#deleteStmt = db.prepare('DELETE FROM Amigos WHERE (id_usuario = @id_usuario AND id_amigo = @id_amigo) OR (id_usuario = @id_amigo AND id_amigo = @id_usuario)');

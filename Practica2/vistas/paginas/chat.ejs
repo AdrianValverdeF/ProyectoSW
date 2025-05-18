@@ -24,8 +24,8 @@
 
             <div class="amigos-chat-header">
                 <div class="amigos-chat-info">
+                    <img src="<%= imgAmigo.rutaImg ? imgAmigo.rutaImg : '/img/default.jpeg'%>" alt="Avatar">
                     <h2><%= amigo %></h2>
-                    <span>Activo hace 5 minutos</span>
                 </div>
             </div>
 
@@ -33,17 +33,38 @@
                 <div class="chat-container">
                     <div class="mensajes">
                         <% if (mensajes && mensajes.length > 0) { %>
-                            <% mensajes.forEach(mensaje => { %>
-                                <div class="mensaje <%= mensaje.id_usuario === id_usuario ? 'propio' : 'ajeno' %>">
-                                    <p><%= mensaje.mensaje %></p>
+                            <% for (let i = 0; i < mensajes.length; i++) { 
+                                const fechaActual = new Date(mensajes[i].created_at);
+                                const fechaAnterior = i > 0 ? new Date(mensajes[i - 1].created_at) : null;
+                        
+                                const cambioDeDia = i === 0 || (
+                                    fechaActual.getFullYear() !== fechaAnterior.getFullYear() ||
+                                    fechaActual.getMonth() !== fechaAnterior.getMonth() ||
+                                    fechaActual.getDate() !== fechaAnterior.getDate()
+                                );
+                            %>
+                        
+                                <% if (cambioDeDia) { %>
+                                    <div class="chat-new-date"><strong>
+                                        <%= fechaActual.toLocaleDateString('es-ES', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric'
+                                        }) %>
+                                    </strong></div>
+                                <% } %>
+                        
+                                <div class="mensaje <%= mensajes[i].id_usuario === id_usuario ? 'propio' : 'ajeno' %>">
+                                    <p><%= mensajes[i].mensaje %></p>
                                     <span>
-                                        <%= new Date(mensaje.created_at).toLocaleString('es-ES', {
+                                        <%= fechaActual.toLocaleString('es-ES', {
                                             hour: '2-digit',
                                             minute: '2-digit'
                                         }) %>
                                     </span>
                                 </div>
-                            <% }) %>
+                        
+                            <% } %>
                         <% } else { %>
                             <p>No hay mensajes aún.</p>
                         <% } %>

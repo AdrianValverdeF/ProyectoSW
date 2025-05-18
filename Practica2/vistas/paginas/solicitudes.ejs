@@ -28,7 +28,7 @@
                 <% if (solicitudes) { %>
                     <% solicitudes.forEach(solicitud => { %>
                         <li>
-                            <img src="/img/descarga.jpeg" alt="Avatar">
+                            <img src="<%= solicitud.rutaImg ? solicitud.rutaImg : '/img/default.jpeg'%>" alt="Avatar">
                             <span class="nombre"><%= solicitud.username %></span>
                             <div class="acciones">
                                 <form action="/contenido/aceptarSolicitud" method="POST">
