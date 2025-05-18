@@ -18,6 +18,56 @@ body {
     color: var(--text-color);
 }
 
+.error-messageR {
+    color:red !important;
+    background: none;
+    font-size: 0.95em;
+    margin: 4px 0 0 0;
+    display: block;
+    font-weight: 500;
+    padding: 0;
+    border: none;
+
+}
+.session-form.register {
+    max-height: 85vh;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 400px;
+    margin: 0;
+    position: relative;
+}
+@media (max-width: 600px) {
+    .session-form.register {
+        max-width: 98vw;
+        padding: 10px;
+    }
+    .form-scroll-container {
+        padding: 0;
+        margin-right : 0;
+    }
+}
+
+@media (max-width: 1920px) and (min-width: 600px) {
+    .form-scroll-container {
+        padding: 0;
+        margin-right: 700px;
+    }
+
+}
+.form-scroll-container {
+    height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    box-sizing: border-box;
+}
+.register-fields > div {
+    position: relative;
+    margin-bottom: 28px;
+}
+
 
 div#contenedor {
     background-color: var(--primary-bg);
