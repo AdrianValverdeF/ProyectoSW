@@ -1,88 +1,77 @@
-/*
- * Inicializamos el JS cuando se ha terminado de procesar todo el HTML de la página.
- *
- * Al incluir <script> al final de la página podríamos invocar simplemente a init().
- */
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formulario-modificar');
+    if (!form) return;
 
-/**
- * Inicializa la página
- */
-function init() {
-    const formMod = document.forms.namedItem('formMod');
-    formMod.addEventListener('submit', modSubmit);
+    // Reglas de validación para cada campo
+    const campos = {
+        nombre: {
+            validar: v => v.trim().length > 0,
+            mensaje: 'El nombre no puede estar vacío.'
+        },
+        apellido: {
+            validar: v => v.trim().length > 0,
+            mensaje: 'El apellido no puede estar vacío.'
+        },
+        edad: {
+            validar: v => Number(v) >= 18,
+            mensaje: 'Debes ser mayor de 18 años.'
+        },
+        username: {
+            validar: v => v.trim().length > 0,
+            mensaje: 'El usuario no puede estar vacío.'
+        },
+        rol: {
+            validar: v => v.trim().length > 0 && (v === 'A' || v === 'U'), 
+            mensaje: 'El rol no puede estar vacío y los valores válidos son "A" o "U".'
+        },
+        fondos: {
+            validar: v => !isNaN(v) && Number(v) >= 0,
+            mensaje: 'Fondos debe ser un número positivo.'
+        }
+    };
 
-    const edad = formMod.elements.namedItem('eadad');
-    edad.addEventListener('input', compruebaEdad);
+    // Añade spans para mensajes de error si no existen
+    Object.keys(campos).forEach(nombre => {
+        const input = form.querySelector(`[name="${nombre}"]`);
+        if (!input) return;
+        let errorSpan = input.parentElement.querySelector('.error-messageR');
+        if (!errorSpan) {
+            errorSpan = document.createElement('span');
+            errorSpan.className = 'error-messageR';
+            input.parentElement.appendChild(errorSpan);
+        }
+        // Validación en tiempo real
+        input.addEventListener('input', () => {
+            validarCampo(input, campos[nombre]);
+        });
+    });
 
-}
-
-/**
- * 
- * @param {SubmitEvent} e 
- */
-async function modSubmit(e){
-    // No se envía el formulario manualmente
-    e.preventDefault();
-    const formMod = e.target;
-    try {
-        const formData = new FormData(formMod);
-        const response = await postData('/contenido/modificarUsuario', formData);
-        window.location.assign('/contenidos/perfil');
-    } catch (err) {
-        if (err instanceof ResponseError) {
-            switch(err.response.status) {
-                case 400:
-                    await displayErrores(err.response);
-                    break;
+    // Validación al enviar
+    form.addEventListener('submit', e => {
+        let valido = true;
+        Object.keys(campos).forEach(nombre => {
+            const input = form.querySelector(`[name="${nombre}"]`);
+            if (!input) return;
+            if (!validarCampo(input, campos[nombre])) {
+                valido = false;
             }
+        });
+        if (!valido) {
+            e.preventDefault();
         }
-        console.error(`Error: `, err);
-    } 
-}
+    });
 
-async function displayErrores(response) {
-    const { errores } = await response.json();
-    const formMod = document.forms.namedItem('registro');
-    for(const input of formMod.elements) {
-        if (input.name == undefined || input.name === '') continue;
-        const feedback = formMod.querySelector(`*[name="${input.name}"] ~ span.error`);
-        if (feedback == undefined) continue;
-
-        feedback.textContent = '';
-
-        const error = errores[input.name];
-        if (error) {
-            feedback.textContent = error.msg;
+    function validarCampo(input, reglas) {
+        const valor = input.value;
+        const esValido = reglas.validar(valor || '');
+        const errorSpan = input.parentElement.querySelector('.error-messageR');
+        if (!esValido) {
+            input.classList.add('invalid');
+            if (errorSpan) errorSpan.textContent = reglas.mensaje;
+        } else {
+            input.classList.remove('invalid');
+            if (errorSpan) errorSpan.textContent = '';
         }
+        return esValido;
     }
-}
-
-function compruebaEdad(e) {
-    const edad = e.target;
-    if (EdadValida(edad.value)) {
-        edad.setCustomValidity('');
-    } else {
-        edad.setCustomValidity("La edad no es válida solo se permite >= 18");
-    }
-    
-
-    const esCorreoValido = edad.checkValidity();
-    const feedback = edad.form.querySelector(`*[name="${edad.name}"] ~ .feedback`);
-    if(edad.value === '') {
-        feedback.textContent = '';
-
-    }else if (esCorreoValido) {
-        feedback.textContent = '✔';
-        // ✔
-    } else {			
-        feedback.textContent = '⚠';
-        // ⚠
-    }
-    // Muestra el mensaje de validación
-    edad.reportValidity();
-}
-
-function EdadValida(edad) {
-    return edad >= 18;
-}
+});

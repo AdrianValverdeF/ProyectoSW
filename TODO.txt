@@ -13,7 +13,7 @@ Tamaño movil  (M) // Alejandro ✅⚠️(solo quedan los chats de evento)⚠️
 ✅error al subir imagen sin imagen previa  (S) //Adrian
 arreglar mensajes vacios en foros pequeños  (S)  //Dani
 ✅modificar Usuario  (M)  //Adrian
-⚠️Revisar ej3, implementar validación de formularios, etc⚠️  (L)  //Adrian
+✅Revisar ej3, implementar validación de formularios, etc✅  (L)  //Adrian
 
 
 CSS:
@@ -45,6 +45,6 @@ General:
     - Ajustar tamaño movil
     - poder usar la barra izquierda como filtro para cada seccion de la pagina 
 
-⚠️Perfil: //Adrián
-    - ⚠️actualizar ultimas apuestas
+✅Perfil: //Adrián
+    - ✅actualizar ultimas apuestas
 
