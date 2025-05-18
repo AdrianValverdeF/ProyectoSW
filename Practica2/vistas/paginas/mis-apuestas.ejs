@@ -106,10 +106,16 @@
                             </div>
                         </div>
                         <div class="botones-apuesta">
-                            <a href="modificarApuesta?id_apuesta=<%= apuesta.id %>" class="apuesta-modif-btn">Modificar</a>
+                            <% const esHoy = apuesta.fecha === fechaHoy; %>
+
+                            <a href="modificarApuesta?id_apuesta=<%= apuesta.id %>"
+                                class="apuesta-modif-btn <%= esHoy ? 'disabled-link' : '' %>"
+                                <%= esHoy ? 'aria-disabled="true" tabindex="-1"' : '' %>>
+                                Modificar
+                            </a>
                             <form action="apuestas/eliminarApuesta" method="POST" style="display:inline;">
                                 <input type="hidden" name="id_apuesta" value="<%= apuesta.id %>">
-                                <button type="submit" class="apuesta-modif-btn">Eliminar</button>
+                                <button type="submit" class="apuesta-modif-btn" <%= esHoy ? 'disabled' : '' %>>Eliminar</button>
                             </form>
                         </div>
                     </li>

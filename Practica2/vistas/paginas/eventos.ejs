@@ -19,8 +19,11 @@
                     const genero = evento.genero ? evento.genero.toString() : 'X';
                     const ahora = new Date();
                     const fechaEvento = new Date(evento.fecha);
+
+                    const hoySinHora = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+                    const eventoSinHora = new Date(fechaEvento.getFullYear(), fechaEvento.getMonth(), fechaEvento.getDate());
                     let estado = '';
-                    if (ahora < fechaEvento) {
+                    if (hoySinHora <= eventoSinHora) {
                         estado = 'Pendiente';
                     } else if (evento.resultado_final && evento.resultado_final.trim() !== '') {
                         estado = 'Finalizado';
@@ -28,14 +31,19 @@
                         estado = 'Sin resultado';
                     }
                 %>
+
                 <div class="contenedor-evento" data-evento-id="<%= evento.id %>" data-deporte="<%= deporte %>">
+
+                    <% const esClicable = (estado === 'Pendiente'); %>
                     <a 
-                        href="<%= estado === 'Pendiente' ? '/contenido/apuestas/' + evento.id : '#' %>" 
+                        href="<%= esClicable ? '/contenido/apuestas/' + evento.id : 'javascript:void(0)' %>" 
                         class="banner-evento <%= estado === 'Finalizado' ? 'evento-finalizado' : '' %>"
                         style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= equipoA %>.jpg'), url('/img/<%= deporte %>-defaultA.jpg'); 
                                --imagen-equipo-b: url('/img/<%= deporte %>-<%= equipoB %>.jpg'), url('/img/<%= deporte %>-defaultB.jpg')"
-                        <%= estado !== 'Pendiente' ? 'tabindex="-1" aria-disabled="true" onclick="return false;"' : '' %>
+                        <%= !esClicable ? 'tabindex="-1" aria-disabled="true" onclick="return false;"' : '' %>
                     >
+
+                    
                         <div class="contenedor-fondos-equipos">
                             <div class="fondo-equipo fondo-equipo-a"></div>
                             <div class="fondo-equipo fondo-equipo-b"></div>
@@ -66,6 +74,18 @@
                             <%= estado === 'Pendiente' ? 'pendiente' : (estado === 'Finalizado' ? 'finalizado' : 'sin-resultado') %>">
                             <%= estado %>
                         </span>
+
+                        <% if (estado === 'Finalizado') { %>
+                            <div class="resultado-final">
+                                <%= evento.resultado_final %>
+                            </div>
+                        <% } else if (estado === 'Sin resultado') { %>
+                            <div class="resultado-final">
+                                Finalizado
+                            </div>
+                        <% } %>
+
+
                     </a>
 
                     <% if (session?.esAdmin) { %>
@@ -79,12 +99,6 @@
                                     <button type="submit" class="admin-btn">Guardar</button>
                                 </form>
                             <% } %>
-                        </div>
-                    <% } %>
-
-                    <% if (evento.resultado_final) { %>
-                        <div class="resultado-final">
-                            Resultado final: <%= evento.resultado_final %>
                         </div>
                     <% } %>
                 </div>

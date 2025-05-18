@@ -221,9 +221,20 @@ contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         let apuestas = MisApuestas.getByUserId(id_usuario);
 
+        const hoy = new Date();
+        const fechaHoy = hoy.toLocaleDateString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }); 
+
+        const fechaHoyFormateada = fechaHoy.replace(/\//g, '-');
+        console.log(fechaHoyFormateada);
+
         render(req, res, 'paginas/mis-apuestas', {
             session: req.session,
-            apuestas
+            apuestas, 
+            fechaHoy: fechaHoyFormateada
         });
     } catch (e) {
         console.error('Error al cargar las apuestas del usuario:', e);

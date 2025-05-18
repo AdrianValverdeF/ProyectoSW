@@ -1526,12 +1526,31 @@ input::placeholder {
         margin-top: 10px;
         margin-bottom: 10px;
     }
-    
+
+    .banner-evento[aria-disabled="true"] {
+        pointer-events: none;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
    
     .banner-evento:hover {
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
+
+    .resultado-final {
+        position: absolute;
+        top: 45%;
+        left: 43%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: bold;
+        text-align: center;
+        z-index: 10;
+      }
     
     .contenedor-fondos-equipos {
         position: absolute;
