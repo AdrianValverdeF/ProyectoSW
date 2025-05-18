@@ -142,7 +142,7 @@ export async function updateProfile(req, res) {
 
         res.redirect('/contenido/perfil');
     } catch (e) {
-        console.error('Error al actualizar el perfil:', e);
+       
         
         // Eliminar la imagen subida si hubo un error
         if (req.file) {

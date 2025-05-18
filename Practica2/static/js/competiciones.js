@@ -89,7 +89,7 @@ async function eliminarCompeticion(competicionId, clickEvent) {
         document.querySelector(`[data-competicion-id="${competicionId}"]`).remove();
 
     } catch (error) {
-        console.error('Error:', error);
+        
         alert(error.message);
     }
 }

@@ -16,7 +16,7 @@ export function getConnection() {
 
 function createConnection() {
     const options = {
-        verbose: console.log // Opcional y sólo recomendable durante desarrollo.
+        //verbose: console.log // Opcional y sólo recomendable durante desarrollo.
     };
     const dbPath = join(__dirname, '..', 'data', 'ucm_bets.db');
     const db = new Database(dbPath, options);

@@ -233,7 +233,7 @@ contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
         
 
         const fechaHoyFormateada = fechaHoy.replace(/\//g, '-');
-        console.log(fechaHoyFormateada);
+      
 
         render(req, res, 'paginas/mis-apuestas', {
             session: req.session,
@@ -241,7 +241,7 @@ contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
             fechaHoy: fechaHoyFormateada
         });
     } catch (e) {
-        console.error('Error al cargar las apuestas del usuario:', e);
+    
         res.status(500).send('Error al cargar tus apuestas.');
     }
 });
@@ -289,8 +289,7 @@ contenidoRouter.get('/perfil', auth, (req, res) => {
     req.session.imagePath = Usuario.getImagen(id_usuario);
     const mostrarFormulario = req.query.modificar === 'true';
     const apuestas = MisApuestas.get3ByUserId(id_usuario);
-    console.log('apuestas', apuestas);
-
+    
     renderSin(req, res, 'paginas/perfil', {
         session: req.session,
         mostrarFormulario,
@@ -332,7 +331,7 @@ contenidoRouter.post('/modificarPerfilUsuario', auth, [
         usuario.persist(usuario);
         res.redirect('/contenido/listaUsuarios'); 
     } catch (e) {
-        console.error('Error al actualizar el perfil:', e);
+        
         const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
         usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
         render(req, res, 'paginas/modificarUsuario', {
@@ -357,9 +356,9 @@ contenidoRouter.post('/modificarPerfil', uploadProfileImage, (req, res) => {
         const rutaRelativa = Usuario.getImagen(Usuario.getIdByUsername(req.session.username)); 
         Usuario.updateImagen(Usuario.getIdByUsername(req.session.username), imagePath);
         if (rutaRelativa.rutaImg) {
-            console.log('Ruta relativa:', rutaRelativa);
+          
             const nombreArchivo = path.basename(rutaRelativa.rutaImg);
-            console.log('Nombre del archivo:', nombreArchivo);
+         
             eliminarImagen(nombreArchivo);
         }
         usuario.nombre = nombre;
@@ -375,7 +374,7 @@ contenidoRouter.post('/modificarPerfil', uploadProfileImage, (req, res) => {
 
         res.redirect('/contenido/perfil');
     } catch (e) {
-        console.error('Error al actualizar el perfil:', e);
+       
 
         renderSin(req, res, 'paginas/perfil', {
             session: req.session,
@@ -674,7 +673,7 @@ contenidoRouter.get('/buscarUsuarios', auth, (req, res) => {
             usuarios: Users
         });
     } catch (e) {
-        console.error('Error al cargar la lista de Usuarios:', e);
+        
         res.status(500).send('Error al cargar la lista de Usuarios');
     }
 });
@@ -690,7 +689,7 @@ contenidoRouter.get('/listaUsuarios', auth, (req, res) => {
             usuarios: Users
         });
     } catch (e) {
-        console.error('Error al cargar la lista de Usuarios:', e);
+      
         res.status(500).send('Error al cargar la lista de Usuarios');
     }
 });
@@ -701,7 +700,7 @@ contenidoRouter.get('/listaUsuarios', auth, (req, res) => {
 contenidoRouter.get('/amigos', auth, (req, res) => {
     try {
         const id_usuario = parseInt(Usuario.getIdByUsername(req.session.username), 10); 
-        console.log('ID del usuario logueado:', id_usuario); 
+        
         const amigos = Usuario.getAmigosById(id_usuario); 
         amigos.forEach(amigo => {
             if (amigo.id_usuario == id_usuario)
@@ -717,7 +716,7 @@ contenidoRouter.get('/amigos', auth, (req, res) => {
         });
         
     } catch (e) {
-        console.error('Error al cargar la lista de amigos:', e);
+        
         res.status(500).render('paginaSinSidebar', {
             contenido: 'paginas/amigos',
             session: req.session,
@@ -744,7 +743,7 @@ contenidoRouter.get('/solicitudes', auth, (req, res) => {
             solicitudes: solicitudes
         });
     } catch (e) {
-        console.error('Error al cargar la lista de solicitudes:', e);
+        
         res.status(500).render('paginaSinSidebar', {
             contenido: 'paginas/solicitudes',
             session: req.session,
@@ -786,7 +785,7 @@ contenidoRouter.get('/chat', auth, [
             amigos
         });
     } catch (e) {
-        console.error('Error al cargar el chat:', e);
+        
         res.status(500).render('paginaSinSidebar', {
             contenido: 'paginas/chat',
             session: req.session,
@@ -809,7 +808,7 @@ contenidoRouter.post('/enviarMensajePriv', auth, (req, res) => {
 
         res.redirect(`/contenido/chat?amigo=${amigo}`);
     } catch (e) {
-        console.error('Error al enviar el mensaje:', e);
+        
         res.status(500).render('paginaSinSidebar', {
             contenido: 'paginas/chat',
             session: req.session,
@@ -852,7 +851,7 @@ contenidoRouter.post('/nuevaSolicitud', auth, [
         Usuario.nuevaSolicitud(id_usuario, id_amigo);
         res.redirect(`/contenido/amigos`);
     } catch (e) {
-        console.error('Error al enviar solicitud:', e);
+        
         res.status(500).render('paginaSinSidebar', {
             contenido: 'paginas/amigos',
             session: req.session,
@@ -884,7 +883,7 @@ contenidoRouter.post('/aceptarSolicitud', auth, [
         Usuario.aceptarSolicitud(id_usuario, id_amigo);
         res.redirect(`/contenido/solicitudes`);
     } catch (e) {
-        console.error('Error al aceptar solicitud:', e);
+       
         res.status(500).render('paginaSinSidebar', {
             contenido: 'paginas/solicitudes',
             session: req.session,
@@ -915,7 +914,7 @@ contenidoRouter.post('/eliminarAmigo', auth, [
         Usuario.eliminar(id_usuario, id_amigo);
         res.redirect(`/contenido/perfil`);
     } catch (e) {
-        console.error('Error al eliminar amigo:', e);
+       
         res.status(500).render('paginaSinSidebar', {
             contenido: 'paginas/perfil',
             session: req.session,
@@ -1159,7 +1158,7 @@ contenidoRouter.post('/agregarFondos', auth, [
         req.session.fondos = Usuario.getFondosById(idUsuario);
         res.redirect('/contenido/perfil');
     } catch (e) {
-        console.error('Error al agregar fondos:', e);
+
         res.status(500).render('paginaSinSidebar', {
             contenido: 'paginas/perfil',
             session: req.session,
@@ -1277,7 +1276,7 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
     Apuestas.insertarApuesta(apuesta);
     res.redirect('/contenido/mis-apuestas');
   } catch (e) {
-    console.error('Error al insertar apuesta:', e);
+   
     res.status(400).send(e.message || 'Error al insertar apuesta');
   }
 });
@@ -1328,7 +1327,7 @@ contenidoRouter.post('/apuestas/modificarApuesta', auth, [
         res.redirect('/contenido/mis-apuestas');
 
     } catch (e) {
-        console.error('Error al modificar apuesta:', e);
+      
         res.status(400).send(e.message || 'Error al modificar apuesta');
     }
   });
@@ -1354,7 +1353,7 @@ contenidoRouter.post('/apuestas/eliminarApuesta', auth, [
         res.redirect('/contenido/mis-apuestas');
 
     } catch (e) {
-        console.error('Error al eliminar apuesta:', e);
+       
         res.status(400).send(e.message || 'Error al eliminar apuesta');
     }
   });
@@ -1935,7 +1934,7 @@ contenidoRouter.post('/competiciones/:id/apostar', auth, [
     res.redirect('/contenido/competiciones/' + id + '/datos');
 
   } catch (e) {
-    console.error('Error al insertar apuesta:', e);
+    
     res.status(400).send(e.message || 'Error al insertar apuesta');
   }
 });

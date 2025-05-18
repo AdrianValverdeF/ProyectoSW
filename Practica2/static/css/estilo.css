@@ -558,156 +558,6 @@ label {
     align-items: flex-start;
 } 
 
-/* ------------------------------ PERFIL ---------------------------- */
-/* .perfil-container {
-    margin: 0 auto;
-    padding: 100px;
-    background-color: var(--primary-bg);
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-}
-
-.perfil-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 40px;
-}
-
-.perfil-header-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.avatar {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-right: 20px;
-    border: 3px solid var(--accent-color);
-}
-
-.perfil-header h1 {
-    font-size: 50px;
-    margin: 0;
-}
-
-.tipo-usuario {
-    font-size: 24px;
-    color: var(--accent-color);
-    margin-top: 10px;
-}
-
-.perfil-content {
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.datos-personales,
-.ultimas-apuestas,
-.seccion-cartera {
-    flex: 1;
-    padding: 20px;
-    background-color: var(--primary-bg);
-    border: 2px solid var(--accent-color);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.datos-personales h2,
-.ultimas-apuestas h2,
-.seccion-cartera h2 {
-    font-size: 30px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.datos-personales p,
-.ultimas-apuestas p,
-.seccion-cartera p {
-    margin: 10px 0;
-    font-size: 18px;
-}
-
-.apuesta {
-    padding: 15px;
-    background-color: var(--secondary-bg);
-    border: 2px solid var(--accent-color);
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.apuesta .fecha {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
-.resultado-ganado {
-    color: green;
-}
-
-.resultado-perdido {
-    color: red;
-}
-
-.amigos-btn {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    padding: 10px;
-    cursor: pointer;
-    font-size: 20px;
-    position: absolute;
-    right: 220px;
-    top: 300px;
-    text-align: right;
-    line-height: 1;
-    border-radius: 0;
-    text-decoration: none;
-}
-
-.solicitudes-btn {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    padding: 10px;
-    cursor: pointer;
-    font-size: 20px;
-    position: absolute;
-    right: 100px;
-    top: 300px;
-    text-align: right;
-    line-height: 1;
-    border-radius: 0;
-    text-decoration: none;
-}
-
-.amigos-btn:hover {
-    background-color: #e55b5b;
-    text-decoration: none;
-}
-
-.perfil-content button {
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    padding: 20px;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 0;
-    text-decoration: none;
-    display: block;
-    width: 100%;
-    margin-top: 80px;
-}
-
-.perfil-content button:hover {
-    background-color: #e55b5b;
-    text-decoration: none;
-} */
-
 .amigos-list {
     display: none;
     position: absolute;
@@ -1468,20 +1318,6 @@ input::placeholder {
     font-family: Arial;
 }
 
-/*.amigos-chat-input button {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-}
-*/
-
 .amigos-sidebar {
     width: 250px;
     background-color: var(--secondary-bg);
@@ -1603,29 +1439,6 @@ input::placeholder {
     border-radius: 4px; 
     margin-bottom: 8px;
 }
-
-/*.amigos-chat-input button {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    background-color: var(--accent-color);
-    color: var(--text-color);
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.amigos-chat-input button:hover {
-    background-color: #e55b5b;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-}
-
-.amigos-chat-input button:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}*/
 
 .volver-btn {
     background-color: var(--accent-color);
@@ -1762,29 +1575,6 @@ input::placeholder {
     .banner-evento:hover .equipo:last-child {
         transform: translateX(5px);
     }
-    
-    /* .vs {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        background-color: rgba(255, 255, 255, 0.9);
-        color: #333;
-        padding: 8px 16px;
-        border-radius: 50%;
-        font-weight: bold;
-        z-index: 3;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        font-size: clamp(14px, 3vw, 20px);
-        white-space: nowrap;
-        transition: all 0.3s ease;
-    }
-    
-    .banner-evento:hover .vs {
-        background-color: white;
-        transform: translate(-50%, -50%) scale(1.1);
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-    } */
     
     .logo-deporte {
         position: absolute;
@@ -2905,4 +2695,5 @@ input::placeholder {
         max-width: 100vw !important;
     }
 }
+
 

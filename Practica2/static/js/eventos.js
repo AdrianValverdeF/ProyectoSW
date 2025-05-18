@@ -37,7 +37,7 @@ async function eliminarEvento(eventId, clickEvent) {
         document.querySelector(`[data-evento-id="${eventId}"]`).remove();
 
     } catch (error) {
-        console.error('Error:', error);
+    
         alert(error.message);
     }
 }

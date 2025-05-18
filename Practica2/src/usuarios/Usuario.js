@@ -115,7 +115,7 @@ export class Usuario {
             if (apellido === '') apellido = null;
             if (edad === '') edad = null;
             if (rol === '') rol = null;
-            console.log('Buscando usuarios con:', { username, nombre, apellido, edad, rol, id });
+           
             result = this.#getListaUsuariosStmt.all({ username, nombre,apellido, edad, rol, id});
             if (!result) {
                 throw new UsuarioNoEncontrado('No hay usuarios registrados');
@@ -134,7 +134,7 @@ export class Usuario {
 
 
     static getUsuarioByUsername(username) {
-        console.log('Buscando usuario con username:', username); 
+         
         const usuario = this.#getByUsernameStmt.get({ username });
         if (usuario === undefined) throw new UsuarioNoEncontrado(username);
 
