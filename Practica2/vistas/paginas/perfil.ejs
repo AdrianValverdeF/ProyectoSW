@@ -69,7 +69,18 @@
             </div>
             <div class="ultimas-apuestas">
                 <h2>Últimas Apuestas</h2>
-                <div class="apuesta">
+                  <% function mostrarApuestas(apuesta) { 
+                    let result="" ; 
+                    for (let i = 0; i < apuesta.length; i++) {
+                        result += `<div class="apuesta">
+                            <span class="fecha">${apuesta[i].fecha}</span>
+                            <p>${apuesta[i].nombre_equipoA} ${apuesta[i].resultado_final} ${apuesta[i].nombre_equipoB}</p>
+                        </div>`;
+                    }
+                    return result;
+                }%>
+                <%- mostrarApuestas(locals.apuesta) %>
+                <!-- <div class="apuesta">
                     <span class="fecha">25/11/24</span>
                     <p>DERECHO 4 - 5 QUÍMICAS <span class="resultado-ganado">✔</span></p>
                 </div>
@@ -80,7 +91,7 @@
                 <div class="apuesta">
                     <span class="fecha">27/11/24</span>
                     <p>INFORMÁTICA 2 - 5 FARMACIA <span class="resultado-ganado">✔</span></p>
-                </div>
+                </div> -->
             </div>
             <div class="seccion-cartera">
                 <h2>Cartera</h2>

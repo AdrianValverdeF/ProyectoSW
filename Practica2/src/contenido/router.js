@@ -273,10 +273,13 @@ contenidoRouter.get('/perfil', auth, (req, res) => {
 
     req.session.imagePath = Usuario.getImagen(id_usuario);
     const mostrarFormulario = req.query.modificar === 'true';
+    const apuestas = MisApuestas.get3ByUserId(id_usuario);
+    console.log('apuestas', apuestas);
 
     renderSin(req, res, 'paginas/perfil', {
         session: req.session,
-        mostrarFormulario
+        mostrarFormulario,
+        apuesta: apuestas
     });
 });
 
