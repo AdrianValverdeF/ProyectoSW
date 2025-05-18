@@ -1928,15 +1928,91 @@ contenidoRouter.post('/eventos/:id/resultado', auth, [
     if (!errors.isEmpty()) {
         return res.status(400).send('Datos inválidos');
     }
+
     const { id, resultado_final } = matchedData(req);
     try {
+        const [golesA, golesB] = resultado_final.split('-').map(Number);
+        if (isNaN(golesA) || isNaN(golesB)) throw new Error('Resultado inválido');
+
         Eventos.setResultadoFinal(id, resultado_final);
         Apuestas.actualizarEstadosGlobal();
+
+        const apuestas = Apuestas.getApuestasByEvento(id);
+        const apuestasCompeticion = new Map();
+
+        for (const apuesta of apuestas) {
+            let cumple = true;
+
+            if (apuesta.ganador !== null) {
+                const ganadorReal = golesA > golesB ? 'equipoA' : golesA < golesB ? 'equipoB' : 'empate';
+                cumple &&= apuesta.ganador === ganadorReal;
+            }
+
+            if (apuesta.resultado_exacto !== null) {
+                cumple &&= apuesta.resultado_exacto === `${golesA}-${golesB}`;
+            }
+
+            if (apuesta.diferencia_puntos !== null) {
+                cumple &&= apuesta.diferencia_puntos === Math.abs(golesA - golesB);
+            }
+
+            if (apuesta.puntos_equipoA !== null) {
+                cumple &&= apuesta.puntos_equipoA <= golesA;
+            }
+
+            if (apuesta.puntos_equipoB !== null) {
+                cumple &&= apuesta.puntos_equipoB <= golesB;
+            }
+
+            if (cumple) {
+                const ganancia = apuesta.cantidad_apuesta * apuesta.multiplicador;
+                apuesta.ganancia = ganancia;
+                Usuario.agregarFondos(apuesta.id_usuario, ganancia);
+
+                if (apuesta.id_usuario === req.session.id_usuario) {
+                    req.session.fondos = Usuario.getFondosById(apuesta.id_usuario);
+                }
+
+                if (!apuestasCompeticion.has(apuesta.id_competicion)) {
+                    apuestasCompeticion.set(apuesta.id_competicion, []);
+                }
+                apuestasCompeticion.get(apuesta.id_competicion).push(apuesta);
+            }
+        }
+
+        Competiciones.getCompeticionesByIdEvento(id).forEach(competicion => {
+            const apuestasGanadoras = apuestasCompeticion.get(competicion.id) || [];
+            if (apuestasGanadoras.length === 0) return;
+
+            const datosCompeticion = Competiciones.getCompeticionById(competicion.id);
+
+            const ranking = apuestasGanadoras
+                .sort((a, b) => b.multiplicador - a.multiplicador)
+                .slice(0, 5); // Solo top 5 por multiplicador
+
+            const porcentajes = [0.4, 0.2, 0.15, 0.10, 0.10];
+            const bote = Apuestas.getApuestasByCompeticion(competicion.id).length * datosCompeticion.precio;
+
+            for (let i = 0; i < ranking.length; i++) {
+                const apuesta = ranking[i];
+                const premio = bote * porcentajes[i];
+
+                Usuario.agregarFondos(apuesta.id_usuario, premio);
+
+                if (apuesta.id_usuario === req.session.id_usuario) {
+                    req.session.fondos = Usuario.getFondosById(apuesta.id_usuario);
+                }
+            }
+        });
+
+        //ELIMINAR APUESTAS Y EVENTOS???? SI SE QUIERE, NO ESTA IMPLEMENTADO
+
         res.redirect('/contenido/eventos');
     } catch (e) {
         res.status(500).send('Error al guardar el resultado');
     }
 });
+
 
 export default contenidoRouter;
 

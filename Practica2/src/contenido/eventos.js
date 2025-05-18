@@ -4,6 +4,7 @@ export class Eventos {
     static #insertStmt = null;
     static #updateStmt = null;
     static #deleteStmt = null;
+    static #getResultadoFinalStmt = null;
     static #db = null;
 
     static initStatements(db) {
@@ -45,6 +46,12 @@ export class Eventos {
         `);
 
         this.#deleteStmt = db.prepare('DELETE FROM Eventos WHERE id = @id');
+
+        this.#getResultadoFinalStmt = db.prepare(`
+            SELECT resultado_final 
+            FROM Eventos 
+            WHERE id = ?
+        `);
     }
 
 
@@ -137,6 +144,10 @@ export class Eventos {
     static setResultadoFinal(id, resultado_final) {
         const stmt = this.#db.prepare('UPDATE Eventos SET resultado_final = ? WHERE id = ?');
         stmt.run(resultado_final, id);
+    }
+
+    static getResultadoFinal(id) {
+        return this.#getResultadoFinalStmt.get(id).resultado_final;
     }
 
     constructor(equipoA, equipoB, deporte, fecha = new Date(), id = null, genero = null, resultado_final = null) {
