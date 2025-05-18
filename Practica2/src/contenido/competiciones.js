@@ -4,6 +4,7 @@ export class Competiciones {
     static #insertStmt = null;
     static #updateStmt = null;
     static #deleteStmt = null;
+    static #getByEventoStmt = null;
 
     static initStatements(db) {
         if (this.#getAllStmt !== null) return;
@@ -43,6 +44,19 @@ export class Competiciones {
             WHERE id = @id
         `);
 
+        this.#getByEventoStmt = db.prepare(`
+            SELECT c.id, c.precio, c.id_evento,
+                e.fecha, e.deporte,
+                eqA.nombre AS equipoA_nombre, eqB.nombre AS equipoB_nombre,
+                eqA.genero AS genero
+            FROM Competiciones c
+            JOIN Eventos e ON c.id_evento = e.id
+            LEFT JOIN Equipos eqA ON e.equipoA = eqA.id
+            LEFT JOIN Equipos eqB ON e.equipoB = eqB.id
+            WHERE c.id_evento = ?
+            ORDER BY e.fecha ASC
+        `);
+
         this.#deleteStmt = db.prepare('DELETE FROM Competiciones WHERE id = @id');
     }
 
@@ -71,6 +85,18 @@ export class Competiciones {
         } catch (e) {
             if (e instanceof CompeticionNoEncontrada) throw e;
             throw new ErrorDatos(`Error al buscar competición con ID ${id}`, { cause: e });
+        }
+    }
+
+    static getCompeticionesByIdEvento(id_evento) {
+        try {
+            const rows = this.#getByEventoStmt.all(id_evento);
+            return rows.map(row => new Competiciones(
+                row.id_evento, row.precio, row.id,
+                row.equipoA_nombre, row.equipoB_nombre, row.deporte, row.fecha, row.genero
+            ));
+        } catch (e) {
+            throw new ErrorDatos(`Error al buscar competiciones del evento ${id_evento}`, { cause: e });
         }
     }
 

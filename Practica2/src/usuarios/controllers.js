@@ -4,6 +4,7 @@ import { Usuario } from './Usuario.js';
 import { uploadProfileImage } from '../upload.js'; 
 import path from 'node:path';
 import { render, renderSin } from '../utils/render.js';
+import fs from 'fs';
 
 export function viewLogin(req, res) {
     if(req.session.login) {

@@ -1,14 +1,38 @@
+<div class="form-scroll-container">
 <form action="/usuarios/register" method="POST" enctype="multipart/form-data" class="session-form register">
     <fieldset>
-        
         <h3>Regístrate</h3>
         <div class="register-fields">
-            <div><label>Nombre:</label> <input type="text" name="name" /></div>
-            <div><label>Apellido:</label> <input type="text" name="surname" /></div>
-            <div><label>Usuario:</label> <input type="text" name="username" /></div>
-            <div><label>Contraseña:</label> <input type="password" name="password" /></div>
-            <div><label>Edad:</label> <input type="number" name="age" /></div>
-            <div><label>Imagen de perfil:</label> <input type="file" name="profileImage" accept="image/*" /></div>
+            <div>
+                <label>Nombre:</label>
+                <input type="text" name="name" />
+                <span class="error-messageR"></span>
+            </div>
+            <div>
+                <label>Apellido:</label>
+                <input type="text" name="surname" />
+                <span class="error-messageR"></span>
+            </div>
+            <div>
+                <label>Usuario:</label>
+                <input type="text" name="username" />
+                <span class="error-messageR"></span>
+            </div>
+            <div>
+                <label>Contraseña:</label>
+                <input type="password" name="password" />
+                <span class="error-messageR"></span>
+            </div>
+            <div>
+                <label>Edad:</label>
+                <input type="number" name="age" />
+                <span class="error-messageR"></span>
+            </div>
+            <div>
+                <label>Imagen de perfil:</label>
+                <input type="file" name="profileImage" accept="image/*" />
+                <span class="error-messageR"></span>
+            </div>
         </div>
         <button class='form-register-btn' type="submit">Enviar</button>
 
@@ -23,3 +47,6 @@
         </div>
     </fieldset>
 </form>
+
+</div>
+<script src="/js/validarRegister.js"></script>
