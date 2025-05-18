@@ -105,7 +105,7 @@
     <div class="accion-apuesta">
       <% const miApuesta = usuarios.find(a => a.username === session.username); %>
       <% if (miApuesta) { %>
-        <a href="/contenido/competiciones/<%= competicion.id %>/apostar/editar" class="admin-btn">Modificar Mi Apuesta</a>
+        <a href="/contenido/modificarApuesta?id_apuesta=<%= miApuesta.id %>" class="admin-btn">Modificar Mi Apuesta</a>
       <% } else { %>
         <a href="/contenido/competiciones/<%= competicion.id %>/apostar" class="admin-btn">Participar</a>
       <% } %>
