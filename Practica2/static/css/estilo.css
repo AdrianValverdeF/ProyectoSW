@@ -931,14 +931,24 @@ label {
 /* ------------------------------ APUESTAS ---------------------------- */
 
 .encabezado-apuesta {
-    text-align: center;
+    /*
     margin-bottom: 1.5rem;
-    margin-top: 2rem;
+    margin-top: 2rem;*/
+
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    max-width: 700px;
+    margin: 2rem auto 1.5rem auto;
+    padding: 0 1rem;
 }
 
 .encabezado-apuesta h1 {
     color: var(--accent-color);
     font-size: clamp(1.5rem, 6vw, 2.5rem);
+    margin-top: 1rem;
     margin-bottom: 0.25rem;
 }
 
@@ -2382,8 +2392,8 @@ input::placeholder {
 }
 .btn-volver.esquina {
     position: absolute;
-    right: 0;
-    top: 50%;
+    left: 0;
+    top: 0;
     transform: translateY(-50%);
 }
 
@@ -2409,6 +2419,28 @@ input::placeholder {
     color: #ff6b6b;
     font-weight: 700;
     margin-left: 0.5rem;
+}
+
+.apuesta-modif-btn {
+    background: var(--accent-color);
+    color: white;
+    border-radius: 8px;
+    padding: 0.4rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    max-width: 110px;
+    margin: 0 auto;
+}
+
+.apuesta-modif-btn:hover {
+    background: #d36161;
+}
+
+.botones-apuesta {
+    display: block;
+    justify-content: center;
 }
 
 /* ------------------------------------------ COMPETICIONES ---------------------------------------------- */

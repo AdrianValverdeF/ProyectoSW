@@ -238,14 +238,26 @@ contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
     }
 });
 
-
 //hecho -
-contenidoRouter.get('/modificarUsuario', auth, (req, res) => {
+/*contenidoRouter.get('/modificarUsuario', auth, (req, res) => {
     const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
     usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
     render(req, res, 'paginas/modificarUsuario', {
         session: req.session,
         user: usuarioParaModificar
+    });
+});*/
+
+contenidoRouter.get('/modificarApuesta', auth, (req, res) => {
+    const apuestaParaModificar = Apuestas.getApuestaById(req.query.id_apuesta);
+    const evento = Eventos.getEventoById(apuestaParaModificar.id_eventos);
+    if (!evento) 
+        return res.status(404).send('Evento no encontrado');
+
+    render(req, res, 'paginas/modificarApuesta', {
+        session: req.session,
+        apuesta: apuestaParaModificar,
+        evento: evento
     });
 });
 
@@ -1212,6 +1224,14 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
     Usuario.restarFondos(id_usuario, cantidad_apuesta);
     req.session.fondos = fondosUsuario - cantidadApuesta;
 
+    const criterios = [
+        apuesta_ganador,
+        apuesta_puntosA,
+        apuesta_puntosB,
+        apuesta_resultadoExacto,
+        apuesta_diferenciaPuntos
+    ].filter(Boolean).length;
+
     const apuesta = {
       id_usuario,
       multiplicador: parseFloat(multiplicador) || 1,
@@ -1228,14 +1248,6 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
       ganancia: 0
     };
 
-    const criterios = [
-        apuesta_ganador,
-        apuesta_puntosA,
-        apuesta_puntosB,
-        apuesta_resultadoExacto,
-        apuesta_diferenciaPuntos
-    ].filter(Boolean).length;
-
     apuesta.combinada = criterios > 1 ? 1 : 0;
 
     const evento = Eventos.getEventoById(apuesta.id_eventos);
@@ -1250,6 +1262,83 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
     res.status(400).send(e.message || 'Error al insertar apuesta');
   }
 });
+
+//hecho
+contenidoRouter.post('/apuestas/modificarApuesta', auth, [
+    param('id').isInt().withMessage('ID de evento inválido')
+  ], (req, res) => {
+    const errors = validationResult(req);
+  
+    const {
+        id_apuesta,
+        apuesta_ganador,
+        apuesta_puntosA,
+        apuesta_puntosB,
+        apuesta_resultadoExacto,
+        apuesta_diferenciaPuntos,
+        ganador,
+        puntosEquipoA,
+        puntosEquipoB,
+        resultadoExacto,
+        diferenciaPuntos,
+        multiplicador
+    } = req.body;
+  
+    try {
+
+        const criterios = [
+            apuesta_ganador,
+            apuesta_puntosA,
+            apuesta_puntosB,
+            apuesta_resultadoExacto,
+            apuesta_diferenciaPuntos
+        ].filter(Boolean).length;
+
+        const apuesta = {
+            id_apuesta: id_apuesta,
+            multiplicador: parseFloat(multiplicador) || 1,
+            ganador: apuesta_ganador ? ganador : null,
+            puntos_equipoA: apuesta_puntosA ? puntosEquipoA : null,
+            puntos_equipoB: apuesta_puntosB ? puntosEquipoB : null,
+            resultado_exacto: apuesta_resultadoExacto ? resultadoExacto : null,
+            diferencia_puntos: apuesta_diferenciaPuntos ? diferenciaPuntos : null,
+            combinada: criterios > 1 ? 1 : 0,
+        };
+  
+        Apuestas.modificarApuesta(apuesta);
+        res.redirect('/contenido/mis-apuestas');
+
+    } catch (e) {
+        console.error('Error al modificar apuesta:', e);
+        res.status(400).send(e.message || 'Error al modificar apuesta');
+    }
+  });
+
+  //hecho
+contenidoRouter.post('/apuestas/eliminarApuesta', auth, [
+    param('id').isInt().withMessage('ID de evento inválido')
+  ], (req, res) => {
+    const errors = validationResult(req);
+  
+    const id_usuario = Usuario.getIdByUsername(req.session.username);
+    const fondosUsuario = Usuario.getFondosById(id_usuario);
+    const apuesta = Apuestas.getApuestaById(req.body.id_apuesta);
+    const cantidadApuesta = parseInt(apuesta.cantidad_apuesta, 10);
+    
+    try {
+
+        Apuestas.eliminarApuesta(req.body.id_apuesta);
+
+        Usuario.agregarFondos(id_usuario, apuesta.cantidad_apuesta);
+        req.session.fondos = fondosUsuario + cantidadApuesta;
+
+        res.redirect('/contenido/mis-apuestas');
+
+    } catch (e) {
+        console.error('Error al eliminar apuesta:', e);
+        res.status(400).send(e.message || 'Error al eliminar apuesta');
+    }
+  });
 
 
 contenidoRouter.get('/foroFutbol11', auth, (req, res) => {

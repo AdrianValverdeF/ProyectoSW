@@ -1,6 +1,5 @@
 <div class="foro-baloncesto">
     <h2>Foro de Baloncesto</h2>
-    <p>Bienvenido al foro de baloncesto. Aquí puedes discutir todo lo relacionado con el baloncesto.</p>
 </div>
 
 <div class="chat-container">
@@ -58,3 +57,12 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('enviar').addEventListener('submit', function (e) {
+        const input = document.getElementById('mensaje');
+        if (!input.value.trim()) {
+            e.preventDefault();
+        }
+    });
+</script>

@@ -10,13 +10,12 @@
     <main>
         <div class="mis-apuestas-header">
             <h1 class="titulo-mis-apuestas">Mis Apuestas</h1>
-            <a href="/contenido/eventos" class="btn-volver esquina">← Volver a eventos</a>
         </div>
         <% if (apuestas && apuestas.length > 0) { %>
             <ul class="apuestas-lista">
                 <% apuestas.forEach(apuesta => { %>
                     <li class="apuesta-card">
-                        <div class="apuesta-titulo titulo-centro">
+                        <div class="apuesta-titulo">
                             <%= apuesta.nombre_equipoA %> <span class="apuesta-vs">vs</span> <%= apuesta.nombre_equipoB %>
                         </div>
                         <div class="apuesta-header">
@@ -105,6 +104,13 @@
                                     <span class="apuesta-valor"><%= apuesta.combinada ? 'Sí' : 'No' %></span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="botones-apuesta">
+                            <a href="modificarApuesta?id_apuesta=<%= apuesta.id %>" class="apuesta-modif-btn">Modificar</a>
+                            <form action="apuestas/eliminarApuesta" method="POST" style="display:inline;">
+                                <input type="hidden" name="id_apuesta" value="<%= apuesta.id %>">
+                                <button type="submit" class="apuesta-modif-btn">Eliminar</button>
+                            </form>
                         </div>
                     </li>
                 <% }) %>

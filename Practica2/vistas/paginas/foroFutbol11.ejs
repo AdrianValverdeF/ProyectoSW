@@ -1,6 +1,5 @@
 <div class="foro-futbol11">
     <h2>Foro de Fútbol 11</h2>
-    <p>Bienvenido al foro de Fútbol 11. Aquí puedes discutir todo lo relacionado con este deporte.</p>
 </div>
 
 <div class="chat-container">
@@ -58,3 +57,12 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('enviar').addEventListener('submit', function (e) {
+        const input = document.getElementById('mensaje');
+        if (!input.value.trim()) {
+            e.preventDefault();
+        }
+    });
+</script>

@@ -1,5 +1,8 @@
 export class Apuestas {
     static #insertStmt = null;
+    static #updateStmt = null;
+    static #selectByIdStmt = null;
+    static #deleteStmt = null;
     static #selectByCompeticionStmt = null;
     static #db = null;
 
@@ -20,6 +23,27 @@ export class Apuestas {
             )
         `);
 
+        this.#updateStmt = db.prepare(`
+            UPDATE Apuestas
+            SET 
+                multiplicador = @multiplicador,
+                ganador = @ganador,
+                puntos_equipoA = @puntos_equipoA,
+                puntos_equipoB = @puntos_equipoB,
+                resultado_exacto = @resultado_exacto,
+                diferencia_puntos = @diferencia_puntos,
+                combinada = @combinada
+            WHERE id = @id_apuesta;
+        `);
+
+        this.#selectByIdStmt = db.prepare(`
+            SELECT * FROM Apuestas WHERE id = @id_apuesta;
+        `);
+
+        this.#deleteStmt = db.prepare(`
+            DELETE FROM Apuestas WHERE id = @id_apuesta;
+        `);
+
         this.#selectByCompeticionStmt = db.prepare(`
             SELECT * FROM Apuestas WHERE id_competicion = ? ORDER BY multiplicador DESC
         `);
@@ -27,6 +51,18 @@ export class Apuestas {
 
     static insertarApuesta(apuesta) {
         this.#insertStmt.run(apuesta);
+    }
+
+    static modificarApuesta(apuesta) {
+        this.#updateStmt.run(apuesta);
+    }
+
+    static eliminarApuesta(id_apuesta) {
+        this.#deleteStmt.run({ id_apuesta });
+    }
+
+    static getApuestaById(id_apuesta) {
+        return this.#selectByIdStmt.get({ id_apuesta });
     }
 
     static getApuestasByCompeticion(id_competicion) {

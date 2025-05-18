@@ -1,6 +1,5 @@
 <div class="foro-futbolSala">
     <h2>Foro de Fútbol Sala</h2>
-    <p>Bienvenido al foro de fútbol sala. Aquí puedes discutir todo lo relacionado con el fútbol sala.</p>
 </div>
 <div class="chat-container">
     <div class="chat-messages">
@@ -57,3 +56,12 @@
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('enviar').addEventListener('submit', function (e) {
+        const input = document.getElementById('mensaje');
+        if (!input.value.trim()) {
+            e.preventDefault();
+        }
+    });
+</script>

@@ -1,0 +1,101 @@
+<div class="contenedor-apuesta">
+    <div class="encabezado-apuesta">
+        <a href="/contenido/mis-apuestas" class="btn-volver esquina">← Volver a mis apuestas</a>
+      <div class="info-evento">
+        <h1><%= evento.equipoA %> vs <%= evento.equipoB %></h1>
+        <p>Modifica tu apuesta</p>
+      </div>
+    </div>
+  
+    <% const deporte = evento.deporte ? evento.deporte.toString().toLowerCase() : 'default'; %>
+  
+    <form class="formulario-apuesta" action="/contenido/apuestas/modificarApuesta" method="POST">
+
+      <input type="hidden" name="id_apuesta" value="<%= apuesta.id %>">
+
+      <!-- GANADOR -->
+      <div class="grupo-formulario">
+        <input type="checkbox" id="apuestaGanador" name="apuesta_ganador" <%= apuesta.ganador ? 'checked' : '' %>>
+        <label for="apuestaGanador"><strong>Apostar al Ganador del Evento</strong></label>
+        <div class="opciones-ganador" id="seccionGanador" style="--imagen-equipo-a: url('/img/<%= deporte %>-<%= evento.equipoA.toLowerCase() %>.jpg'); --imagen-equipo-b: url('/img/<%= deporte %>-<%= evento.equipoB.toLowerCase() %>.jpg'); --imagen-empate: url('/img/<%= deporte %>.png');">
+          
+          
+          <input type="radio" name="ganador" id="ganador-equipoA" value="equipoA" class="hidden-radio"<%= apuesta.ganador === 'equipoA' ? 'checked' : '' %> >
+          <label for="ganador-equipoA" class="boton-radio equipoA"><%= evento.equipoA %></label>
+  
+          <input type="radio" name="ganador" id="ganador-empate" value="empate" class="hidden-radio"<%= apuesta.ganador === 'empate' ? 'checked' : '' %>> 
+          <label for="ganador-empate" class="boton-radio empate">EMPATE</label>
+  
+          <input type="radio" name="ganador" id="ganador-equipoB" value="equipoB" class="hidden-radio"<%= apuesta.ganador === 'equipoB' ? 'checked' : '' %>> 
+          <label for="ganador-equipoB" class="boton-radio equipoB"><%= evento.equipoB %></label>
+        </div>
+      </div>
+  
+      <!-- PUNTOS EQUIPO A -->
+      <div class="grupo-formulario">
+        <input type="checkbox" id="apuestaPuntosA" name="apuesta_puntosA" <%= apuesta.puntos_equipoA ? 'checked' : '' %>>
+        <label for="apuestaPuntosA"><strong>Apostar a Puntos <%= evento.equipoA %></strong></label>
+        <div class="control-deslizador" id="seccionPuntosA">
+          <div class="botones-puntos-toggle">
+            <button type="button" class="boton-toggle" data-tipo="mas" data-equipo="A">Más de</button>
+            <button type="button" class="boton-toggle" data-tipo="menos" data-equipo="A">Menos de</button>
+          </div>
+          <input type="range" id="sliderA" name="puntosEquipoA" min="0" max="200" step="1" value="<%= apuesta.puntos_equipoA != null ? apuesta.puntos_equipoA : 50 %>" class="deslizador-puntos" data-equipo="A">
+          <span id="marcadorEquipoA" class="marca-deslizador">50</span>
+        </div>
+      </div>
+  
+      <!-- PUNTOS EQUIPO B -->
+      <div class="grupo-formulario">
+        <input type="checkbox" id="apuestaPuntosB" name="apuesta_puntosB" <%= apuesta.puntos_equipoB ? 'checked' : '' %> >
+        <label for="apuestaPuntosB"><strong>Apostar a Puntos <%= evento.equipoB %></strong></label>
+        <div class="control-deslizador" id="seccionPuntosB">
+          <div class="botones-puntos-toggle">
+            <button type="button" class="boton-toggle" data-tipo="mas" data-equipo="B">Más de</button>
+            <button type="button" class="boton-toggle" data-tipo="menos" data-equipo="B">Menos de</button>
+          </div>
+          <input type="range" id="sliderB" name="puntosEquipoB" min="0" max="200" step="1" value="<%= apuesta.puntos_equipoB != null ? apuesta.puntos_equipoB : 50 %>" class="deslizador-puntos" data-equipo="B">
+          <span id="marcadorEquipoB" class="marca-deslizador">50</span>
+        </div>
+      </div>
+  
+      <!-- RESULTADO EXACTO -->
+      <div class="grupo-formulario">
+        <input type="checkbox" id="apuestaExacto" name="apuesta_resultadoExacto" <%= apuesta.resultado_exacto ? 'checked' : '' %>>
+        <label for="apuestaExacto"><strong>Apostar al Resultado Exacto</strong></label>
+        <div id="seccionExacto" class="contenedor-puntuacion-grid">
+          <input type="text" id="inputExacto" name="resultadoExacto" placeholder="Ej: 2-1" value="<%= apuesta.resultado_exacto || '' %>" <%= apuesta.resultado_exacto ? '' : 'disabled' %> >
+        </div>
+      </div>
+  
+      <!-- DIFERENCIA DE PUNTOS -->
+      <div class="grupo-formulario">
+        <input type="checkbox" id="apuestaDiferencia" name="apuesta_diferenciaPuntos" <%= apuesta.diferencia_puntos ? 'checked' : '' %>>
+        <label for="apuestaDiferencia"><strong>Apostar a Diferencia de Puntos</strong></label>
+        <div id="seccionDiferencia">
+          <input type="number" id="inputDiferencia" name="diferenciaPuntos" placeholder="Ej: 1" value="<%= apuesta.diferencia_puntos != null ? apuesta.diferencia_puntos : '' %>"<%= apuesta.diferencia_puntos != null ? '' : 'disabled' %> >
+        </div>
+      </div>
+  
+      <!-- MULTIPLICADOR -->
+      <div class="grupo-formulario">
+        <label>Multiplicador</label>
+        <input type="text" id="multiplicador" value="1.00" readonly>
+        <input type="hidden" name="multiplicador" id="hiddenMultiplicador" value="1.00">
+      </div>
+  
+      <!-- CANTIDAD APOSTADA -->
+      <div class="grupo-formulario">
+        <label for="cantidadApuesta">Dinero apostado: <%= apuesta.cantidad_apuesta %>€ </label>
+      </div>
+  
+      <button type="submit" class="boton-enviar">Modificar Apuesta</button>
+  
+      <% if (session.apuestaError) { %>
+        <div class="error-message error-apuesta">
+          <%= session.apuestaError %>
+        </div>
+        <% session.apuestaError=null; %>
+          <% } %>
+    </form>
+  </div>
