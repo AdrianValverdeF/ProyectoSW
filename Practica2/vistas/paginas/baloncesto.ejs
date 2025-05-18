@@ -1,6 +1,5 @@
-
-<div style="display: flex;">
-    <div style="flex:2; margin-right:2rem;">
+<div class="deporte-layout">
+    <div class="eventos-deporte">
         <h2>Eventos de Baloncesto</h2>
         <% if (eventos && eventos.length > 0) { %>
             <ul>
@@ -14,7 +13,7 @@
             <p>No hay eventos de Baloncesto.</p>
         <% } %>
     </div>
-    <aside style="flex:1;">
+    <aside class="foro-deporte">
         <%- include('./foroBaloncesto.ejs',{ mensajes: mensajes, session: session }) %>) %>
     </aside>
 </div>
