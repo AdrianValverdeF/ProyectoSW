@@ -93,3 +93,36 @@ async function eliminarCompeticion(competicionId, clickEvent) {
         alert(error.message);
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('formEditarCompeticion');
+  if (form) {
+    form.addEventListener('submit', confirmarEdicionCompeticion);
+  }
+});
+
+async function confirmarEdicionCompeticion(event) {
+    event.preventDefault();
+
+    const modal = document.getElementById('modalConfirmacionEditar');
+    const confirmBtn = document.getElementById('botonConfirmarEditar');
+    const cancelBtn = document.getElementById('botonCancelarEditar');
+
+    modal.style.display = 'flex';
+
+    const userConfirmed = await new Promise((resolve) => {
+        confirmBtn.onclick = () => {
+            modal.style.display = 'none';
+            resolve(true);
+        };
+
+        cancelBtn.onclick = () => {
+            modal.style.display = 'none';
+            resolve(false);
+        };
+    });
+
+    if (!userConfirmed) return;
+
+    event.target.submit();
+}

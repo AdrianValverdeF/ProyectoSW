@@ -18,7 +18,7 @@ export class Eventos {
             FROM Eventos e 
             LEFT JOIN Equipos eqA ON e.equipoA = eqA.id 
             LEFT JOIN Equipos eqB ON e.equipoB = eqB.id
-            ORDER BY e.fecha ASC
+            ORDER BY e.fecha DESC
         `);
 
         this.#getByIdStmt = db.prepare(`

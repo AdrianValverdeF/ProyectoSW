@@ -5,7 +5,7 @@
         </div>
     <% } %>
 
-    <form action="/contenido/competiciones/<%= competicion.id %>/actualizar" method="POST">
+    <form id="formEditarCompeticion" action="/contenido/competiciones/<%= competicion.id %>/actualizar" method="POST">
 
         <h3>Editar Competición</h3>
 
@@ -31,4 +31,16 @@
             <button type="submit" class="admin-btn">Guardar Cambios</button>
         </div>
     </form>
+
+    <div id="modalConfirmacionEditar" class="modal-confirmacion">
+        <div class="contenido-modal">
+            <h3>Confirmar edición</h3>
+            <p><strong>Estas seguro de que deseas editar la competición?</strong></p>
+            <p>Recuerda que si editas la competición, por politica de juegos, se eliminaran todas las apuestas y se le reembolsara el dinero a los usuarios.</p>
+            <div class="botones-modal">
+                <button id="botonCancelarEditar" class="admin-btn danger">Cancelar</button>
+                <button id="botonConfirmarEditar" class="admin-btn">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
 </div>

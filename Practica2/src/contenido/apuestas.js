@@ -4,6 +4,7 @@ export class Apuestas {
     static #selectByIdStmt = null;
     static #deleteStmt = null;
     static #selectByCompeticionStmt = null;
+    static #deleteByIdStmt = null;
     static #db = null;
 
     static initStatements(db) {
@@ -47,6 +48,10 @@ export class Apuestas {
         this.#selectByCompeticionStmt = db.prepare(`
             SELECT * FROM Apuestas WHERE id_competicion = ? ORDER BY multiplicador DESC
         `);
+
+        this.#deleteByIdStmt = db.prepare(`
+            DELETE FROM Apuestas WHERE id = ?
+        `);
     }
 
     static insertarApuesta(apuesta) {
@@ -73,6 +78,47 @@ export class Apuestas {
     static actualizarEstadoPorEvento(id_eventos, nuevoEstado) {
         const stmt = this.#db.prepare('UPDATE Apuestas SET estado = ? WHERE id_eventos = ?');
         stmt.run(nuevoEstado, id_eventos);
+    }
+
+    static eliminarApuestaPorId(id) {
+        this.#deleteByIdStmt.run(id);
+    }
+
+    static actualizarEstadosGlobal() {
+        const stmt2 = this.#db.prepare(`
+            UPDATE Apuestas
+            SET estado = 'finalizado'
+            WHERE id_eventos IN (
+                SELECT e.id FROM Eventos e
+                WHERE datetime(e.fecha) < datetime('now')
+                AND (e.resultado_final IS NOT NULL AND TRIM(e.resultado_final) != '')
+            )
+            AND estado != 'finalizado'
+        `);
+        stmt2.run();
+
+        const stmt = this.#db.prepare(`
+            UPDATE Apuestas
+            SET estado = 'sin resultado'
+            WHERE id_eventos IN (
+                SELECT e.id FROM Eventos e
+                WHERE datetime(e.fecha) < datetime('now')
+                AND (e.resultado_final IS NULL OR TRIM(e.resultado_final) = '')
+            )
+            AND estado != 'sin resultado'
+        `);
+        stmt.run();
+
+        const stmt3 = this.#db.prepare(`
+            UPDATE Apuestas
+            SET estado = 'pendiente'
+            WHERE id_eventos IN (
+                SELECT e.id FROM Eventos e
+                WHERE datetime(e.fecha) > datetime('now')
+            )
+            AND estado != 'pendiente'
+        `);
+        stmt3.run();
     }
 
     constructor({id, id_usuario, multiplicador, cantidad_apuesta, id_eventos,

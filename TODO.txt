@@ -1,26 +1,23 @@
 -> Poner con que tarea estais por wass
 -> AVISAD POR WASS DE CUALQUIER DUDA
 
-⚠️HAY QUE HACER LA MEMORIA⚠️
 
-Correciones:
-    - ⚠️Revisar ej3, implementar validación de formularios, etc⚠️                           //Adrián
-    - ✅⚠️Peticiones que modifiquen el servidor (metodos POST) IMPORTANTE!!!!⚠️      //Alejandro (Lo he revisado un par de veces, todo parece correto)
-    - Poder hacer busquedas con datos parciales en Perfil->Usuarios                          //Adrián
-    - ✅Manejar cantidades negativas en la cartera                                             //Alejandro
-    - Cambiar barra de deportes por enlaces a eventos por url, a su vez,                     //Marta
-        hacer lo mismo con el foro y mostrarlo en lado derecho con css y un nuevo contenedor
-        (esto es para mi pero me he quedado en qeu el foro de futbol funciona menos responder y la vista de baloncesto va guay)
-    - ✅Para imagenes subidas (no estaticas) crear una carpeta uploads dentro de imagenes
-    - Revisar la clase Upload por seguridad                                                  //Adrian
-    - ✅Quitar limite de apuesta                                               //Alejandro (cambiado a 100k)
-    - ✅BUG: si envias un mensaje vacio en el foro desaparecen los mensajes.                   //Dani
+
+⚠️HAY QUE HACER LA MEMORIA⚠️ //Marta
+chat general -> futbol11    (S)  //Adrian
+Logica de apuestas ganadas/perdidas  (M)  //Dani
+✅Editar competiciones  (L)  //Alejandro
+Premiar competiciones  (M) //Alejandro
+Editar/Eliminar(>1 Dia y que te reintegre los fondos) Apuestas y apuestas competicion  (M) //Dani
+Tamaño movil  (M) // Alejandro ✅⚠️(solo quedan los chats de evento)⚠️✅
+error al subir imagen sin imagen previa  (S) //Adrian
+arreglar mensajes vacios en foros pequeños  (S)  //Dani
+modificar Usuario  (M)  //Adrian
+⚠️Revisar ej3, implementar validación de formularios, etc⚠️  (L)  //Adrian
+
 
 CSS:
     - Checkbox seleccion de campos de apuestas
-    - ✅Editar eventos //Alejandro
-    - Usuarios de perfil
-    - ✅Chat // Dani
 
 Competiciones: 
     (Alejandro)//COMO LO HE PLANTEADO:⚠️
@@ -33,7 +30,6 @@ Competiciones:
         -Ganan los que mas dinero consigan en base a la apuesta (MAYOR MULTIPLICADOR QUE SE CUMPLA)
         -En la seccion "Los mas atrevidos" apareceran los x usuarios con mayor multiplicador de apuesta ✅
             en la competicion.
-    - Competiciones
 
 Sugerencia:
     - Aplicar paginas a listados largos (Eventos, apuestas, usuarios, etc), es decir,
@@ -45,58 +41,14 @@ Apuestas:
         -> Que devuelva el importe de la apuesta
     - Repoblar campos de apuesta en caso de error? <--Validacion de formularios?⚠️
 
-
-Ficheros correccion:
- -src/contenido:
-    - ✅Equipo.js //Alejandro
-    - ✅Router.js //Marta
- -src/usuarios:
-    - ✅router.js //Dani
-    - ✅Usuario.js //Adrián --> HECHO falta por revisar el amigos.js para mover todo lo de usuario.js a amigos.js
- -✅data:
-    - ✅borrar carpeta //Alejandro
- -✅static:
-    - ✅Perfil.ejs //Alejandro   -> Comentario: "XXX Pues no me habéis preguntado :D"
-
 General:
     - Ajustar tamaño movil
     - poder usar la barra izquierda como filtro para cada seccion de la pagina 
 
 ⚠️Lista de usuarios perfil: //Adrián
     - ⚠️comprobar campos posiblemente erroneos
-    - ✅Darle una vuelta al css
 
-Apuestas:
-    - Cesta de apuestas 
-    - ✅añadir campo de dinero //Marta
-    - ✅logica de apuestas (calcular dinamicamente el multiplicador) //Alejandro
-    - ✅poder seleccionar campos unicos de apuesta //Alejandro
-    - ✅Error al apostar mas dinero del disponible en la cartera
-
-✅Monedero:   //Alejandro
-    - ✅arreglar añadir fondos
-
-✅Cabecera: //Adrián
-    - ✅subrayar menu actual del usuario
-
-✅Eventos: //Alejandro
-    - ✅poder filtar Eventos
-    - ✅añadir distintivo para genero del deporte
 
 ⚠️Perfil: //Adriánw
     - ⚠️actualizar ultimas apuestas
-    - ✅Cambiar foto usuario -> ✅eliminar la anterior
-
-✅Mis Apuestas: //Marta
-    -✅ que aparezca informacion de la apuesta (modificar bbdd para ello)
-
--✅BBDD: //Marta
-    - -✅Terminar de añadir datos en equipos
-
-Chat: //Dani 
-    - ✅css de mensaje respuesta ("respondiendo a:") y cancelar respuesta
-    - ✅arreglar horas del foro
-    - ✅mensajes
-
-
 

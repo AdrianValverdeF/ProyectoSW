@@ -4,11 +4,13 @@ import { getConnection, checkConnection, closeConnection } from './db.js';
 import { inicializaModelos } from './modelos.js';
 import { inicializarMensajes } from './modelos-mensajes.js';
 import { Chat } from './contenido/chat.js';
+import { Apuestas } from './contenido/apuestas.js'; 
 
 
 const db = getConnection();
 checkConnection(db);
 inicializaModelos(db); // inicializo Eventos aqui tambien, si no es correcto avisad (Alejandro)
+Apuestas.actualizarEstadosGlobal(); 
 inicializarMensajes(db);
 Chat.initStatements(db);
 
