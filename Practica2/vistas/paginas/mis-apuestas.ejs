@@ -8,6 +8,7 @@
 </head>
 <body>
     <main>
+        
         <div class="mis-apuestas-header">
             <h1 class="titulo-mis-apuestas">Mis Apuestas</h1>
         </div>
@@ -22,6 +23,7 @@
                             <span class="apuesta-fecha">
                                 <i class="fa-regular fa-calendar"></i>
                                 <%= apuesta.fecha ? new Date(apuesta.fecha).toLocaleDateString() : 'Sin fecha' %>
+                                <%= apuesta.fecha %>
                             </span>
                         </div>
                         <div class="apuesta-detalles">
@@ -105,18 +107,18 @@
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="botones-apuesta">
                             <% const esHoy = apuesta.fecha === fechaHoy; %>
-
-                            <a href="modificarApuesta?id_apuesta=<%= apuesta.id %>"
-                                class="apuesta-modif-btn <%= esHoy ? 'disabled-link' : '' %>"
-                                <%= esHoy ? 'aria-disabled="true" tabindex="-1"' : '' %>>
+                            <% if (!esHoy) { %>
+                            <a href="modificarApuesta?id_apuesta=<%= apuesta.id %>" class="apuesta-modif-btn ">
                                 Modificar
                             </a>
                             <form action="apuestas/eliminarApuesta" method="POST" style="display:inline;">
                                 <input type="hidden" name="id_apuesta" value="<%= apuesta.id %>">
-                                <button type="submit" class="apuesta-modif-btn" <%= esHoy ? 'disabled' : '' %>>Eliminar</button>
+                                <button type="submit" class="apuesta-modif-btn">Eliminar</button>
                             </form>
+                            <% } %>
                         </div>
                     </li>
                 <% }) %>

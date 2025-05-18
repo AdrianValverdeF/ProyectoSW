@@ -280,6 +280,15 @@ aside {
     margin-right: 2rem;
 }
 
+.logo-container h1 {
+    color: var(--text-color);
+}
+
+.logo-container h1:hover {
+    color: var(--accent-color);
+    transition: color 0.3s;
+}
+
 .logo {
     width: 40px;
     height: 40px;
@@ -2640,7 +2649,8 @@ input::placeholder {
     text-decoration: none;
     transition: background 0.2s, color 0.2s;
     max-width: 110px;
-    margin: 0 auto;
+    margin-left: 9rem;
+
 }
 
 .apuesta-modif-btn:hover {

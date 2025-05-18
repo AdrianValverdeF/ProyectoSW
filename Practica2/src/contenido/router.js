@@ -221,12 +221,16 @@ contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
         const id_usuario = Usuario.getIdByUsername(req.session.username);
         let apuestas = MisApuestas.getByUserId(id_usuario);
 
+
+
         const hoy = new Date();
-        const fechaHoy = hoy.toLocaleDateString('es-ES', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        }); 
+
+        const year = hoy.getFullYear();
+        const month = String(hoy.getMonth() + 1).padStart(2, '0');
+        const day = String(hoy.getDate()).padStart(2, '0');
+
+        const fechaHoy = `${year}-${month}-${day}`;
+        
 
         const fechaHoyFormateada = fechaHoy.replace(/\//g, '-');
         console.log(fechaHoyFormateada);
@@ -1199,7 +1203,13 @@ contenidoRouter.post('/apuestas/:id/apostar', auth, [
   const evento = Eventos.getEventoById(id);
   if (!evento) return res.status(404).send('Evento no encontrado');
 
-  if (new Date(evento.fecha) <= new Date()) {
+  const ahora = new Date();
+  const fechaEvento = new Date(evento.fecha);
+
+  const hoySinHora = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+  const eventoSinHora = new Date(fechaEvento.getFullYear(), fechaEvento.getMonth(), fechaEvento.getDate());
+  
+  if (eventoSinHora < hoySinHora) {
     req.session.apuestaError = 'No puedes apostar en un evento finalizado.';
     return res.redirect('/contenido/eventos');
   }
