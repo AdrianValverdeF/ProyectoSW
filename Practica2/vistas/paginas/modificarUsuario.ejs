@@ -25,7 +25,7 @@
                     <form id="formulario-modificar" action="/contenido/modificarPerfilUsuario?id=<%=user.id%>" method="POST">
                         <p><strong>Nombre:</strong> <input type="text" name="nombre" value="<%= user.nombre %>" required></p>
                         <p><strong>Apellidos:</strong> <input type="text" name="apellido" value="<%= user.apellido %>" required></p>
-                        <p><strong>Edad:</strong> <input type="number" name="edad" value="<%= user.edad %>" required><%- helpers.error(errores, 'edad') %><span class="error"></span><span class="feedback"></span></p>
+                        <p><strong>Edad:</strong> <input type="number" name="edad" value="<%= user.edad %>" required></p>
                         <p><strong>Username:</strong> <input type="text" name="username" value="<%= user.username %>" required></p>
                         <p><strong>Rol:</strong> <input type="text" name="rol" value="<%= user.rol %>" required></p>
                         <p><strong>Fondos:</strong> <input type="number" name="fondos" value="<%= user.fondos %>" required></p>

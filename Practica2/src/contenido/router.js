@@ -232,14 +232,14 @@ contenidoRouter.get('/mis-apuestas', auth, (req, res) => {
 });
 
 //hecho -
-/*contenidoRouter.get('/modificarUsuario', auth, (req, res) => {
+contenidoRouter.get('/modificarUsuario', auth, (req, res) => {
     const usuarioParaModificar = Usuario.getUsuarioById(req.query.id);
     usuarioParaModificar.imagePath = Usuario.getImagen(usuarioParaModificar.id);
-    render(req, res, 'paginas/modificarUsuario', {
+    renderSin(req, res, 'paginas/modificarUsuario', {
         session: req.session,
         user: usuarioParaModificar
     });
-});*/
+});
 
 contenidoRouter.get('/modificarApuesta', auth, (req, res) => {
     const apuestaParaModificar = Apuestas.getApuestaById(req.query.id_apuesta);
@@ -338,7 +338,7 @@ contenidoRouter.post('/modificarPerfil', uploadProfileImage, (req, res) => {
         const usuario = Usuario.getUsuarioByUsername(req.session.username);
         const rutaRelativa = Usuario.getImagen(Usuario.getIdByUsername(req.session.username)); 
         Usuario.updateImagen(Usuario.getIdByUsername(req.session.username), imagePath);
-        if (rutaRelativa) {
+        if (rutaRelativa.rutaImg) {
             console.log('Ruta relativa:', rutaRelativa);
             const nombreArchivo = path.basename(rutaRelativa.rutaImg);
             console.log('Nombre del archivo:', nombreArchivo);
